@@ -60,6 +60,7 @@ public class Init_Neo4j2
     }
     
     void init() throws IOException {
+    	
     	FileUtils.deleteRecursively( databaseDirectory );
     	// tag::startDb[]
     	graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( databaseDirectory );
@@ -122,59 +123,9 @@ public class Init_Neo4j2
         }
     	
     }
-
-    void createDb() throws IOException
-    {
-    	FileUtils.deleteRecursively( databaseDirectory );
-    	// tag::startDb[]
-    	graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( databaseDirectory );
-    	registerShutdownHook( graphDb );
-
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Label label = Label.label( "Person" );
-        	for (int i=0; i<2000;i++) {
-        		Persons[i] = graphDb.createNode(label);
-        		Persons[i].setProperty( "name", "Person" + i );
-        		Persons[i].setProperty( "attribute",  i );
-        	}
-        	tx.success();
-        }
-
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Label labelAction = Label.label( "Action" );
-            for (int i=0;i<=1;i++) {
-        		Actions1[i] = graphDb.createNode(labelAction);
-        		Actions1[i].setProperty( "name", "Action1_" + i );
-        		Actions1[i].setProperty( "attribute",  i*5 );
-        		Actions2[i] = graphDb.createNode(labelAction);
-        		Actions2[i].setProperty( "name", "Action2_" + i );
-        		Actions2[i].setProperty( "attribute",  i*5 );
-            }
-        	tx.success();
-        }
-    }
-    void createRE() throws IOException{
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-        	for (int i=0; i<2000;i++) {
-        		relationships.add(Persons[i].createRelationshipTo( Actions1[ i%2], RelTypes.RELATIONSHIP1));
-        		relationships.add(Persons[i].createRelationshipTo( Actions2[ (i+1)%2], RelTypes.RELATIONSHIP2));
-        		for(int j=0;j<=CONSTANTS.edges;j++) {
-            		relationships.add(Persons[i].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP3));
-            		relationships.add(Persons[i].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP4));
-        		}
-        	}           
-        	tx.success();
-        }
-
-    }
     
     void Query() { 
-    	for (int i=0;i<=CONSTANTS.iterations;i++) {
-    		double start = System.currentTimeMillis();
-    	 	try ( Result result = graphDb.execute("MATCH (X:Person)- return COUNT(X)") )
+    	 	try ( Result result = graphDb.execute("MATCH (X:Person) return COUNT(X)") )
     	 	{
     	     	while ( result.hasNext() )
     	     	{
@@ -185,7 +136,6 @@ public class Init_Neo4j2
     	         	}
     	     	}
     	 	}
-    	}
     }
     
     void Query1() { 
