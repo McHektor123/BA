@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.neo4j.graphdb.Direction;
@@ -12,34 +11,28 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.schema.IndexDefinition;
-import org.neo4j.graphdb.schema.Schema;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
-import org.neo4j.io.fs.FileUtils;
 
 import Constants.CONSTANTS;
 
-public class Init_Neo4j2
+public class Init_Neo4j3
 {
    // private static final File databaseDirectory = new File( "target/neo4j-query-1-6" );
 
     private static final File databaseDirectory = new File( "target/smallTest" );
 
-    public String greeting;
-
 	int timeIndex=0;
     // tag::vars[]
-    GraphDatabaseService graphDb;
-    Node Persons[] = new Node[CONSTANTS.nodes+1];
+	private static GraphDatabaseService graphDb =new GraphDatabaseFactory().newEmbeddedDatabase( databaseDirectory );
+	Node Persons[] = new Node[CONSTANTS.nodes+1];
     Node Actions1[] = new Node[2];
     Node Actions2[] = new Node[2];
     // end::vars[]
@@ -56,142 +49,15 @@ public class Init_Neo4j2
 
     public static void main( final String[] args ) throws IOException
     {
-    	Init_Neo4j2 hello = new Init_Neo4j2();
-    	hello.init();
+    	registerShutdownHook( graphDb );
+    	Init_Neo4j3 hello = new Init_Neo4j3();
+    	System.out.print("test");
         hello.Query1();
         hello.Query();
         hello.write_data();
-        //hello.removeData();
-        hello.deleteIndex();
         hello.shutDown();
     }
-    
-    void init() throws IOException {
-    	boolean test=false;
-    	FileUtils.deleteRecursively( databaseDirectory );
-    	// tag::startDb[]
-    	graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( databaseDirectory );
-    	registerShutdownHook( graphDb );
-    	createIndex();
-    	createActions();
-    	for(int i=0;i<CONSTANTS.nodes;i++) {
-    		createPersons(i);    
-    		createRelationships1_2(i);  
-    		test= i==CONSTANTS.nodes-1;
-    	} 	
-    	if(test) {
-    		for(int j=0;j<CONSTANTS.nodes;j++) {
-    			createRelationships3_4(j); 		
-    		}
-    	}
-    }
-    
-    void createIndex() throws IOException
-    {
-        IndexDefinition indexDefinition;
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Schema schema = graphDb.schema();
-            indexDefinition = schema.indexFor( Label.label( "Person" ) )
-                    .on( "name" )
-                    .create();
-            tx.success();
-        }
-        
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Schema schema = graphDb.schema();
-            indexDefinition = schema.indexFor( Label.label( "Person" ) )
-                    .on( "attribute" )
-                    .create();
-            tx.success();
-        }
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Schema schema = graphDb.schema();
-            indexDefinition = schema.indexFor( Label.label( "Action" ) )
-                    .on( "attribute" )
-                    .create();
-            tx.success();
-        }
-    }
-    
-    void deleteIndex()throws IOException
-    {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Label label = Label.label( "Person" );
-            for ( IndexDefinition indexDefinition : graphDb.schema()
-                    .getIndexes( label ) )
-            {
-                // There is only one index
-                indexDefinition.drop();
-            }
 
-            tx.success();
-        }      
-    }
-    
-    
-    void createActions() throws IOException
-    {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            Label labelAction = Label.label( "Action" );
-            for (int i=0;i<=1;i++) {
-        		Actions1[i] = graphDb.createNode(labelAction);
-        		Actions1[i].setProperty( "name", "Action1_" + i );
-        		Actions1[i].setProperty( "attribute",  i*20 );
-        		Actions2[i] = graphDb.createNode(labelAction);
-        		Actions2[i].setProperty( "name", "Action2_" + i );
-        		Actions2[i].setProperty( "attribute",  i*20 );
-            }
-        	tx.success();
-        }
-    }
-    
-    void createPersons(int i) throws IOException
-    {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-        	Label label = Label.label( "Person" );
-        	Persons[i] = graphDb.createNode(label);
-        	Persons[i].setProperty( "name", "Person" + i );
-        	Persons[i].setProperty( "attribute",  i );    		
-        	tx.success();
-        }
-    }
-    
-    void createRelationships1_2(int i) throws IOException
-     {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-        	Persons[i].createRelationshipTo( Actions1[i%2], RelTypes.RELATIONSHIP1);
-        	Persons[i].createRelationshipTo( Actions2[ (i+1)%2], RelTypes.RELATIONSHIP2);
-        	tx.success();
-        }   	
-    }
-     
-    void createRelationships3_4(int k) throws IOException
-     {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-        	for (int j=0;j<CONSTANTS.edges/2;j++) {
-        		Persons[k].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP3);        
-        		Persons[k].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP4);
-        	}
-        	tx.success();
-        }   	
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-        	for (int j=CONSTANTS.edges/2;j<CONSTANTS.edges;j++) {
-        		Persons[k].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP3);        
-        		Persons[k].createRelationshipTo( Persons[(int)(Math.random() * CONSTANTS.nodes-1)], RelTypes.RELATIONSHIP4);
-        	}
-        	tx.success();
-        }  
-    }
-    
     void Query() { 
         try ( Transaction tx = graphDb.beginTx() )
         {     	
@@ -201,7 +67,7 @@ public class Init_Neo4j2
         			Traverser friendsTraverser = getFriends( N, Direction.BOTH );
         				for ( Path friendPath : friendsTraverser ) {
         					if((Integer)friendPath.endNode().getProperty("attribute") >= 15) {	
-        						System.out.println("Query 19:" +"The  user " + 613 + " is connected with " + friendPath.endNode().getProperty( "name" ));	
+        						System.out.println("Query 19:" +"The  user " + 250 + " is connected with " + friendPath.endNode().getProperty( "name" ));	
         					}
         				}
         }
@@ -361,7 +227,7 @@ public class Init_Neo4j2
      		//Query9
     		start = System.currentTimeMillis();
     	 	try ( 	Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("MATCH (X:Person)-[:RELATIONSHIP3]->(n1) With COLLECT(n1) as n MATCH (Y:Person)-[:RELATIONSHIP3]->(n1) WHERE n1 in n RETURN COUNT(DISTINCT(n1))"))
+    	 			Result result = graphDb.execute("MATCH (X:Person{name:'Person1'})-[:RELATIONSHIP3]->(n1) With COLLECT(n1) as n MATCH (Y:Person)-[:RELATIONSHIP3]->(n1) WHERE n1 in n RETURN COUNT(DISTINCT(n1))"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
@@ -551,7 +417,43 @@ public class Init_Neo4j2
      		end = System.currentTimeMillis();
      		CONSTANTS.queries[timeIndex][i] = end - start ; 
      		timeIndex++;
- 
+     		
+     		//Query19
+    		start = System.currentTimeMillis();
+    	 	try ( 	Transaction ignored = graphDb.beginTx();
+    	 			Result result = graphDb.execute("MATCH (X:Person)-[:RELATIONSHIP4]->(Y) WHERE X.attribute>=250 AND Y.attribute>=15  RETURN SUM(DISTINCT(Y.attribute))"))
+    	 	{
+    	     	while ( result.hasNext() )
+    	     	{
+    	         	Map<String, Object> row = result.next();
+    	         	for ( String key : result.columns() )
+    	         	{
+    	             	//System.out.printf( "Query 7:" +"%s = %s%n", key, row.get( key ) );
+    	         	}
+    	     	}
+    	 	}
+     		end = System.currentTimeMillis();
+     		CONSTANTS.queries[timeIndex][i] = end - start ;
+     		timeIndex++;
+     		
+     		//Query20
+    		start = System.currentTimeMillis();
+    	 	try ( 	Transaction ignored = graphDb.beginTx();
+    	 			Result result = graphDb.execute("MATCH (X:Person)-[:RELATIONSHIP4]->(Y) WHERE X.attribute>=250 AND Y.attribute>=15  RETURN AVG(DISTINCT(Y.attribute))"))
+    	 	{
+    	     	while ( result.hasNext() )
+    	     	{
+    	         	Map<String, Object> row = result.next();
+    	         	for ( String key : result.columns() )
+    	         	{
+    	             	//System.out.printf( "Query 7:" +"%s = %s%n", key, row.get( key ) );
+    	         	}
+    	     	}
+    	 	}
+     		end = System.currentTimeMillis();
+     		CONSTANTS.queries[timeIndex][i] = end - start ;
+     		timeIndex++;
+  
     	}    	
     }
 
@@ -580,25 +482,7 @@ public class Init_Neo4j2
 				e.printStackTrace();
 			}
     }
-    
-    void removeData()
-    {
-        try ( Transaction tx = graphDb.beginTx() )
-        {
-            // tag::removingData[]
-            // let's remove the data
-        	for (int i=0; i>CONSTANTS.nodes;i++) {
-                Persons[i].delete();
-                Persons[i].getSingleRelationship( RelTypes.RELATIONSHIP1, Direction.BOTH ).delete();
-                Persons[i].getSingleRelationship( RelTypes.RELATIONSHIP2, Direction.BOTH ).delete();
-                Persons[i].getSingleRelationship( RelTypes.RELATIONSHIP3, Direction.BOTH ).delete();
-                Persons[i].getSingleRelationship( RelTypes.RELATIONSHIP4, Direction.BOTH ).delete();
-        	}
-            // end::removingData[]
 
-            tx.success();
-        }
-    }
 
     void shutDown()
     {
