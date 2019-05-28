@@ -1,4 +1,3 @@
-package Neo4j;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,7 +23,6 @@ import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 
-import Constants.CONSTANTS;
 
 public class New_Queries
 {
@@ -57,7 +55,7 @@ public class New_Queries
     	System.out.print("test");
     	//hello.createIndex();
         hello.Query1();
-        hello.Query();
+        //hello.Query();
         hello.write_data();
         hello.shutDown();
     }
@@ -91,14 +89,14 @@ public class New_Queries
     		//Query1
     		double start = System.currentTimeMillis();
     	 	try (  Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("MATCH (Y:Person)-[:RELATIONSHIP4]->(X) WITH AVG(X.attribute) as A  MATCH (Y:Person)-[:RELATIONSHIP4]->(X) WHERE A>=20000 return COUNT((X))"))
+    	 			Result result = graphDb.execute("MATCH (Y:Person)-[:RELATIONSHIP4]->(X) WITH AVG(X.attribute) as A MATCH (Y:Person)-[:RELATIONSHIP4]->(X) WHERE  A<=250 return Count(DISTINCT(Y))"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
     	         	Map<String, Object> row = result.next();
     	         	for ( String key : result.columns() )
     	         	{
-    	             	//System.out.printf( "Query 1:" + " %s = %s%n", key, row.get( key ) );
+    	             	System.out.printf( "Query 1:" + " %s = %s%n", key, row.get( key ) );
     	         	}
     	     	}
     	 	}
@@ -113,19 +111,20 @@ public class New_Queries
             {
             	int count =0;
             	int avg=0;
-            	ResourceIterable<Node> startPoints= graphDb.getAllNodes();
-            	for(Node n1 :startPoints) {
-            			Traverser friendsTraverser = getFriends( n1, Direction.INCOMING,1 );
+            	Iterable<Node>	allNodes = graphDb.getAllNodes();
+            	for(Node n : allNodes) {	
+            			avg = 0;
+            			Traverser friendsTraverser = getFriends( n, Direction.OUTGOING,1 );
             			{
             				for ( Path friendPath : friendsTraverser ) {
             					avg += (Integer)friendPath.endNode().getProperty("attribute");
             				}    
-            				if(avg/friendsTraverser.metadata().getNumberOfPathsReturned() >=20000) {
+            				if( friendsTraverser.metadata().getNumberOfPathsReturned()!=0 &&  avg/friendsTraverser.metadata().getNumberOfPathsReturned() <=250) {
             					count++;
             				}
-            				System.out.println("Query 15:" +"The result of user  is " + count );	
             			}   	
             	}
+            	System.out.println("Query 2:" +"The result of user  is " + count);	
             }
      		end = System.currentTimeMillis();
      		CONSTANTS.queries[timeIndex][i] = end - start ; 
@@ -134,14 +133,14 @@ public class New_Queries
     		//Query3
     		start = System.currentTimeMillis();
     	 	try (  Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("match t=(p:Person{name :'person1'})-[:Relationship3*1..2]->(p1:Person)-[:Relationship3*1..3]->(p2) where not (p)-[:Relationship3*1..2]->(p2) return p2.name"))
+    	 			Result result = graphDb.execute("match t=(p:Person{name :'Person1'})-[:RELATIONSHIP3*1..3]->(p1:Person)-[:RELATIONSHIP3*1..2]->(p2) where not (p)-[:RELATIONSHIP3]->(p2) return COUNT(p2)"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
     	         	Map<String, Object> row = result.next();
     	         	for ( String key : result.columns() )
     	         	{
-    	             	System.out.printf( "Query 1:" + " %s = %s%n", key, row.get( key ) );
+    	             	System.out.printf( "Query 3:" + " %s = %s%n", key, row.get( key ) );
     	         	}
     	     	}
     	 	}
@@ -153,7 +152,7 @@ public class New_Queries
     		//Query4
     		start = System.currentTimeMillis();
     	 	try (  Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("match t=(p:Person{name :'person1'})-[:Relationship2*1..2]->(p1:Action)<-[:Relationship2*1..3]-(p2) where not (p)-[:Relationship3*1..2]->(p2) return p2.name"))
+    	 			Result result = graphDb.execute("match t=(p:Person{name :'Person1'})-[:RELATIONSHIP2*1..2]->(p1:Action)<-[:RELATIONSHIP2*1..3]-(p2) where not (p)-[:RELATIONSHIP3]->(p2) return COUNT(p2)"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
@@ -173,20 +172,23 @@ public class New_Queries
     		start = System.currentTimeMillis();
             try ( Transaction tx = graphDb.beginTx() )
             {
-            	ResourceIterable<Node> startPoints= graphDb.getAllNodes();
-            	for(Node n1 :startPoints) {
-            			Traverser friendsTraverser = getFriends( n1, Direction.OUTGOING,2 );
+            	int count=0;
+            	Node startPoints= graphDb.findNode(labelPerson,"name","Person1");
+            			Traverser friendsTraverser = getFriends( startPoints, Direction.OUTGOING,2 );
+            			Traverser friendTraverser = getFriends( startPoints, Direction.OUTGOING,1 );
             			{
             				for ( Path friendPath : friendsTraverser ) {
             					Traverser NoN =getFriends(friendPath.endNode(), Direction.OUTGOING,3);
             					for ( Path N : NoN ) {
-            						if(N.endNode() != friendPath.endNode()) {
-            							System.out.println("Query 5:" +"Found new user " + N.endNode().getProperty("name") );		
-            						}
+                    				for ( Path Path : friendTraverser ) {
+                    					if(N.endNode() != Path.endNode()) {
+                    						count++;
+            							}
+                    				}
             					}
             				}    
-            			}   	
-            	}
+            			}   	 	
+            	System.out.println("Query 5:" +"Found new user " + count );		
             }
      		end = System.currentTimeMillis();
      		CONSTANTS.queries[timeIndex][i] = end - start ; 
@@ -196,20 +198,23 @@ public class New_Queries
     		start = System.currentTimeMillis();
             try ( Transaction tx = graphDb.beginTx() )
             {
-            	ResourceIterable<Node> startPoints= graphDb.getAllNodes();
-            	for(Node n1 :startPoints) {
-            			Traverser friendsTraverser = getActions( n1, Direction.OUTGOING,2 );
+            	int count=0;
+            	Node startPoints= graphDb.findNode(labelPerson,"name","Person1");
+            			Traverser actionsTraverser = getActions( startPoints, Direction.OUTGOING,2 );
+            			Traverser friendsTraverser = getFriends( startPoints, Direction.OUTGOING,1 );
             			{
-            				for ( Path friendPath : friendsTraverser ) {
-            					Traverser NoN =getActions(friendPath.endNode(), Direction.INCOMING,3);
+            				for ( Path actionPath : actionsTraverser ) {
+            					Traverser NoN =getActions(actionPath.endNode(), Direction.INCOMING,2);
             					for ( Path N : NoN ) {
-            						if(N.endNode() != friendPath.endNode()) {
-            							System.out.println("Query 6:" +"Found new user " + N.endNode().getProperty("name") );		
-            						}
+                    				for ( Path Path : friendsTraverser ) {
+                    					if(N.endNode() != Path.endNode()) {
+                    						count++;
+            							}
+                    				}
             					}
             				}    
-            			}   	
-            	}
+            			}   	 	
+            	System.out.println("Query 6:" +"Found new user " + count );		
             }
      		end = System.currentTimeMillis();
      		CONSTANTS.queries[timeIndex][i] = end - start ; 
@@ -218,14 +223,14 @@ public class New_Queries
     		//Query7
     		start = System.currentTimeMillis();
     	 	try (  Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("match t=(p:Person{name :'person1'})-[:Relationship3*1..4]->(p1:Person)-[:Relationship3*1..6]->(p2) where not (p)-[:Relationship3*1..4]->(p2) return p2.name"))
+    	 			Result result = graphDb.execute("match t=(p:Person{name :'Person1'})-[:Relationship3*1..4]->(p1:Person)-[:Relationship3*1..6]->(p2) where not (p)-[:Relationship3*1..4]->(p2) return p2.name"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
     	         	Map<String, Object> row = result.next();
     	         	for ( String key : result.columns() )
     	         	{
-    	             	System.out.printf( "Query 4:" + " %s = %s%n", key, row.get( key ) );
+    	             	System.out.printf( "Query 7:" + " %s = %s%n", key, row.get( key ) );
     	         	}
     	     	}
     	 	}
@@ -237,14 +242,14 @@ public class New_Queries
     		//Query8
     		start = System.currentTimeMillis();
     	 	try (  Transaction ignored = graphDb.beginTx();
-    	 			Result result = graphDb.execute("match t=(p:Person{name :'person1'})-[:Relationship2*1..4]->(p1:Action)<-[:Relationship2*1..6]-(p2) where not (p)-[:Relationship3*1..4]->(p2) return p2.name"))
+    	 			Result result = graphDb.execute("match t=(p:Person{name :'Person1'})-[:Relationship2*1..4]->(p1:Action)<-[:Relationship2*1..6]-(p2) where not (p)-[:Relationship3*1..4]->(p2) return p2.name"))
     	 	{
     	     	while ( result.hasNext() )
     	     	{
     	         	Map<String, Object> row = result.next();
     	         	for ( String key : result.columns() )
     	         	{
-    	             	System.out.printf( "Query 4:" + " %s = %s%n", key, row.get( key ) );
+    	             	System.out.printf( "Query 8:" + " %s = %s%n", key, row.get( key ) );
     	         	}
     	     	}
     	 	}
