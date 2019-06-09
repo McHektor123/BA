@@ -1,0 +1,17 @@
+% Chapter 0
+
+\chapter{Hintergrund} % Main chapter title
+
+\label{Chapter0} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+%----------------------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content 
+\newcommand{\keyword}[1]{\textit{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+Um Daten in einer Datenbank abzulegen ist ein Datenmodell nötig, welches  das Allgemeine Verhalten der Datenbank definiert. Dieses ist durch folgende Eigenschaften definiert ist: ein Liste von Datenstruktur Typen, ein Liste von Operatoren die auf die Daten angewandt werden können und eine Liste der Regeln zur Vollständigkeit der Datenbank \parencite{codd1981data}. Zwei dieser Datenmodelle sind der Relationale-Ansatz und die NoSQL-Bewegung. Die meisten Datenbanken werden heutzutage nach dem relationalen Datenmodell verwaltet und mittels SQL bearbeitet \parencite{miller2013graph}. Dieses Schema wurde über viele Jahre lang optimiert und gilt für viele Daten als performanteste Implementierung \parencite{miller2013graph}. Die verwendete Datenstruktur bildet eine Tabelle, eine Reihe bildet ein Objekt und die Spalten bilden die dazugehörigen Attribute \parencite{miller2013graph}. Die Möglichkeiten der Operationen, mit denen die Daten verändert oder angefragt werden,sind durch den SQL-Standard bzw. die Implementierung des  Standards limitiert. Die Regeln zur Vollständigkeit der Datenbank sind ebenfalls im Standard festgehalten.  Als eine Alternative zu diesem relationalen Datenmodell gibt es die “NoSQL” Bewegung, welche erstmal 1998 erwähnt wurde \parencite{strauch2011nosql}. Diese Bewegung versuchte zunächst den Gebrauch von SQL als Anfragesprache zu vermeiden und brachte in den folgenden Jahren weitere Datenmodelle hervor. Eines dieser Konzepte ist das Darstellen von Daten in der Datenstruktur eines Graphen \parencite{miller2013graph}. Die sogenannten Graphdatenbanken(GDB) werden besonders in dem Darstellen von Netzwerken verwendet \parencite{han2011survey}, da das relationalen Datenmodell bei großen Datenmengen und vielen komplex verbunden Informationen durch eine hohe Anzahl von notwendigen Joins nicht performant verwendet werden kann \parencite{miller2013graph}. Für GDBs gibt es keine standardisierte Anfragesprache und  die Menge an möglichen Operatoren ist sehr variable. Neo4j ist ein populäres Beispiel für Graphdatenbanken und wird im folgenden genauer beschrieben.
+

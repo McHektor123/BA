@@ -1,0 +1,14 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: main.aux
+The style file: biblatex.bst
+A level-1 auxiliary file: Chapters/Chapter0.aux
+A level-1 auxiliary file: Chapters/Chapter1.aux
+A level-1 auxiliary file: Chapters/Chapter2.aux
+A level-1 auxiliary file: Chapters/Chapter3.aux
+Database file #1: main-blx.bib
+Database file #2: example.bib
+Repeated entry---line 131 of file example.bib
+ : @inproceedings{holzschuher2013performance
+ :                                          ,
+I'm skipping whatever remains of this entry
+Biblatex version: 3.11
+(There was 1 error message)

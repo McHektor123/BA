@@ -1,0 +1,22 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}
+\contentsline {chapter}{Declaration of Authorship}{iii}{section*.1}% 
+\contentsline {chapter}{Abstract}{v}{section*.2}% 
+\contentsline {chapter}{\numberline {1}Hintergrund}{1}{chapter.7}% 
+\contentsline {chapter}{\numberline {2}Grundlagen}{3}{chapter.8}% 
+\contentsline {section}{\numberline {2.1}Graph}{3}{section.9}% 
+\contentsline {section}{\numberline {2.2}Neo4j}{3}{section.10}% 
+\contentsline {section}{\numberline {2.3}CAP und ACID unter Neo4j}{4}{section.12}% 
+\contentsline {section}{\numberline {2.4}Neo4j als Datenbank management system}{4}{section.13}% 
+\contentsline {subsection}{\numberline {2.4.1}Cypher}{5}{subsection.15}% 
+\contentsline {subsection}{\numberline {2.4.2}Java Core API}{7}{subsection.16}% 
+\contentsline {subsection}{\numberline {2.4.3}Traversal API}{7}{subsection.17}% 
+\contentsline {chapter}{\numberline {3}Chapter Title Here}{9}{chapter.18}% 
+\contentsline {section}{\numberline {3.1}Main Section 1}{9}{section.19}% 
+\contentsline {subsection}{\numberline {3.1.1}Subsection 1}{9}{subsection.20}% 
+\contentsline {subsection}{\numberline {3.1.2}Subsection 2}{9}{subsection.21}% 
+\contentsline {section}{\numberline {3.2}Main Section 2}{9}{section.22}% 
+\contentsline {chapter}{\numberline {4}Die 2 Modi}{11}{chapter.23}% 
+\contentsline {section}{\numberline {4.1}Der eingebettete Modus}{11}{section.24}% 
+\contentsline {section}{\numberline {4.2}Der Server Modus}{12}{section.26}% 
+\contentsline {chapter}{Bibliography}{13}{appendix*.28}% 
