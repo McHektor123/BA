@@ -2,7 +2,7 @@
 
 \chapter{Grundlagen} % Main chapter title
 
-\label{ChapterX} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -33,7 +33,7 @@ Die ACID Eigenschaft setzt sich aus 4 Eigenschaften zusammen, die das Verhalten 
 %-----------------------------------
 
 \section{Neo4j als Datenbank management system}
-Ein Datenbank Managment System(DBMS), ist für die Verarbeitung von Anfragen verantwortlich und kann mit folgenden Teilen beschrieben werden: Eine Schnittstelle mit dem Nutzer, eine Anfragesprache, ein Anfragen Optimierer, eine database engine, eine storage engine ,eine transaction engine und operation features\parencite{angles2012comparison}. Als Schnittstelle mit dem Nutzer stehen die Anwendungen “Neo4j Browser” unter Linux und “Neo4j Desktop” unter Windows zur Verfügung, zusätzlich besteht die Möglichkeit eine, von den Neo4j Treibern unterstützte Programmiersprache zu verwenden und direkt die Neo4j APIs zu nutzen. Die Anfragesprache für Neo4j Browser und Neo4j Desktop ist “Cypher”. Zum Optimieren von Anfrageplänen wird der “Volcano Optimizer Generator” \parencite{graefe1993volcano} verwendet \parencite{francis2018cypher}. Die database engine wird durch die Core API dargestellt. Die storage engine durch die record files und die transaction unit  wird durch das trancsaction  management dargestellt. Die operation features zum Wiederherstellen von Daten werden in den Transaktions-Log realisiert. Optional kann zu eventuellen Performanz Steigerung ein Cache verwaltet werden. In der Neo4j Enterprise Version ist es möglich, das DBMS auf mehrere Systeme in einem Netzwerk mittels High Availability Funktion auszulagern \parencite{vukotic2015neo4j}. Zusammengefasst wird die Architektur in \ref{fig:Architecure}
+Ein Datenbank Managment System(DBMS), ist für die Verarbeitung von Anfragen verantwortlich und kann mit folgenden Teilen beschrieben werden: Eine Schnittstelle mit dem Nutzer, eine Anfragesprache, ein Anfragen Optimierer, eine database engine, eine storage engine ,eine transaction engine und operation features\parencite{angles2012comparison}. Als Schnittstelle mit dem Nutzer stehen die Anwendungen “Neo4j Browser” unter Linux und “Neo4j Desktop” unter Windows zur Verfügung, zusätzlich besteht die Möglichkeit eine, von den Neo4j Treibern unterstützte Programmiersprache zu verwenden und direkt die Neo4j APIs zu nutzen. Die Anfragesprache für Neo4j Browser und Neo4j Desktop ist “Cypher”. Zum Optimieren von Anfrageplänen wird der “Cypher Query Optimizer”verwendet \footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}. Die database engine wird durch das Transaction Managment dargestellt. Die storage engine durch die Record Files und die transaction unit  wird durch das Trancsaction Log dargestellt. Die operation features zum Wiederherstellen von Daten werden in den Transaktions-Log realisiert. Optional kann zu eventuellen Performanz Steigerung ein Cache verwaltet werden. In der Neo4j Enterprise Version ist es möglich, das DBMS auf mehrere Systeme in einem Netzwerk mittels High Availability Funktion auszulagern \parencite{vukotic2015neo4j}. Zusammengefasst wird die Architektur in \ref{fig:Architecure}
 
 \begin{figure}[th]
 	\centering
@@ -71,7 +71,7 @@ Create (p:Person)
  \end{Verbatim} 
  , hier werden nur die Namen  von 10 Personen zurückgegeben\newline
 \textbf{SUM/COUNT/AVG}: Werden wie in SQL verwendet. \newline
-Der Nutzer beeinflusst so welche Daten durch  das Musters gesucht werden. Der Nutzer besitzt keine Möglichkeit die Art der Berechnung zu beeinflussen. Cypher wird dadurch als Nutzerfreundlichere, aber auch weniger performante Alternative zu den APIs empfohlen \parencite{vukotic2015neo4j}. In den folgenden Experimenten wurde sowohl Cypher als als auch die Travese API für einen direkten Vergleich verwendet.
+Der Nutzer beeinflusst so welche Daten durch  das Musters gesucht werden. Der Nutzer besitzt keine Möglichkeit die Art der Berechnung zu beeinflussen. Cypher wird dadurch als Nutzerfreundlichere, aber auch weniger performante Alternative zu den APIs empfohlen \parencite{vukotic2015neo4j}. In den folgenden Experimenten wurde sowohl Cypher als als auch die Travese API für einen direkten Vergleich verwendet. Cypher lässt sich ausschließlich als single thread ausführen.
 
 \subsection{Java Core API}
 Als low-level Schnittstelle zu den Kernfunktionen von Neo4j ist dies die Möglichkeit mit der besten Laufzeit \parencite{vukotic2015neo4j}. Zur Verwendung dieser imperativen API sind weitreichende Programmierkenntnisse und Wissen über die Neo4j-Bibliotheken, sowie einer genauen Vorstellung über die Daten in dem Graph erforderlich. Wenn diese Kenntnisse gegeben sind, ist die API sehr flexible verwendbar  und der Nutzer hat hohen Einfluss darauf, wie die Anfragen bearbeitet werden sollen und kann so eine optimale Berechnungsstrategie angeben \parencite{vukotic2015neo4j}. Die so produzierten Queries sind in meisten sehr lang. Eine Beispielhafte Traversion wäre:
@@ -81,7 +81,7 @@ public Node getSomeNode( Long ID){
 	return graphDb.getNodeById(ID);
 }
 \end{Verbatim}
-Die Funktion getSomeNode(Long ID) gibt den Knoten mit der gegeben ID zurück.
+Die Funktion getSomeNode(Long ID) gibt den Knoten mit der gegeben ID zurück. Der Nutzer gibt jede Transaktion explizit an,so ist es dem System möglich alle zur Verfügung stehenden Kerne zu nutzen.
 
 \subsection{Traversal API}
 Diese deklarative API ist schneller als Cypher und langsamer als die Core API. Die Traversal API erlaubt einen high-level Zugriff auf Neo4j, welcher weniger abstrakt als die Core API ist und dennoch Programmierkenntnisse erfordert. Der Nutzer muss keine genaue Vorstellung von den Daten im Graphen haben.Es wird eine Beschreibung angegeben, wie eine Suche  genau ausgeübt werden soll und kann diese dann auf einen Knoten anwenden. 
@@ -97,9 +97,9 @@ return td.traverse( person );
 \end{Verbatim}
 Zusammengefasst wäre diese Traversion: Suche alle Verbindungen von dem Anfangsnode über die Relation RELATIONSHIP4 bis zu Tiefe 2.  Beim Traversieren kann der der Nutzer zwischen 2 grundsätzlichen Vorgehen wählen: Breadth-first und Depth-first, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. \newline
 \textbf {Breadth-First(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
-\textbf {Depth-First(Tiefen-Suche)} : Zuerst wird ein Nachbarknoten mit der geringsten Distanz betrachtet, ausgehend von diesem Nachbarknoten werden alle Nachbarn betrachtet. Wenn alle Nachbarn betrachtet wurden, wird ausgehend von Anfangsknoten ein weiterer Nachbar mit der geringsten oder nächst geringsten Distanz betrachtet und ausgehend von diesem werden erneut alle Nachbarn betrachtet.  Dieses Vorgehen wird als default angenommen, wenn keine Vorgehen von dem Nutzer angegeben wird, wird dieses Vorgehen verwendet. 
+\textbf {Depth-First(Tiefen-Suche)} : Zuerst wird ein Nachbarknoten mit der geringsten Distanz betrachtet, ausgehend von diesem Nachbarknoten werden alle Nachbarn betrachtet. Wenn alle Nachbarn betrachtet wurden, wird ausgehend von Anfangsknoten ein weiterer Nachbar mit der geringsten oder nächst-geringsten Distanz untersucht und ausgehend von diesem werden erneut alle Nachbarn angeschaut. Dieses Vorgehen wird als Normalfall angenommen, wenn keine Vorgehen von dem Nutzer angegeben wird, wird dieses verwendet. 
 \newline
 \newline
-Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann das ausgewählte eine erheblichen Performance Unterschied  hervorbrigen[16]. Die Traversion kann auch bidirektional aufgeführt werden, dabei werden 2 Anfangsknoten angeben und die Suche wird so lange ausgeführt, bis es zu einer Kollision der beiden Knoten kommt. Wenn eine Kollision zwischen den beiden Knoten erkannt wird, ist damit zum Beispiel eine Verbindung der beiden Knoten bewiesen. Für die folgenden Experimente wurde bei den meisten Anfragen die Traversal API verwendet. 
+Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann das ausgewählte eine erheblichen Performance Unterschied  hervorbringen[16]. Die Traversion kann auch bidirektional aufgeführt werden, dabei werden 2 Anfangsknoten angeben und die Suche wird so lange ausgeführt, bis es zu einer Kollision der beiden Knoten kommt. Wenn eine Kollision zwischen den beiden Knoten erkannt wird, ist damit zum Beispiel eine Verbindung der beiden Knoten bewiesen. Für die folgenden Experimente wurde bei den meisten Anfragen die Traversal API verwendet. 
 
 
