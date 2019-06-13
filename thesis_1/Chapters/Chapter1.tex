@@ -33,7 +33,7 @@ Die ACID Eigenschaft setzt sich aus 4 Eigenschaften zusammen, die das Verhalten 
 %-----------------------------------
 
 \section{Neo4j als Datenbank management system}
-Ein Datenbank Managment System(DBMS), ist für die Verarbeitung von Anfragen verantwortlich und kann mit folgenden Teilen beschrieben werden: Eine Schnittstelle mit dem Nutzer, eine Anfragesprache, ein Anfragen Optimierer, eine database engine, eine storage engine ,eine transaction engine und operation features\parencite{angles2012comparison}. Als Schnittstelle mit dem Nutzer stehen die Anwendungen “Neo4j Browser” unter Linux und “Neo4j Desktop” unter Windows zur Verfügung, zusätzlich besteht die Möglichkeit eine, von den Neo4j Treibern unterstützte Programmiersprache zu verwenden und direkt die Neo4j APIs zu nutzen. Die Anfragesprache für Neo4j Browser und Neo4j Desktop ist “Cypher”. Zum Optimieren von Anfrageplänen wird der “Cypher Query Optimizer”verwendet \footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}. Die database engine wird durch das Transaction Managment dargestellt. Die storage engine durch die Record Files und die transaction unit  wird durch das Trancsaction Log dargestellt. Die operation features zum Wiederherstellen von Daten werden in den Transaktions-Log realisiert. Optional kann zu eventuellen Performanz Steigerung ein Cache verwaltet werden. In der Neo4j Enterprise Version ist es möglich, das DBMS auf mehrere Systeme in einem Netzwerk mittels High Availability Funktion auszulagern \parencite{vukotic2015neo4j}. Zusammengefasst wird die Architektur in \ref{fig:Architecure}
+Ein Datenbank Managment System(DBMS), ist für die Verarbeitung von Anfragen verantwortlich und kann mit folgenden Teilen beschrieben werden: Eine Schnittstelle mit dem Nutzer, eine Anfragesprache, ein Anfrage-Optimierer, eine database engine, eine storage engine ,eine transaction engine und operation features \parencite{angles2012comparison}. Als Schnittstelle mit dem Nutzer stehen die Anwendungen “Neo4j Browser” unter Linux und “Neo4j Desktop” unter Windows zur Verfügung, zusätzlich besteht die Möglichkeit eine von den Neo4j Treibern unterstützte Programmiersprache  oder Java zu verwenden und direkt die Neo4j APIs zu nutzen. Die Anfragesprache für Neo4j Browser und Neo4j Desktop ist “Cypher”. Zum Optimieren von Anfrageplänen wird der “Cypher Query Optimizer”verwendet. Die wird storage engine durch die Record Files und die transaction unit  wird durch das Transaction Management dargestellt. Die database engine bildet das Gesamtystem der einzelnen Komponenten. Die operation features zum Wiederherstellen von Daten werden in dem Transaktions-Log realisiert. Optional kann zu eventuellen Performanz Steigerung ein Cache verwaltet werden. In der Neo4j Enterprise Version ist es möglich, das DBMS auf mehrere Systeme in einem Netzwerk mittels High Availability Funktion auszulagern \parencite{vukotic2015neo4j}. Zusammengefasst wird die Architektur in \ref{fig:Architecure}
 
 \begin{figure}[th]
 	\centering
@@ -42,8 +42,11 @@ Ein Datenbank Managment System(DBMS), ist für die Verarbeitung von Anfragen ver
 	\label{fig:Architecure}
 \end{figure}
 
-\subsection{Cypher}
-Im Gegensatz zu den relationalen Datenbanken gibt es bei Graphdatenbanken keine standardisierte Anfragesprache, welche bei den meisten Graphdatenbanken Verwendung findet \parencite{han2011survey}. In Neo4j besteht seit 2000 die Möglichkeit die deklarative Anfragesprache “Cypher” zu verwendenden  \parencite{francis2018cypher}. Cypher wird von Neo4j entwickelt und wurde ursprünglich ausschließlich für die Neo4j Datenbank verwendet. Seit Oktober 2015  findet Cypher als “openCypher” Gebrauch in anderen Datenbanken \parencite{francis2018cypher}. Da für die Traversal API und die Java Core API Kenntnisse in Java bzw. einer durch die Neo4j-Treiber unterstützten Programmiersprachen benötigt werden, bildet Cypher eine Möglichkeit ohne diese Kenntnisse mit der Datenbank zu interagieren[16]. Die Syntax ist an SQL und Gremlin \parencite{vukotic2015neo4j} orientiert. In Cypher wird ein Muster von dem Nutzer angegeben und alle Objekte, die dieses Muster erfüllen, können zurückgegeben werden. Die wichtigsten  Schlüsselwörter sind: \newline
+\subsection{Cypher und APIs für Neo4j}
+Im Folgenden werden die Möglichkeiten zum Interagieren mit Neo4j beschrieben. Da es über die Neo4j-Treiber möglich ist, Neo4j in mehreren Programmiersprachen zu nutzen und die genaue Anzahl der Sprachen stetig steigt, werden im folgenden nur die Kernfunktionen in Java beschrieben und verwendet. Im späteren Absatz zu Neo4j im Servermodus wird zusätzlich das Bolt-protocol und die REST HTTP API beschrieben, welche als weitere Schnittstelle dienen.
+
+\subsubsection{Cypher}
+Im Gegensatz zu den relationalen Datenbanken gibt es bei Graphdatenbanken keine standardisierte Anfragesprache, welche bei den meisten Graphdatenbanken Verwendung findet \parencite{han2011survey}. In Neo4j besteht seit 2000 die Möglichkeit die deklarative Anfragesprache “Cypher” zu verwendenden  \parencite{francis2018cypher}. Cypher wird von Neo4, Inc. entwickelt und wurde ursprünglich ausschließlich für die Neo4j Datenbank verwendet. Seit Oktober 2015  findet Cypher als “openCypher” Gebrauch in anderen Datenbanken \parencite{francis2018cypher}. Da für die Traversal API und die Java Core API Kenntnisse in Java bzw. einer durch die Neo4j-Treiber unterstützten Programmiersprachen benötigt werden, bildet Cypher eine Möglichkeit ohne diese Kenntnisse mit der Datenbank zu interagieren[16]. Die Syntax ist an SQL und Gremlin \parencite{vukotic2015neo4j} orientiert. In Cypher wird ein Muster von dem Nutzer angegeben und alle Objekte, die dieses Muster erfüllen, können zurückgegeben werden. Die wichtigsten  Schlüsselwörter sind: \newline
 \textbf{Where}: Dies hat die gleiche Funktion wie in SQL und spezifiziert Objekte durch einen Ausdruck. \newline
 \textbf{Match}: Dadurch wird das Muster spezifiziert indem Neo4j suchen soll. Beispielweise: 
 \begin{Verbatim}[frame=single]
@@ -73,7 +76,7 @@ Create (p:Person)
 \textbf{SUM/COUNT/AVG}: Werden wie in SQL verwendet. \newline
 Der Nutzer beeinflusst so welche Daten durch  das Musters gesucht werden. Der Nutzer besitzt keine Möglichkeit die Art der Berechnung zu beeinflussen. Cypher wird dadurch als Nutzerfreundlichere, aber auch weniger performante Alternative zu den APIs empfohlen \parencite{vukotic2015neo4j}. In den folgenden Experimenten wurde sowohl Cypher als als auch die Travese API für einen direkten Vergleich verwendet. Cypher lässt sich ausschließlich als single thread ausführen.
 
-\subsection{Java Core API}
+\subsubsection{Java Core API}
 Als low-level Schnittstelle zu den Kernfunktionen von Neo4j ist dies die Möglichkeit mit der besten Laufzeit \parencite{vukotic2015neo4j}. Zur Verwendung dieser imperativen API sind weitreichende Programmierkenntnisse und Wissen über die Neo4j-Bibliotheken, sowie einer genauen Vorstellung über die Daten in dem Graph erforderlich. Wenn diese Kenntnisse gegeben sind, ist die API sehr flexible verwendbar  und der Nutzer hat hohen Einfluss darauf, wie die Anfragen bearbeitet werden sollen und kann so eine optimale Berechnungsstrategie angeben \parencite{vukotic2015neo4j}. Die so produzierten Queries sind in meisten sehr lang. Eine Beispielhafte Berechung wäre:
 \begin{Verbatim}[frame=single]
 Node Peter = graphDb.getNodeById(Peter_ID);
@@ -88,8 +91,8 @@ for (Node friend : friends) {
 \end{Verbatim}
 Bei deisem Beispiel werden alle Freunde von Peter gefunden udn ausgegeben.Der Nutzer gibt jede Transaktion explizit an,so ist es dem System möglich alle zur Verfügung stehenden Kerne zu nutzen.
 
-\subsection{Traversal API}
-Diese deklarative API ist schneller als Cypher und langsamer als die Core API. Die Traversal API erlaubt einen high-level Zugriff auf Neo4j, welcher weniger abstrakt als die Core API ist und dennoch Programmierkenntnisse erfordert. Der Nutzer muss keine genaue Vorstellung von den Daten im Graphen haben.Es wird eine Beschreibung angegeben, wie eine Suche  genau ausgeübt werden soll und kann diese dann auf einen Knoten anwenden. 
+\subsubsection{Traversal API}
+Diese deklarative API  dient zum spezifizieren von Traversierungen im Graph, sie ist schneller als Cypher und langsamer als die Core API. Die Traversal API erlaubt einen high-level Zugriff auf Neo4j, welcher weniger abstrakt als die Core API ist und dennoch Programmierkenntnisse erfordert. Der Nutzer muss keine genaue Vorstellung von den Daten im Graphen haben.Es wird eine Beschreibung angegeben, wie eine Suche  genau ausgeübt werden soll und kann diese dann auf einen Knoten anwenden. 
 \begin{Verbatim}[frame=single]
 private Traverser getFriends(final Node person)
 {
@@ -99,7 +102,7 @@ TraversalDescription td = graphDb.traversalDescription()
 return td.traverse( person );
 }
 \end{Verbatim}
-Zusammengefasst wäre diese Traversion: Suche alle Verbindungen von dem Anfangsnode über die Relation FRIEND bis zu Tiefe 2.  Beim Traversieren kann der der Nutzer zwischen 2 grundsätzlichen Vorgehen wählen: Breadth-first und Depth-first, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. \newline
+Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfangsnode über die Relation FRIEND bis zu Tiefe 2.  Beim Traversieren kann der der Nutzer zwischen 2 grundsätzlichen Vorgehen wählen: Breadth-first und Depth-first, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. \newline
 \textbf {Breadth-First(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
 \textbf {Depth-First(Tiefen-Suche)} : Zuerst wird ein Nachbarknoten mit der geringsten Distanz betrachtet, ausgehend von diesem Nachbarknoten werden alle Nachbarn betrachtet. Wenn alle Nachbarn betrachtet wurden, wird ausgehend von Anfangsknoten ein weiterer Nachbar mit der geringsten oder nächst-geringsten Distanz untersucht und ausgehend von diesem werden erneut alle Nachbarn angeschaut. Dieses Vorgehen wird als Normalfall angenommen, wenn keine Vorgehen von dem Nutzer angegeben wird, wird dieses verwendet. 
 \newline
@@ -107,17 +110,17 @@ Zusammengefasst wäre diese Traversion: Suche alle Verbindungen von dem Anfangsn
 Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann das ausgewählte eine erheblichen Performance Unterschied  hervorbringen[16]. Die Traversion kann auch bidirektional aufgeführt werden, dabei werden 2 Anfangsknoten angeben und die Suche wird so lange ausgeführt, bis es zu einer Kollision der beiden Knoten kommt. Wenn eine Kollision zwischen den beiden Knoten erkannt wird, ist damit zum Beispiel eine Verbindung der beiden Knoten bewiesen. Für die folgenden Experimente wurde bei den meisten Anfragen die Traversal API verwendet. 
 
 \subsection{Anfragebearbeitung und Planoptimierung}
-Nach Angaben von Neo4j\footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}, werden die Anfragen nach folgendem Muster bearbeitet:
+Nach Angaben von Neo4j\footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}, werden Anfragen, die mittels Cypher gestellt werden, nach folgendem Muster bearbeitet:
 \begin{enumerate}
 	\item Umwandeln der Eingabe in einen Abstrakten Syntax Baum (ASB)
 	\item Optimieren des ASB
-	\item Erstellen eines Anfragegraphen aus dem Baum
+	\item Erstellen eines Anfrage Graphen aus dem Baum
 	\item Erstelle einen logischen Plan
 	\item Schreibe den logischen Plan neu
 	\item Erstelle einen Ausführungsplan aus dem logischen Plan
 	\item Führe die Anfrage mit Hilfe, des Ausführungsplans aus 
 \end{enumerate}
-Die Schritte 2-5 werden vom Query-Optimizer übernommen. \newline
+Die Schritte 2-5 werden vom Anfrage-Optimierer übernommen. \newline
 \newline
 2. Die Optimierung des AST beinhaltet folgende Schritte: 
 \begin{enumerate}
@@ -129,4 +132,27 @@ Die Schritte 2-5 werden vom Query-Optimizer übernommen. \newline
 	\item Ersetze das Gleichheitszeichen durch ein 'IN'wie: \textbf{MATCH (n) WHERE id(n) = 12 => MATCH n WHERE id(n) IN [12]}
 \end{enumerate}
 3. Durch das erstellen einen Anfragegraphen, wird ein abstraktere high-level Darstellung für die Anfrage erzeugt. Diese lässt sich kosteneffizienter Optimieren.	 \newline \newline
-4. Aus dem Anfragegraph werden  logische Pläne für jede Anfrage erzeugt. Dieser Plan ist ein Baum mit maximal 2 Kindern, welche die verwendeten Operatoren darstellen. Dies gleicht dem logischen Plan für relationnelle Datenbanken. Aus dem logische Plan wird der geschätzte Bearbeitungsaufwand für eine Anfrage gelesen. Der Aufwand wird aus den benötigten I/O-Operatoren auf den Speicher oder Indizies  und den durchzuführenden Traversierungen ermittelt. Bei jedem Durchgang werden  mehrere Pläne für eine Anfrage erzeugt, der Optimizer wählt aus diesem Plänen mit einem gierigen Suchalgorithmus einen Plan aus, welcher nicht immer der optimalste Plan ist. Der gierige Suchalgorithmus gewährleistest, dass nicht der langsamste Plan gwählt wird, aber es ist nicht garantiert, dass der optimalste Plan gewählt ist. Test
+4. Aus dem Anfragegraph werden logische Pläne für jede Anfrage erzeugt. Dieser Plan ist ein Baum mit maximal 2 Kindern, welche die verwendeten Operatoren darstellen. Dies gleicht dem logischen Plan für relationnelle Datenbanken. Aus dem logische Plan wird der geschätzte Bearbeitungsaufwand für eine Anfrage gelesen. Der Aufwand wird aus den benötigten I/O-Operatoren auf den Speicher oder Indizies und den durchzuführenden Traversierungen ermittelt. Bei jedem Durchgang werden mehrere Pläne für eine Anfrage erzeugt, der Optimierers wählt aus diesem Plänen mit einem gierigen Suchalgorithmus einen Plan aus, welcher nicht immer der optimalste Plan ist. Der gierige Suchalgorithmus gewährleistest, dass nicht der langsamste Plan gewählt wird, aber es ist nicht garantiert, dass der optimalste Plan gewählt ist. Test
+5. Nachdem die Pläne erstellt wurden und einer dieser Pläne ausgewählt wurde, wird der ausgewählte Plan nochmals optimiert. Das heißt mehrere Komponenten werden vereinfacht oder zusammengeführt und jede Art von Verschachtelung wird aufgelöst. \newline
+Nach diesem Schritt  ist die Arbeit des Optimierers abgeschlossen und die Database-Engine kann aus diesem optimierten Plan einen ausführbaren Plan erstellen. 
+
+\subsection{Speicherverwaltung in Neo4j}
+Graphdatenbanken besitzen eine andere Speicherverwaltung als relationnelle Datenbanken \parencite{angles2012comparison}. In Neo4j wird der Speicher in sogenannten Record Files unterteilt, diese Dateien speichern jeweils einen Teil des Graphen ab, wie Knoten, Kanten, Eigenschaften etc.. Die Objekte besitzen in den Dateien eine feste Größe, dies erlaubt einen Zugriff in O(1) \parencite{robinson2013graph}. Wenn zum Beispiel der Knoten mit der ID "100" gesucht wird und ein einzelner Knoten X Bytes groß ist, wird der gesuchte Knoten bei Byte 100*X beginnen. Die genaue Größe  variiert, je nach betrachteter Neo4j Version, seit Neo4j Version 3.X besitzt ein Knoten die Größe 15 Byte und werden in node-store gespeichert. \footnote{https://neo4j.com/developer/kb/understanding-data-on-disk/ (13.06.19)}. Nach \parencite{robinson2013graph} werden die Objekte wie folgt verwaltet:
+\subsubsection{Verwaltung der Knoten im Speicher}
+  Ein Knoten im Knotenspeicher wird folgendermaßen dargestellt: Das erste Byte kennzeichnet, ob der Knoten verwendet wird bzw. verwendet werden kann. Die nachfolgenden 4 Bytes kennzeichnen die ID für die erste Relation, die mit dem Knoten verbunden ist. Die darauffolgenden 4 Bytes beschreiben das erste Attribute des Knoten. Die nächsten 5 Bytes verweisen auf ein Label, welches gegebenenfalls verwendet wurde und ich sich im Label-Store befindet. Das Letzte Byte ist für bestimmte Flags und für zukünftige Arbeiten. 
+ \subsubsection{Verwaltung der Kanten im Speicher}
+ Die Kanten werden in dem Relationsspeicher gespeichert. Jeder Eintrag besitzt die IDs zu den zugehörigen Knoten, einen Pointer zu dem Relationstypen, welcher in dem Relationstypspeicher gespeichert ist, Pointer zu den vorherigen und nächsten Relationen von den beiden zugehörigen Knoten und ein Flag das angibt, ob die betrachtete Relation die erste ist. \newline
+  \subsubsection{Verwaltung der Eigenschaften im Speicher}
+ Da Neo4j eine property graph databse ist, kann jeder Knoten und jede Kante  Eigenschaften besitzen. Die Eigenschaften befinden sich im Eigenschaftenspeicher.  Jeder Eintrag zu einer Eigenschaft ist in 1-4 Blöcke und eine ID zu einer folgenden Eigenschaft unterteilt. Jeder dieser Blöcke beinhaltet Informationen über einen Typen, welcher ein standard- Java-Typ, string oder ein Array sein kann und Informationen über einen Pointer auf einen Index, der auf den Namen der Eigenschaft verweist, zeigt.  \newline
+ \subsubsection {Traversierung im Speicher}
+ Die festgelegte Größe der Knoten und Kanten hat als Ziel die Traversierung zu beschleunigen \parencite{robinson2013graph}. Eine einfache Traversierung wird beschrieben wie folgt: 
+ \begin{enumerate}
+ 	\item Starten bei einem Eintrag in den Knotenspeicher
+ 	\item Lesen des gegebene Byte für die ID zur ersten Relation und betrachten des entsprechenden Eintrags im Relationsspeicher mit dieser ID
+ 	\item Ausgehend von dem Eintrag im Relationsspeicher wird der Pointer zum dazugehörigen Knoten aufgerufen.
+ 	\item Springen zu der Knoten im Knotenspeicher
+ \end{enumerate}
+Diese Traversierung beschreibt das suchen eines benachbarten Knotens.
+\subsubsection{Caching vom Speicher}
+LRU-K page-affined cache beschreibt, dass der Speicher aufgeteilt wird und eine feste Anzahl von Teilen wird im Speicher gehalten. Die Auswahl, der Teile die im Speicher gehalten werden geschieht nach der least frequently used(LFU) Methode. Die Methode besagt, dass ein Teil der selten benutzt wird aus dem Speicher entfernt wird und ein häufig genutzter Teil wird in dem Speicher gehalten \parencite{robinson2013graph}.
+
