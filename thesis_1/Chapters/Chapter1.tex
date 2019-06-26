@@ -2,7 +2,7 @@
 
 \chapter{Grundlagen} % Main chapter title
 
-\label{Kaptiel3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Kaptiel 2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -133,6 +133,7 @@ Ein Knoten im Knotenspeicher wird folgendermaßen dargestellt: Das erste Byte ke
 Die Kanten werden in dem Relationsspeicher gespeichert. Jeder Eintrag besitzt die IDs zu den zugehörigen Knoten, einen Pointer zu dem Relationstypen, welcher in dem Relationstypspeicher gespeichert ist, Pointer zu den vorherigen und nächsten Relationen von den beiden zugehörigen Knoten und ein Flag das angibt, ob die betrachtete Relation die erste ist. \newline
 \subsubsection{Verwaltung der Eigenschaften im Speicher}
 Da Neo4j eine property graph databse ist, kann jeder Knoten und jede Kante  Eigenschaften besitzen. Die Eigenschaften befinden sich im Eigenschaftenspeicher.  Jeder Eintrag zu einer Eigenschaft ist in 1-4 Blöcke und eine ID zu einer folgenden Eigenschaft unterteilt. Jeder dieser Blöcke beinhaltet Informationen über einen Typen, welcher ein standard- Java-Typ, string oder ein Array sein kann und Informationen über einen Pointer auf einen Index, der auf den Namen der Eigenschaft verweist, zeigt.  \newline
+\subsubsection{Indizies}
 \subsubsection {Traversierung im Speicher}
 Die festgelegte Größe der Knoten und Kanten hat als Ziel die Traversierung zu beschleunigen \parencite{robinson2013graph}. Eine einfache Traversierung wird beschrieben wie folgt: 
 \begin{enumerate}

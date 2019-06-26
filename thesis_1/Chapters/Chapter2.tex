@@ -1,10 +1,33 @@
 % Chapter Template
 
-\chapter{Grundlagen} % Main chapter title
+\chapter{Theoretische Grundlagen} % Main chapter title
 
 \label{Kaptiel3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
+\section{Vorraussetzungen}
+Im Folgenden werden alle Einstellungen, die für die Evaluation getroffen wurden beschrieben und begründet. 
+\subsection{Datensatz}
+Für das Experiment wurde ein selbsterstellter Datensatz gewählt, dieser wurde aus folgendem Code erstellt \footnote{https://github.com/McHektor123/BA/blob/master/Neo4j/InitNeo4j2.java} unter Verwendung der Parameter \footnote{https://github.com/McHektor123/BA/blob/master/Constants/CONSTANTS.java}. Die Datenbank besteht aus insgesamt 50.004 Entitäten, davon sind 4  vom Typ Action und  50000  vom Typ Person. Der Typ Action besitzt  2 Eigenschaften, mit den Namen 'name', welche einen String erwartet  und 'attribute', welche einen Int erwartet. Der Typ Person besitzt ebenfalls 2 Eigenschaften namens 'name' und 'attribute'. \newline
+Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 bilden eine Relation von einer Entität des Typen Person zu einer Entität des Typen Action  und  RELATIONSHIP3 und RELATIONSHIP4 eine Relation von Person zu Person. Jede Person besitzt eine Relation vom Typen RELATIONSHIP1 und eine vom Typen RELATIONSHIP2, wobei die Ziel-Actions disjunkt sind. Pro Person existieren 2.500 Relationen vom Typen RELATIONSHIP3 und 2.500 Relationen vom Typen RELATIONSHIP4, welche jeweils zu einer anderen zufällig gewählten Person bestehen. Jede Person besitzt insgesamt 5002 Relationen. Da die Relationen als Kanten und die Entitäten als Knoten aufgefasst werden, besitzt der generierte Graph 50.004 Knoten und 250.100.000 Kanten mit einer phyischen Gesamtgröße von 8.8 GB. 
+\subsection{Anfragen}
+Für die Evaluation werden die Anfragen nach  \parencite{angles2012comparison}  in folgende Kategorien unterteilt: Nachbarschafts-Anfragen, Erreichbarkeits-Anfragen, Muster Passungs Anfragen und  Zusammenfassungen. 
+\begin{enumerate}
+	\item Nachbarschafts-Anfragen: Es wird geprüft, ob ein Knoten direkt über eine  Kante mit einem anderen Knoten verbunden ist oder  es werden alle Knoten die über eine bestimmte Menge an Kanten erreichbar sind zu einer Menge zusammengefasst, dies ist auch als k-nächste Nachbarn Problem bekannt. Beide Fälle lassen sich auch auf die Verbundenheit von Kanten über Knoten übertragen.
+	\item Erreichbarkeits-Anfragen: Die Suche nach einem Pfad, welcher 2 Knoten bzw. Kanten verbindet. Wenn ein Pfad besteht ist der Ziel-Knoten von dem Start-Knoten aus erreichbar, bei einem ungerichteten Graphen gilt der umgekehrte Fall ebenfalls. Beim dem Auffinden von mehreren Pfaden, entsteht zudem das Problem des Finden des kürzesten Pfades. Bei einem gewichteten Graphen kann dieses Problem um die Suche des schnellsten/leichtesten Pfades  erweitert werden. 
+	\item Muster Passungs Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Dies ist als Graph bzw. Sub-Graph Isomorphismus bekannt. 
+	\item Zusammenfassungen: Diese Anfragen fassen eine Ergebnismenge zu einem Wert zusammen, dies ist durch Funktionen wie MAX,AVG oder COUNT ,aber auch dem Lesen von Eigenschaften des Graphen wie die Menge alle Knoten, realisiert. 
+\end{enumerate}
+Eine Anfrage kann dabei mehrere Kategorien beinhalten. In dem folgenden Experiment wurden hauptsächlich Anfragen der Kategorien 1,2 und 4 verwendet. \newline
+Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. 
+Eine Grundanfrage wird beschrieben als:
+\begin{Verbatim}[frame=single]
+ MATCH (X:Person)-[:Relationship4]-(Y) 
+ WHERE X.attribute>=250 AND Y.attribute>=15  
+ RETURN COUNT(DISTINCT(Y))
+\end{Verbatim} 
+Bei dieser A
+
 
