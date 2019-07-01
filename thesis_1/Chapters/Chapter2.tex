@@ -29,13 +29,13 @@ Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfass
  WHERE X.attribute>=250 AND Y.attribute>=15  
  RETURN COUNT(DISTINCT(Y))
 \end{Verbatim} 
-Grundanfrage 1 findet alle Personen, die über RELATIONSHIP3 erreichbar sind, unter der Voraussetzung dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Bei dieser Anfrage wird die Richtung der Relation RELATIONSHIP3 zu ausgehend,eingehend und beides geändert und zusätzlichen werden diese Anfragen  semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Bei den 3 in Cypher formulierten Anfragen wird die Relation RELATIONSHIP3 durch die Relation RELATIONSHIP2 verändert. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1. \newline \newline
+Grundanfrage 1 findet alle Personen, die über RELATIONSHIP3 erreichbar sind, unter der Voraussetzung dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Es handelt sich um eine Erreichbarkeits-Anfrage. Bei dieser Anfrage wird die Richtung der Relation RELATIONSHIP3 zu ausgehend,eingehend und beides geändert und zusätzlichen werden diese Anfragen  semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Bei den 3 in Cypher formulierten Anfragen wird die Relation RELATIONSHIP3 durch die Relation RELATIONSHIP2 verändert. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1. \newline \newline
 
  \textbf{Grundanfrage 2} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person {name:'Person613'}) return p
 \end{Verbatim} 
-Diese Anfrage findet den Nutzer mit dem Namen "Person613". Sie wird dahingehend verändert, dass die Überprüfung des attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage wird in der Core API formuliert. Aus Grundanfrage 2 entstehen insgesamt 3 Anfragen.\newline \newline
+Diese Anfrage findet den Nutzer mit dem Namen "Person613". Sie wird dahingehend verändert, dass die Überprüfung des attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage  in der Core API formuliert wird. Aus Grundanfrage 2 entstehen insgesamt 3 Anfragen.\newline \newline
 
 \textbf{Grundanfrage 3} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
@@ -45,13 +45,14 @@ MATCH (Y:Person)-[:Relationship3]->(n1)
 WHERE n1 in n
 RETURN COUNT(DISTINCT(n1))
 \end{Verbatim} 
-Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, als Permutationen wird eine semantisch äquivalente Anfrage in den APIs und folgende in Cypher formuliert:
+Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, so ist es eine Nachbarschafts-Anfrage mit einer genutzten Zusammenfassung. Als Permutationen wird eine semantisch äquivalente Anfrage in den APIs und folgende in Cypher formuliert:
 \begin{Verbatim}[frame=single]
  MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
  		<-[:Relationship3]-(Y:Person{name: 'Person2'}) 
  RETURN COUNT(DISTINCT(n1))
 \end{Verbatim} 
 Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breadth-First-Methode für die Traversierungen verwendet. \newline
+
 \subsection{Vermutungen}
 Für \textbf{Grundanfrage 1} entstehen 3 Aspekte, welche betrachtet werden.
 \begin{enumerate}
@@ -68,12 +69,12 @@ Für \textbf{Grundanfrage 2} werden 2 Aspekte betrachtet .
 	\item Das Verhalten, wenn die Abfrage, nach dem Namen in das WHERE-Prädikat verschoben wird.
 \end{enumerate}
 Zum 1. Aspekt: Wie bei der Grundanfrage 1 wird vermutet, dass der Java Core API eine höhere Performanz besitzt, insbesondere weil keine Traversal API verwendet wurde. Alle 3 Anfragen werden eine sehr schnelle Ausführungszeit besitzen, da besonders der Gebrauch von Indizes ein schnelles Finden durch Eigenschaften erlaubt. \newline
-Zum 2. Aspekt: Da der Optimizer nach Angaben der Neo4j Inc. \footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/ 27.06.19} , die meisten Labels in das WHERE Prädikat verschiebt, sollte nur ein minimaler Performanzunterschied zwischen den beiden Anfragen bestehen. \newline \newline
+Zum 2. Aspekt: Da der Optimizer nach Angaben der Neo4j Inc. \footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/ (27.06.19)} , die meisten Labels in das WHERE Prädikat verschiebt, sollte nur ein minimaler Performanzunterschied zwischen den beiden Anfragen bestehen. \newline \newline
 Für \textbf{Grundanfrage 3} besteht ein Aspekt, der untersucht wird. 
 \begin{enumerate}
 	\item Ein Unterschied in der Laufzeit bei  semantisches Äquivalenz ein 
 \end{enumerate}
-Es wird vermutet, dass es kein signifikanten Unterschied zwischen den Laufzeiten gibt, falls Unterschied bestehen sollte, wird diese auf die Performanz des IN-Operator zurück geführt.
+Es wird vermutet, dass es kein signifikanten Unterschied zwischen den Laufzeiten gibt, falls ein Unterschied bestehen sollte, wird diese auf die Performanz des IN-Operator zurückgeführt.
 
 
 
