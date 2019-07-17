@@ -20,15 +20,11 @@ Für die Evaluation werden die Anfragen nach  \parencite{angles2012comparison}  
 	\item Muster Passungs Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Dies ist als Graph bzw. Sub-Graph Isomorphismus bekannt. 
 	\item Zusammenfassungen: Diese Anfragen fassen eine Ergebnismenge zu einem Wert zusammen, dies ist durch Funktionen wie MAX,AVG oder COUNT ,aber auch dem Lesen von Eigenschaften des Graphen wie die Menge alle Knoten, realisiert. 
 \end{enumerate}
-
 Eine Anfrage kann dabei mehrere Kategorien beinhalten. In dem folgenden Experimenten werden hauptsächlich Anfragen der Kategorien 1,2 und 4 verwendet. Das gesamte Experiment besteht aus 2 Iterationen, in denen eine Menge von Anfragen gestellt und analysiert werden. \newline
 \section{Erste Iteration}
 Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. Im folgenden Abschnitt werden die Grundanfragen der ersten Iteration und die Permutationen aus diesen vorgestellt. Ausgehend von den Grundanfragen werden Hypothesen zu dem erwarteten Verhalten aufgestellt.
 \subsection{Grundanfragen}
  \textbf{Grundanfrage 1} wird beschrieben als:
-
-Eine Anfrage kann dabei mehrere Kategorien beinhalten. In dem folgenden Experiment werden  Anfragen der Kategorien 1,2 und 4 verwendet. \newline
-
 \begin{Verbatim}[frame=single]
  MATCH (X:Person)-[:RELATIONSHIP3]-(Y) 
  WHERE X.attribute>=250 AND Y.attribute>=15  
