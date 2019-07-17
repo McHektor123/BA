@@ -40,7 +40,7 @@ MATCH (p1:Person)-[:Friends]->(p2:Person)
 WHERE p1.name= ‘Peter’ 
 RETURN p.name
 \end{Verbatim}
-, hier werden alle Personen-Knoten durchsucht, die mit einer “Friends”-Relation mit dem Personen-Knoten von “Peter” verbunden sind. p1 stellt ein Label für den Knoten vom Typ “Person” da, [:Friends] ist eine Relation vom Typ “Friends” und durch “->” wird angegeben, dass es sich um eine ausgehende Kante vom Knoten p1 handelt. \newline
+, hier werden alle Personen-Knoten durchsucht, die mit einer “Friends”-Relation mit dem Personen-Knoten von “Peter” verbunden sind. p1 stellt ein Label für den Knoten vom Typ “Person” da, [:Friends] ist eine Relation vom Typ “Friends” und durch “->” wird angegeben, dass es sich um eine ausgehende Kante vom Knoten p1 handelt. Mit der Schreibweise [:Friends*2] wird ausgedrückt, dass es sich um die Tiefe 2 handelt, dies ist äquivalent zu : [:Friends]-()->[:Friends]-. \newline
 \textbf{Return}: Es wird angegeben, welche Objekte bzw. welche Attribute der Objekte, die das Muster erfüllen zurückgegeben werden sollen.\newline
 \textbf{Delete}: Wie in SQL  wird ein Objekt  oder mehrere Objekte aus der Datenbank entfernt.\newline
 \textbf{With}: Dadurch lassen sich in einer Anfrage Objekte manipulieren bevor sie zu einer weiteren Anfrage gegeben werden. Beispielsweise:
