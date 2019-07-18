@@ -22,8 +22,8 @@ Für die Evaluation werden die Anfragen nach  \parencite{angles2012comparison}  
 \end{enumerate}
 Eine Anfrage kann dabei mehrere Kategorien beinhalten. In dem folgenden Experimenten werden hauptsächlich Anfragen der Kategorien 1,2 und 4 verwendet. Das gesamte Experiment besteht aus 2 Iterationen, in denen eine Menge von Anfragen gestellt und analysiert werden. 
 \section{Erste Iteration}
-Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. Im folgenden Abschnitt werden die Grundanfragen der ersten Iteration und die Permutationen aus diesen vorgestellt. Ausgehend von den Grundanfragen werden Hypothesen zu dem erwarteten Verhalten aufgestellt.
-\subsection{Grundanfragen}
+Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. Im folgenden Abschnitt werden die Grundanfragen der ersten Iteration und die Permutationen aus diesen vorgestellt. 
+\subsection{Grundanfragen zur ersten Iteration}
 \textbf{Grundanfrage 1.1} wird beschrieben als:
 \begin{Verbatim}[frame=single]
  MATCH (X:Person)-[:RELATIONSHIP3]-(Y) 
@@ -31,13 +31,11 @@ Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfass
  RETURN COUNT(DISTINCT(Y))
 \end{Verbatim} 
 Grundanfrage 1.1 findet alle Personen, die über RELATIONSHIP3 erreichbar sind, unter der Voraussetzung dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Es handelt sich um eine Erreichbarkeits-Anfrage. Bei dieser Anfrage wird die Richtung der Relation RELATIONSHIP3 zu ausgehend,eingehend  geändert und zusätzlichen werden diese Anfragen  semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Bei den 3 in Cypher formulierten Anfragen wird die Relation RELATIONSHIP3 durch die Relation RELATIONSHIP2 ersetzt. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1.1. \newline 
-
 \textbf{Grundanfrage 1.2} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person {name:'Person613'}) return p
 \end{Verbatim} 
 Diese Anfrage findet den Nutzer mit dem Namen "Person613". Sie wird dahingehend verändert, dass die Überprüfung des attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage  in der Core API formuliert wird. Aus Grundanfrage 1.2 entstehen insgesamt 3 Anfragen.\newline 
-
 \textbf{Grundanfrage 1.3} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1) 
@@ -52,9 +50,9 @@ Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, so is
  		<-[:Relationship3]-(Y:Person{name: 'Person2'}) 
  RETURN COUNT(DISTINCT(n1))
 \end{Verbatim} 
-Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breadth-First-Methode für die Traversierungen verwendet. \newline
-
-\subsection{Vermutungen}
+Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breadth-First-Methode für die Traversierungen verwendet. 
+\subsection{Erwartungen zur ersten Iteration}
+Im Folgenden werden Hypothesen über das Verhalten der Grundanfragen zur ersten Iteration aufgestellt und es werden  Begründungen ausgestellt. In dem praktischen Teil werden diese Hypothesen überprüft. \newline \newline
 Für \textbf{Grundanfrage 1.1} entstehen 3 Aspekte, welche betrachtet werden.
 \begin{enumerate}
 \item Das Verhalten beim Ändern der Richtung der Relationen
@@ -62,7 +60,7 @@ Für \textbf{Grundanfrage 1.1} entstehen 3 Aspekte, welche betrachtet werden.
 \item Die Unterschiede zwischen der Anfrage mit Verwendung von RELATIONSHIP3 und RELATIONSHIP2.
 \end{enumerate}
 Zum 1. Aspekt: Es besteht die Vermutung, dass die Ausführungszeit am höchsten ist, wenn die Relation in beide Richtung gelten kann und die Zeit ist minimal wenn die Relation als ausgehende Kante beschrieben wird. \newline
- Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs low-level arbeiten und Cypher als high-lvl Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird erwartet, dass die Performanz bei den verwendeten Anfragen deutlich höher ist, wenn die Java Core API mit Verwendung der Traversal API genutzt wird. \newline
+ Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs hardware-nahe arbeiten und Cypher als hardware-ferne Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird erwartet, dass die Performanz bei den verwendeten Anfragen deutlich höher ist, wenn die Java Core API mit Verwendung der Traversal API genutzt wird. \newline
 Zum 3. Aspekt: Da jede Person 1 Relation vom Typ RELATIONSHIP2 besitzt und maximal 2.500 vom Typ RELATIONSHIP3 wird Vermutet, dass die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1.000 schneller ausgeführt werden. \newline \newline
 Für \textbf{Grundanfrage 1.2} werden 2 Aspekte betrachtet .
 \begin{enumerate}
@@ -78,7 +76,8 @@ Für \textbf{Grundanfrage 1.3} besteht ein Aspekt, der untersucht wird.
 Zum 1. Aspekt: Es wird vermutet, dass es keine signifikante Differenz zwischen den Laufzeiten gibt, falls ein Unterschied bestehen sollte, wird diese auf die Performanz des IN-Operator zurückgeführt.
 
 \section{Zweite Iteration}
-Die zweite Iteration verwendet die Nachbarschafts-Anfragen in einer höheren Tiefe vom 2,3, wodurch eine höherer Rechenaufwand simuliert wird. Es wird zusätzlich das Verhalten zwischen der Depth-First-Methode und der Depth-First-Methode betrachtet. Es werden komplexere Anfragen gestellt und es wird die Skalierbarkeit des Systems analysiert. \newline \newline
+Die zweite Iteration verwendet die Nachbarschafts-Anfragen in einer höheren Tiefe vom 2,3, wodurch eine höherer Rechenaufwand simuliert wird. Es wird zusätzlich das Verhalten zwischen der Depth-First-Methode und der Depth-First-Methode betrachtet. Es werden komplexere Anfragen gestellt und es wird die Skalierbarkeit des Systems analysiert. 
+\subsection{Grundanfragen zur zweiten Iteration}
 \textbf{Grundanfrage 2.1} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
@@ -104,8 +103,15 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 		path=shortestPath((p)-[:RELATIONSHIP4*..3]->(p1)) 
 RETURN LENGTH(path)
 \end{Verbatim} 
-Diese Anfrage gibt die Länge des kürzesten Pfades zwischen die Personen Person1 und Person42 über die Relation RELATIONSHIP4 an, die maximale länge beträgt 3. Diese Anfrage ist eine Erreichbarkeits-Anfrage und nutzt den shortestPath Algorithmus von Cypher. Diese Anfrage wird erneut mit der Core API ausgeführt. Es ergeben sich 2 Anfragen. 
-\subsection{Vermutungen}
+Diese Anfrage gibt die Länge des kürzesten Pfades zwischen die Personen Person1 und Person42 über die Relation RELATIONSHIP4 an, die maximale länge beträgt 3. Diese Anfrage ist eine Erreichbarkeits-Anfrage und nutzt den shortestPath Algorithmus von Cypher. Diese Anfrage wird erneut mit der Core API ausgeführt und als folgende Alternative in Cypher dargestellt: 
+\begin{Verbatim}[frame=single]
+MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
+		path=(p)-[:RELATIONSHIP4*..3]->(p1) 
+RETURN LENGTH(path)
+ORDER BY length(path) asc LIMIT 1
+\end{Verbatim} 
+\subsection{Erwartungen zur zweiten Iteration}
+Es werden Hypothesen zu den komplexeren Grundanfrage aus der zweiten Iteration vorgestellt und Ursache für das erwartete Verhalten werden aufgestellt. Diese Hypothesen werden in dem Teil zur praktischen Arbeit überprüft und die Ausführbarkeit von sehr rechenaufwendigen Anfragen wird getestet.  \newline \newline
 Für \textbf{Grundanfrage 2.1} werden folgende Aspekte betrachet: 
 \begin{enumerate}
 	\item Ein Unterschied in der Laufzeit bei  semantisches Äquivalenz  
@@ -117,14 +123,16 @@ Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet:
 \begin{enumerate}
 	\item Ein Unterschied zwischen der Traversierung in den Tiefen 2 und 3 
 	\item Das Verhalten von Breath-First und Depth-First
-	\item Der relative Anteil an erreichten Personen
+	\item Der relative Anteil an erreichten Personen im gesamten Graphen
 \end{enumerate}
 Zum 1. Aspekt: Bei der Anfrage in Cypher wird davon ausgegangen, dass die Zeit für die Traversierung mit der Tiefe 3 in quadratischer Abhängigkeit zu der  mit Tiefe 2 steht. Für  Breath-First und Depth-First besteht die Annahme, dass ein linearer Unterschied entsteht  und eine der beide Methoden signifikant schneller ausgeführt wird. \newline
 Zum 2. Aspekt: Da der Graph ausgehend von dem Knoten der Person1 mit der Tiefe 3 eine relativ hohe Breite im Vergleich zu der Tiefe besitzt, wird vermutet dass die Anfrage mit Depth-First signifikant schneller  ausgeführt wird. \newline
-Zum 3. Aspekt: Durch die Tiefe 2 können  unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2, wird vermutet ,dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
-Für \textbf{Grundanfrage 2.3} wird folgender Aspekt betrachet: 
+Zum 3. Aspekt: Durch die Tiefe 2 können  unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet ,dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
+Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet: 
 \begin{enumerate}
 	\item Die Berechnungszeit für den kürzesten Weg und die Länge von diesem
+	\item Die Ausführungszeit in Cypher ohne Verwenden des Algorithmus
 \end{enumerate}
-Zum 1. Aspekt: Durch die Vermutung, dass alle Personen über RELATIONSHIP3/RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.2 zusammenhängen und es wird keine höhere Ausführungszeit erwartet. 
+Zum 1. Aspekt: Durch die Vermutung, dass alle Personen über RELATIONSHIP3/ RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.2 zusammenhängen und es wird keine höhere Ausführungszeit erwartet. \newline
+Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus für den Compiler optimiert ist, wird der Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus.
 

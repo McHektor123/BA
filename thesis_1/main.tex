@@ -36,7 +36,6 @@ headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
-
 \usepackage{fancyvrb}
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
@@ -60,7 +59,7 @@ headsepline, % Uncomment to get a line under the header
 	outer=3.8cm, % Outer margin
 	bindingoffset=.5cm, % Binding offset
 	top=1.5cm, % Top margin
-	bottom=1.5cm, % Bottom margin
+	bottom=3cm, % Bottom margin
 	%showframe, % Uncomment to show how the type block is set on the page
 }
 
@@ -119,7 +118,7 @@ headsepline, % Uncomment to get a line under the header
 		\vfill
 		Lübeck, den \today
 		\vskip 20pt
-		Im Focus das Leben
+
 
 \end{titlepage}
 
@@ -154,9 +153,15 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
 %----------------------------------------------------------------------------------------
 
-\tableofcontents % Prints the main table of contents
+{
+	\setcounter{tocdepth}{2}
+	\hypersetup{linkcolor=black}
+	\tableofcontents
+}
+
 
 \listoffigures % Prints the list of figures
+
 
 \listoftables % Prints the list of tables
 
@@ -173,7 +178,6 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 \mainmatter % Begin numeric (1,2,3...) page numbering
 
 \pagestyle{thesis} % Return the page headers back to the "thesis" style
-
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 \include{Chapters/Chapter0}
