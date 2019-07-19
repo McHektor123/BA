@@ -92,12 +92,13 @@ TraversalDescription td = graphDb.traversalDescription()
 return td.traverse( person );
 }
 \end{Verbatim}
-Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfangsnode über die Relation FRIEND bis zu Tiefe 2.  Beim Traversieren kann der der Nutzer zwischen 2 grundsätzlichen Vorgehen wählen: Breadth-first und Depth-first, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. \newline
+Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfangsnode über die Relation FRIEND bis zu Tiefe 2.  Beim Traversieren kann der der Nutzer zwischen 3 grundsätzlichen Vorgehen wählen: Breadth-first und Depth-first, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. \newline
 \textbf {Breadth-First(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
-\textbf {Depth-First(Tiefen-Suche)} : Gegeben sei die maximale Distanz n, so wird zunächst ein Knoten mit der minimalen Distanz m betrachtet und ausgehend von diesem Knoten wird ein Knoten mit der Distanz m+1 ausgewählt. Dies wird solange wiederholt bis die aktuelle Distanz n-1 beträgt. Ausgehend von diesem Knoten werden alle Nachbarn betrachtet, wenn alle Nachbarn betrachtet wurden, wird von Startknoten ein neuer Knoten mit der Distanz m gewählt.
+\textbf {Depth-First(Tiefen-Suche)}: Gegeben sei die maximale Distanz n, so wird zunächst ein Knoten mit der minimalen Distanz m betrachtet und ausgehend von diesem Knoten wird ein Knoten mit der Distanz m+1 ausgewählt. Dies wird solange wiederholt bis die aktuelle Distanz n-1 beträgt. Ausgehend von diesem Knoten werden alle Nachbarn betrachtet, wenn alle Nachbarn betrachtet wurden, wird von Startknoten ein neuer Knoten mit der Distanz m gewählt.
+\textbf {Bidirektionale Traversierung}: Es werden 2 Knoten gewählt und von jedem Knoten wird eine  gestartet, diese muss nicht über die gleichen Relationen verlaufen oder im gleichen Schritttempo vollzogen werden. Bei einer Kollision von wird von dem Nutzer ein Verhalten definiert, eine Kollision zwischen den Pfaden von 2 Knoten während einer Bidirektionalen Traversierung beweist, dass  ein Startknoten von dem anderen Knoten erreichbar ist.
 \newline
 \newline
-Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann das ausgewählte eine erheblichen Performanz-Unterschied  hervorbringen \parencite{vukotic2015neo4j}. Die Traversion kann auch bidirektional aufgeführt werden, dabei werden 2 Anfangsknoten angeben und die Suche wird so lange ausgeführt, bis es zu einer Kollision der beiden Pfade kommt. Wenn eine Kollision zwischen den beiden Pfaden erkannt wird, ist damit zum Beispiel eine Verbindung der beiden Knoten bewiesen.
+Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann das ausgewählte eine erheblichen Performanz-Unterschied  hervorbringen \parencite{vukotic2015neo4j}. 
 
 \subsection{Anfragebearbeitung und Planoptimierung}
 Nach Angaben von Neo4j\footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}, werden Anfragen in Cypher, nach folgendem Muster bearbeitet:
