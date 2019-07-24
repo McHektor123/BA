@@ -110,7 +110,7 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 RETURN LENGTH(path)
 ORDER BY length(path) asc LIMIT 1
 \end{Verbatim}
-Die Alterantive Formulierung von \textbf{Grundanfrage 1.3} wird in dieser Iteration als \textbf{Grundanfrage 2.4}  beschrieben :
+Die alternative Formulierung von \textbf{Grundanfrage 1.3} wird in dieser Iteration als \textbf{Grundanfrage 2.4}  beschrieben :
 \begin{Verbatim}[frame=single]
 MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
 <-[:Relationship3]-(Y:Person{name: 'Person2'})
