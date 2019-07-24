@@ -80,8 +80,14 @@ Die zweite Iteration verwendet die Nachbarschafts-Anfragen in einer höheren Tie
 \subsection{Grundanfragen zur zweiten Iteration}
 \textbf{Grundanfrage 2.1} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
+MATCH (p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person) 
+RETURN COUNT(DISTINCT(p1))
+\end{Verbatim} 
+Diese Anfrage findet die Anzahl aller Verbindungen über die Relation RELATIONSHIP3 mit der exakten Tiefe 2. Es handelt sich um eine Nachbarschafts-Anfrage. Diese Grundanfrage wird erneut mit der Tiefe 3 ausgeführt und beide Anfragen werden in den APIs mit der Breath-First-Methode und Depth-First-Methode ausgeführt. Es ergeben sich 6 Anfragen. \newline
+\textbf{Grundanfrage 2.2} wird beschrieben als: 
+\begin{Verbatim}[frame=single]
 MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
-				   -[:RELATIONSHIP3]->(p2)
+-[:RELATIONSHIP3]->(p2)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p2) 
 RETURN COUNT(DISTINCT(p2))
 \end{Verbatim} 
@@ -91,12 +97,6 @@ MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p1)
 RETURN COUNT(DISTINCT(p1))
 \end{Verbatim} 
-\textbf{Grundanfrage 2.2} wird beschrieben als: 
-\begin{Verbatim}[frame=single]
-MATCH (p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person) 
-RETURN COUNT(DISTINCT(p1))
-\end{Verbatim} 
-Diese Anfrage findet die Anzahl aller Verbindungen über die Relation RELATIONSHIP3 mit der exakten Tiefe 2. Es handelt sich um eine Nachbarschafts-Anfrage. Diese Grundanfrage wird erneut  mit der Tiefe 3 ausgeführt und beide Anfragen werden in den APIs mit der Breath-First-Methode und Depth-First-Methode ausgeführt. Es ergeben sich 6 Anfragen.
 \textbf{Grundanfrage 2.3} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
@@ -109,17 +109,17 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 		path=(p)-[:RELATIONSHIP4*..3]->(p1) 
 RETURN LENGTH(path)
 ORDER BY length(path) asc LIMIT 1
-\end{Verbatim} 
+\end{Verbatim}
+Die Alterantive Formulierung von \textbf{Grundanfrage 1.3} wird in dieser Iteration als \textbf{Grundanfrage 2.4}  beschrieben :
+\begin{Verbatim}[frame=single]
+MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
+<-[:Relationship3]-(Y:Person{name: 'Person2'})
+RETURN COUNT(DISTINCT(n1))
+\end{Verbatim}
+Die Anfrage findet gemeinsame Nachbarn zwischen der Person1 und Person2, dies ist eine  Nachbarschafts-Anfrage. Diese Anfrage wird mit der Breath-First- und Depth-First-Methode formuliert und die  wird zusätzlich mit der Bidirektionalen Traversierung bearbeitet. Es ergeben sich 3 Anfrage da die in Cypher formulierte Anfrage nicht betrachtet wird. 
 \subsection{Erwartungen zur zweiten Iteration}
 Es werden Hypothesen zu den komplexeren Grundanfrage aus der zweiten Iteration vorgestellt und Ursache für das erwartete Verhalten werden aufgestellt. Diese Hypothesen werden in dem Teil zur praktischen Arbeit überprüft und die Ausführbarkeit von sehr rechenaufwendigen Anfragen wird getestet.  \newline \newline
 Für \textbf{Grundanfrage 2.1} werden folgende Aspekte betrachet: 
-\begin{enumerate}
-	\item Ein Unterschied in der Laufzeit bei  semantisches Äquivalenz  
-	\item Die allgemeine Performanz von dem Ausdruck "WHERE NOT".
-\end{enumerate}
-Zum 1. Aspekt: Es wird vermutet, dass die Anfrage mit [RELATIONSHIP3*2] eine schneller Ausführungszeit besitzt, da dieser Ausdruck auf den Compiler optimiert ist. \newline
-Zum 2. Aspekt: Da eine Weitere Anfrage im WHERE-Prädikat gestellt wird und beide Ergebnismengen verglichen werden, wird vermutet dass die Ausführungszeit sehr hoch ist. Durch die Eigenschaften des Multithreading wird die Anfrage in der Core-API um ein vielfaches schneller beantwortet werden. \newline  \newline
-Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
 \begin{enumerate}
 	\item Ein Unterschied zwischen der Traversierung in den Tiefen 2 und 3 
 	\item Das Verhalten von Breath-First und Depth-First
@@ -128,11 +128,23 @@ Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet:
 Zum 1. Aspekt: Bei der Anfrage in Cypher wird davon ausgegangen, dass die Zeit für die Traversierung mit der Tiefe 3 in quadratischer Abhängigkeit zu der  mit Tiefe 2 steht. Für  Breath-First und Depth-First besteht die Annahme, dass ein linearer Unterschied entsteht  und eine der beide Methoden signifikant schneller ausgeführt wird. \newline
 Zum 2. Aspekt: Da der Graph ausgehend von dem Knoten der Person1 mit der Tiefe 3 eine relativ hohe Breite im Vergleich zu der Tiefe besitzt, wird vermutet dass die Anfrage mit Depth-First signifikant schneller  ausgeführt wird. \newline
 Zum 3. Aspekt: Durch die Tiefe 2 können  unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet ,dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
+Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
+\begin{enumerate}
+	\item Ein Unterschied in der Laufzeit bei  semantisches Äquivalenz  
+	\item Die allgemeine Performanz von dem Ausdruck "WHERE NOT".
+\end{enumerate}
+Zum 1. Aspekt: Es wird vermutet, dass die Anfrage mit [RELATIONSHIP3*2] eine schneller Ausführungszeit besitzt, da dieser Ausdruck auf den Compiler optimiert ist. \newline
+Zum 2. Aspekt: Da eine Weitere Anfrage im WHERE-Prädikat gestellt wird und beide Ergebnismengen verglichen werden, wird vermutet dass die Ausführungszeit sehr hoch ist. Durch die Eigenschaften des Multithreading wird die Anfrage in der Core-API um ein vielfaches schneller beantwortet werden. \newline  \newline
 Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet: 
 \begin{enumerate}
 	\item Die Berechnungszeit für den kürzesten Weg und die Länge von diesem
 	\item Die Ausführungszeit in Cypher ohne Verwenden des Algorithmus
 \end{enumerate}
 Zum 1. Aspekt: Durch die Vermutung, dass alle Personen über RELATIONSHIP3/ RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.2 zusammenhängen und es wird keine höhere Ausführungszeit erwartet. \newline
-Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus für den Compiler optimiert ist, wird der Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus.
+Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus für den Compiler optimiert ist, wird der Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. \newline \newline
+Für \textbf{Grundanfrage 2.4} wird folgender Aspekt betrachtet:
+\begin{enumerate}
+	\item Die relativen Berechnungszeit der 3 Traversierung-Methoden zueinander
+\end{enumerate}
+Zum 1. Aspekt: Ausgehend von den vorangegangen Vermutungen, dass die Depth-First Methode signifikant schneller sein wird, als die Breath-First-Methode wird erwartet ,dass die Anfrage mit dem Depth-First hier schneller bearbeitet wird. Durch die Größe des Graphen wird erwartet, dass die Bidirektionale Traversierung die kürzeste Bearbeitungszeit besitzen wird, da theoretisch die Hälfte der Berechnungschritte notwendig ist. \newline
 
