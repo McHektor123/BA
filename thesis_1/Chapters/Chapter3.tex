@@ -7,4 +7,88 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
+\section{Versuchsaufbau}
+Für die Berechnung der Anfragen wurde die Dell Precision Workstation T5500 verwendet. Das System besitzt 16 Prozessoren vom Typ Intel Xeon  X5500 mit 2,66GHz und  8 MB SmartCache. Insgesamt stehen 72 GB DDR3 RAM mit 1333 MHz zur Verfügung und es wird Ubuntu 18.04 genutzt. Für die Evaluation der Iterationen wurden alle Anfragen wiederholt ausgeführt. \newline
+ Jede Anfrage der ersten Iteration wurde 50 mal aufgeführt und die Anfragen der zweiten Iteration wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. 
+\section{Tables}
+Die Erbenisse für Grundanfrage 1 werden gezeigt in \ref{tab:Query1_1}
+\begin{table}[!htb]
+\centering
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+	\hline
+	Anfrage& RELATIONSHIP3 &Core API&RELATIONSHIP2\\
+	\hline
+	Eingehend   & 215.383    &123.963&  64\\
+	Ausgehend&    212.620  & 82.057   & 160\\
+	Beides&496.704 & 222.150&  165\\
+	\hline
+\end{tabular}
+\caption{Grundanfrage 1.1}
+\label{tab:Query1_1}
+\end{table}
 
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Ohne Where& Mit Where  &Core API\\
+			\hline
+			1,69   &  0,54  &0,29 \\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 1.2}
+	\end{center}
+\end{table}
+
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			 13,36    & 8.66 &  3.2\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 1.3}
+	\end{center}
+\end{table}
+
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Anfrage& Cypher & Breath-First&Depth-First\\
+			\hline
+			Tiefe 2   & 224.431    & 1.190&  100\\
+			Tiefe 3&    TODO  & 1.278   & 65\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.1}
+	\end{center}
+\end{table}
+
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			4.740.646    & 4.753.414 &  1.609\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.2}
+	\end{center}
+\end{table}
+
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			8,4    & 8.370.298 &  11,5\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.3}
+	\end{center}
+\end{table}
