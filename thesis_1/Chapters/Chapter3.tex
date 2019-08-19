@@ -7,4 +7,117 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-
+\section{Versuchsaufbau}
+Für die Berechnung der Anfragen wurde die Dell Precision Workstation T5500 verwendet. Das System besitzt 16 Prozessoren vom Typ Intel Xeon  X5500 mit 2,66GHz und  8 MB SmartCache. Insgesamt stehen 72 GB DDR3 RAM mit 1333 MHz zur Verfügung und es wird Ubuntu 18.04 genutzt. Für die Evaluation der Iterationen wurden alle Anfragen wiederholt ausgeführt. \newline
+ Jede Anfrage der ersten Iteration wurde 50 mal aufgeführt und die Anfragen der zweiten Iteration wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. Alle Zeitangaben sind in ms angegeben. 
+\section{Auswertung}
+Die Erbenisse für Grundanfrage 1.1 werden gezeigt in Tabelle \ref{tab:Query1_1}. Wie erwartet ist der Ausführungszeit in allen 3 Szenarien am längsten, wenn die Relationen unabhängig von ihrer Richtung betrachtet werden. Dies ist auf die hohe Zahl der vorhandenen Relationen zurückzuführen. Bei der Anfrage in Cypher für die RELATIONSHIP3 und in der Core API ist die Ausführungszeit für ein Richtungsunabhängige Suche länger als bei der Suche mit einer Ausgehenden Kante und einer Eingehenden Kante addiert. \newline
+Die Anfrage für RELATIONSHIP3 wird mit der Core API in  allen Fällen fast doppelt so schnell berechnet wie in Cypher. Dieses Verhalten wird bei den weiteren Grundanfragen ebenfalls erwartet, die Ursachen hierfür wurden in den Kapitel zu den Grundlagen erläutert. \newline
+Die Anfragen wurde in Cypher für RELATIONSHIP2 mehr als 1000 mal schneller bearbeitet. Dies deutet auf eine schlechte Skalierbarkeit des Systems hin, da die notwendigen Berechnungen beinahe linear ansteigen. 
+\FloatBarrier  
+\begin{table}[h]
+\centering
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+	\hline
+	Anfrage& RELATIONSHIP3 &Core API&RELATIONSHIP2\\
+	\hline
+	Eingehend   & 215.383    &123.963&  64\\
+	Ausgehend&    212.620  & 82.057   & 160\\
+	Beides&496.704 & 222.150&  165\\
+	\hline
+\end{tabular}
+\caption{Grundanfrage 1.1}
+\label{tab:Query1_1}
+\end{table}
+\FloatBarrier
+Tabelle \ref{tab:Query1_2} zeigt die Zeiten für Grundanfrage 1.2. Für alle 3 Fälle ist die benötigte Zeit sehr gering. Für diese Anfrage wird über den gesamten Graphen traversiert  und alle Knoten werden betrachtet. Durch die geringe Anzahl von 50002 Knoten und einer einfachen Traversierung entstehen die geringen Zeiten. \newline Entgegen der Erwartungen besteht ein Unterschied zwischen den Ausführungzeiten der Anfrage, wenn sich die Bedingung im Where-Prädikat befindet. Die beobachtet Ausführungszeit ist 3-mal schneller, als bei der Anfrage mit der Bedingung im Match-Prädikat. Da der Cypher Query Optimizer alle Bedingungen des Match-Prädikates in ein Where verschiebt, wird hier gezeigt, dass dieser Optimierungsschritt selber eine gewisse Berechnungzeit in Anspruch nimmt. Für ein optimalen Gebrauch von Neo4j sollten dementsprechend alle Bedingungen direkt in einem Where-Prädikat formuliert werden, dies wird auch von Neo4j empfohlen \footnote{https://neo4j.com/blog/tuning-cypher-queries/ (07.08.19)}. 
+\FloatBarrier
+\begin{table}[h]
+	\centering
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Ohne Where& Mit Where  &Core API\\
+			\hline
+			1,69   &  0,54  &0,29 \\
+			\hline
+		\end{tabular}
+		\FloatBarrier
+		\caption{Grundanfrage 1.2}
+		\label{tab:Query1_2}
+\end{table}
+\FloatBarrier
+Für Grundanfrage 1.3 wurde beobachtet, dass die semantisch Äquivalente Anfrage ca. 35\% schneller bearbeitet wird. Wie in den Erwartungen bereits beschrieben, ist dies auf die effiziente Implementierung des IN-Operators zurückzuführen. Da die äquivalente Anfrage diesen Operator verwendet und die Grundanfrage nur ein Match-Prädikat und keinen IN-Operator verwendet.
+Die genauen Zahlen befinden sich in Tabelle		\ref{tab:Query1_3}.
+\begin{table}[h]
+	\centering
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			 13,36    & 8,66 &  3,2\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 1.3}
+		\label{tab:Query1_3}
+\end{table}
+\FloatBarrier
+TODO
+\FloatBarrier
+\begin{table}[h]
+\centering
+		\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Anfrage& Cypher & Breath-First&Depth-First\\
+			\hline
+			Tiefe 2   & 224.431    & 1.190&  100\\
+			Tiefe 3&    TODO  & 1.278   & 65\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.1}
+\end{table}
+\FloatBarrier
+Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2 und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ "Set" gebildet und durch den Aufruf der Funktion "removeAll()" wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem "WHERE NOT" Ausdruck  in Java und ist offensichtlich schneller zu berechnen. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
+\FloatBarrier
+\begin{table}[h]
+	\centering
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			4.740.646    & 4.753.414 &  1.609\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.2}
+		\label{tab:Query2_2}
+\end{table}
+\FloatBarrier
+Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle\ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als bei allen Grundanfragen außer 1.2. In diesem Fall ist die Anfrage erstmalig schneller als die alternative Formulierung in der Core API. Der Unterschied beträgt relativ betrachtet 37 \%, da der absolute Unterschied dennoch sehr gering ist, bleibt die Core API die performantere Alternative für alle Anfragen. \newline
+Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Die Alternative Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und vielen notwendigen Berechnungsschritten, die durch den Algorithmus entfallen würden. So entsteht eine extrem unperformante Berechnungsalternative.  
+\FloatBarrier
+\begin{table}[!htb]
+	\centering
+		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+			\hline
+			Grundanfrage & Äquivalent&Core API\\
+			\hline
+			8,4    & 8.370.298 &  11,5\\
+			\hline
+		\end{tabular}
+		\caption{Grundanfrage 2.3}
+		\label{tab:Query2_3}
+\end{table}
+\FloatBarrier
+TODO
+\FloatBarrier
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+		\hline
+		Breadth-First & Depth-First&Bidirektional-Breadth-First &Bidirektional-Depth-First\\
+		\hline
+		TODO    & TODO &  TODO  &  TODO\\
+		\hline
+	\end{tabular}
+	\caption{Grundanfrage 2.4}
+\end{table}
+\FloatBarrier
