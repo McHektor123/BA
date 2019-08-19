@@ -47,7 +47,7 @@ Tabelle \ref{tab:Query1_2} zeigt die Zeiten für Grundanfrage 1.2. Für alle 3 F
 \end{table}
 \FloatBarrier
 Für Grundanfrage 1.3 wurde beobachtet, dass die semantisch Äquivalente Anfrage ca. 35\% schneller bearbeitet wird. Wie in den Erwartungen bereits beschrieben, ist dies auf die effiziente Implementierung des IN-Operators zurückzuführen. Da die äquivalente Anfrage diesen Operator verwendet und die Grundanfrage nur ein Match-Prädikat und keinen IN-Operator verwendet.
-Die genauen Zahlen befinden sich in Tabelle		\ref{tab:Query1_3}.
+Die genauen Zahlen befinden sich in Tabelle	\ref{tab:Query1_3}.
 \begin{table}[h]
 	\centering
 		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
@@ -69,14 +69,14 @@ TODO
 			\hline
 			Anfrage& Cypher & Breath-First&Depth-First\\
 			\hline
-			Tiefe 2   & 224.431    & 1.190&  100\\
-			Tiefe 3&    TODO  & 1.278   & 65\\
+			Tiefe 2   & 224431    & 1190&  100\\
+			Tiefe 3&    TODO  & 1278   & 65\\
 			\hline
 		\end{tabular}
 		\caption{Grundanfrage 2.1}
 \end{table}
 \FloatBarrier
-Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2 und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ "Set" gebildet und durch den Aufruf der Funktion "removeAll()" wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem "WHERE NOT" Ausdruck  in Java und ist offensichtlich schneller zu berechnen. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
+Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2 und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ 'Set' gebildet und durch den Aufruf der Funktion "removeAll()" wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem 'WHERE NOT' Ausdruck  in Java und ist offensichtlich schneller zu berechnen. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -91,7 +91,7 @@ Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zw
 		\label{tab:Query2_2}
 \end{table}
 \FloatBarrier
-Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle\ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als bei allen Grundanfragen außer 1.2. In diesem Fall ist die Anfrage erstmalig schneller als die alternative Formulierung in der Core API. Der Unterschied beträgt relativ betrachtet 37 \%, da der absolute Unterschied dennoch sehr gering ist, bleibt die Core API die performantere Alternative für alle Anfragen. \newline
+Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als bei allen Grundanfragen außer 1.2. In diesem Fall ist die Anfrage erstmalig schneller als die alternative Formulierung in der Core API. Der Unterschied beträgt relativ betrachtet 37 \%, da der absolute Unterschied dennoch sehr gering ist, bleibt die Core API die performantere Alternative für alle Anfragen. \newline
 Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Die Alternative Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und vielen notwendigen Berechnungsschritten, die durch den Algorithmus entfallen würden. So entsteht eine extrem unperformante Berechnungsalternative.  
 \FloatBarrier
 \begin{table}[!htb]

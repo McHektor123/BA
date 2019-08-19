@@ -1,6 +1,6 @@
 % Chapter Template
 
-\chapter{Theoretische Grundlagen} % Main chapter title
+\chapter{Iterationen der Evaluation} % Main chapter title
 
 \label{Kaptiel3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
@@ -8,21 +8,21 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 \section{Vorraussetzungen}
-Im Folgenden wird der verwendete Datensatz beschrieben und eine Kategorisierung der Anfragen für die folgenden Iterationen wird erläutert. 
-\subsection{Datensatz}
-Für die Evaluation wurde ein selbsterstellter Datensatz gewählt, dieser wurde aus folgendem Code  \footnote{https://github.com/McHektor123/BA/blob/master/Neo4j/InitNeo4j2.java} unter Verwendung der Parameter \footnote{https://github.com/McHektor123/BA/blob/master/Constants/CONSTANTS.java} erstellt. Die Datenbank läuft im eingebettten Modus von Neo4j Version 3.5.5 und besteht aus insgesamt 50.004 Entitäten, davon sind 4  vom Typ Action und  50000  vom Typ Person. Der Typen Action und Person besitzen 3 Eigenschaften, die erste ist 'name', welche aus einem String besteht, die zweite 'attribute' besteht aus einem Int und die dritte 'time' ist vom Datentyp Date. Es gibt keine Entitäten, die Eigenschaft mit gleichen Werten besitzen. \newline
-Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 bilden eine Relation von einer Entität des Typen Person zu einer Entität des Typen Action  und  RELATIONSHIP3 und RELATIONSHIP4 eine Relation von Person zu Person. Jede Person besitzt jeweils eine Relation vom Typen RELATIONSHIP1 und eine vom Typen RELATIONSHIP2, wobei die Ziel-Actions disjunkt sind. Pro Person wurden 2.500 Relationen vom Typen RELATIONSHIP3 und 2.500 Relationen vom Typen RELATIONSHIP4 generiert, die Ziel-Personen sind nicht disjunkt. Jede Person besitzt 5002 Relationen. Da die Relationen als Kanten und die Entitäten als Knoten aufgefasst werden, besitzt der generierte Graph 50.004 Knoten und 250.100.000 Kanten mit einer physischen Gesamtgröße von 8.8 GB. 
+Im Folgenden werden alle Einstellungen, die für die Evaluation getroffen wurden beschrieben und begründet. 
+\subsection{Der verwendete Datensatz}
+Für das Experiment wurde ein selbsterstellter Datensatz gewählt, dieser wurde aus folgendem Code erstellt \footnote{https://github.com/McHektor123/BA/blob/master/Neo4j/InitNeo4j2.java} unter Verwendung der Parameter \footnote{https://github.com/McHektor123/BA/blob/master/Constants/CONSTANTS.java}. Die Datenbank läuft im eingebettten Modus von Neo4j und besteht aus insgesamt 50.004 Entitäten, davon sind 4  vom Typ Action und  50000  vom Typ Person. Der Typ Action besitzt  2 Eigenschaften, mit den Namen 'name', welche aus einem String besteht  und 'attribute', welche aus einem Int besteht. Der Typ Person besitzt ebenfalls 2 Eigenschaften namens 'name' und 'attribute'. \newline
+Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 bilden eine Relation von einer Entität des Typen Person zu einer Entität des Typen Action  und  RELATIONSHIP3 und RELATIONSHIP4 eine Relation von Person zu Person. Jede Person besitzt jeweils 1 Relation vom Typen RELATIONSHIP1 und eine vom Typen RELATIONSHIP2, wobei die Ziel-Actions disjunkt sind. Pro Person wurden 2.500 Relationen vom Typen RELATIONSHIP3 und 2.500 Relationen vom Typen RELATIONSHIP4 generiert, da die Ziel-Personen nicht disjunkt sind, kommt es zu einer variablen Anzahl von zugehörigen disjunkten Relationen pro Person. Jede Person besitzt maximal 5002 Relationen. Da die Relationen als Kanten und die Entitäten als Knoten aufgefasst werden, besitzt der generierte Graph 50.004 Knoten und 250.100.000 Kanten mit einer physischen Gesamtgröße von 8.8 GB. 
 \subsection{Anfragen}
-Für die Evaluation werden die Anfragen nach  \parencite{angles2012comparison}  in folgende Kategorien unterteilt: Nachbarschafts-Anfragen, Erreichbarkeits-Anfragen, Muster-Passungs-Anfragen und  Zusammenfassungen. 
+Für die Evaluation werden die Anfragen nach  \parencite{angles2012comparison}  in folgende Kategorien unterteilt: Nachbarschafts-Anfragen, Erreichbarkeits-Anfragen, Muster Passungs Anfragen und  Zusammenfassungen. 
 \begin{enumerate}
-	\item Nachbarschafts-Anfragen: Es wird geprüft, welche Knoten über eine oder mehrere Kanten mit einem Startknoten verbunden sind, dies ist auch als k-nächste Nachbarn Problem bekannt. Beide Fälle lassen sich auch auf die Verbundenheit von Kanten über Knoten übertragen.
-	\item Erreichbarkeits-Anfragen: Die Suche nach einem Pfad, welcher 2 Knoten bzw. Kanten verbindet. Wenn ein Pfad besteht ist der Ziel-Knoten von dem Start-Knoten aus erreichbar, bei einem ungerichteten Graphen gilt auch der umgekehrte Fall. Beim dem Auffinden von mehreren Pfaden, entsteht zudem das Problem des Finden des kürzesten Pfades. Bei einem gewichteten Graphen kann dieses Problem um die Suche des schnellsten/leichtesten Pfades  erweitert werden. 
-	\item Musterabgleichungs-Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Dies ist als Graph bzw. Sub-Graph Isomorphismus-Passungs bekannt. 
+	\item Nachbarschafts-Anfragen: Es wird geprüft, ob ein Knoten direkt über eine  Kante mit einem anderen Knoten verbunden ist oder  es werden alle Knoten die über eine bestimmte Menge an Kanten erreichbar sind zu einer Menge zusammengefasst, dies ist auch als k-nächste Nachbarn Problem bekannt. Beide Fälle lassen sich auch auf die Verbundenheit von Kanten über Knoten übertragen.
+	\item Erreichbarkeits-Anfragen: Die Suche nach einem Pfad, welcher 2 Knoten bzw. Kanten verbindet. Wenn ein Pfad besteht ist der Ziel-Knoten von dem Start-Knoten aus erreichbar, bei einem ungerichteten Graphen gilt der umgekehrte Fall ebenfalls. Beim dem Auffinden von mehreren Pfaden, entsteht zudem das Problem des Finden des kürzesten Pfades. Bei einem gewichteten Graphen kann dieses Problem um die Suche des schnellsten/leichtesten Pfades  erweitert werden. 
+	\item Muster Passungs Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Dies ist als Graph bzw. Sub-Graph Isomorphismus bekannt. 
 	\item Zusammenfassungen: Diese Anfragen fassen eine Ergebnismenge zu einem Wert zusammen, dies ist durch Funktionen wie MAX,AVG oder COUNT ,aber auch dem Lesen von Eigenschaften des Graphen wie die Menge alle Knoten, realisiert. 
 \end{enumerate}
-Eine Anfrage kann dabei mehrere Kategorien beinhalten. In der folgenden Evaluation werden die primär Grundanfragen der Kategorien 1,2 und 4 verwendet. Die gesamte Evaluation besteht aus 3 Iterationen, in denen eine Menge von Anfragen gestellt und analysiert werden. 
+Eine Anfrage kann dabei mehrere Kategorien beinhalten. In dem folgenden Experimenten werden die primär Grundanfragen der Kategorien 1,2 und 4 verwendet. Das gesamte Experiment besteht aus 2 Iterationen, in denen eine Menge von Anfragen gestellt und analysiert werden. 
 \section{Erste Iteration}
-Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. Im folgenden Abschnitt werden die Grundanfragen vorgestellt und es wird beschrieben wie daraus mehrere Anfragen gebildet werden. 
+Die erste Iteration besteht primär aus Nachbarschafts-Anfragen und Zusammenfassungen. Im folgenden Abschnitt werden die Grundanfragen der ersten Iteration und die Permutationen aus diesen vorgestellt. 
 \subsection{Grundanfragen zur ersten Iteration}
 \textbf{Grundanfrage 1.1} wird beschrieben als:
 \begin{Verbatim}[frame=single]
@@ -35,7 +35,7 @@ Grundanfrage 1.1 findet alle Personen, die über RELATIONSHIP3 erreichbar sind, 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person {name:'Person613'}) return p
 \end{Verbatim} 
-Diese Anfrage findet den Nutzer mit dem Namen "Person613". Sie wird dahingehend verändert, dass die Überprüfung des attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage  in der Core API formuliert wird. Aus Grundanfrage 1.2 entstehen insgesamt 3 Anfragen.\newline 
+Diese Anfrage findet den Nutzer mit dem Namen "Person613". Sie wird dahingehend verändert, Prodass die Überprüfung des attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage  in der Core API formuliert wird. Aus Grundanfrage 1.2 entstehen insgesamt 3 Anfragen.\newline 
 \textbf{Grundanfrage 1.3} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1) 
@@ -44,13 +44,13 @@ MATCH (Y:Person{name: 'Person2'})-[:Relationship3]->(n1)
 WHERE n1 in n
 RETURN COUNT(DISTINCT(n1))
 \end{Verbatim} 
-Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, so ist es eine Nachbarschafts-Anfrage mit einer genutzten Zusammenfassung. Es entstehen insgesamt 3 Anfragen. Als Permutationen wird eine semantisch äquivalente Anfrage in den APIs und folgende in Cypher formuliert:
+Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, so ist es eine Nachbarschafts-Anfrage mit einer genutzten Zusammenfassung. Als Permutationen wird eine semantisch äquivalente Anfrage in den APIs und folgende in Cypher formuliert:
 \begin{Verbatim}[frame=single]
  MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
  		<-[:Relationship3]-(Y:Person{name: 'Person2'}) 
  RETURN COUNT(DISTINCT(n1))
 \end{Verbatim} 
-Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breadth-First-Search für die Traversierungen verwendet. 
+Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breadth-First-Methode für die Traversierungen verwendet. 
 \subsection{Erwartungen zur ersten Iteration}
 Im Folgenden werden Hypothesen über das Verhalten der Grundanfragen zur ersten Iteration aufgestellt und es werden  Begründungen ausgestellt. In dem praktischen Teil werden diese Hypothesen überprüft. \newline \newline
 Für \textbf{Grundanfrage 1.1} entstehen 3 Aspekte, welche betrachtet werden.
@@ -60,8 +60,8 @@ Für \textbf{Grundanfrage 1.1} entstehen 3 Aspekte, welche betrachtet werden.
 \item Die Unterschiede zwischen der Anfrage mit Verwendung von RELATIONSHIP3 und RELATIONSHIP2.
 \end{enumerate}
 Zum 1. Aspekt: Es besteht die Vermutung, dass die Ausführungszeit am höchsten ist, wenn die Relation in beide Richtung gelten kann und die Zeit ist minimal wenn die Relation als ausgehende Kante beschrieben wird. \newline
- Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs nahe am Kern arbeiten und Cypher als Kern ferne Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird erwartet, dass die Performanz bei den verwendeten Anfragen deutlich höher ist, wenn die Java Core API mit Verwendung der Traversal API genutzt wird. \newline
-Zum 3. Aspekt: Da jede Person 1 Relation vom Typ RELATIONSHIP2 besitzt und maximal 2.500 vom Typ RELATIONSHIP3 wird Vermutet, dass die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1000 schneller ausgeführt werden. \newline \newline
+ Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs hardware-nahe arbeiten und Cypher als hardware-ferne Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird erwartet, dass die Performanz bei den verwendeten Anfragen deutlich höher ist, wenn die Java Core API mit Verwendung der Traversal API genutzt wird. \newline
+Zum 3. Aspekt: Da jede Person 1 Relation vom Typ RELATIONSHIP2 besitzt und maximal 2.500 vom Typ RELATIONSHIP3 wird Vermutet, dass die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1.000 schneller ausgeführt werden. \newline \newline
 Für \textbf{Grundanfrage 1.2} werden 2 Aspekte betrachtet .
 \begin{enumerate}
 	\item Die allgemeine Performanz und die entstehenden Unterschiede für das Suchen eines Knotens
@@ -76,14 +76,14 @@ Für \textbf{Grundanfrage 1.3} besteht ein Aspekt, der untersucht wird.
 Zum 1. Aspekt: Es wird vermutet, dass es keine signifikante Differenz zwischen den Laufzeiten gibt, falls ein Unterschied bestehen sollte, wird diese auf die Performanz des IN-Operator zurückgeführt.
 
 \section{Zweite Iteration}
-Die zweite Iteration verwendet die Nachbarschafts-Anfragen in einer erhöhten Tiefe , wodurch eine höherer Rechenaufwand simuliert wird. Es wird das Verhalten zwischen  Depth-First-Search und  Breath-First-Search betrachtet und die Bidirektionale Traversierung wird genutzt. Es werden komplexere Anfragen gestellt und es wird die Skalierbarkeit des Systems analysiert. 
+Die zweite Iteration verwendet die Nachbarschafts-Anfragen in einer höheren Tiefe vom 2,3, wodurch eine höherer Rechenaufwand simuliert wird. Es wird das Verhalten zwischen der Depth-First-Methode und der Depth-First-Methode betrachtet und die Bidirektionale Traversierung wird genutzt. Es werden komplexere Anfragen gestellt und es wird die Skalierbarkeit des Systems analysiert. 
 \subsection{Grundanfragen zur zweiten Iteration}
 \textbf{Grundanfrage 2.1} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person) 
 RETURN COUNT(DISTINCT(p1))
 \end{Verbatim} 
-Diese Anfrage findet die Anzahl aller Verbindungen über die Relation RELATIONSHIP3 mit der exakten Tiefe 2. Es handelt sich um eine Nachbarschafts-Anfrage. Diese Grundanfrage wird erneut mit der Tiefe 3 ausgeführt und beide Anfragen werden in den APIs mit der Breath-First-Search und Depth-First-Search ausgeführt. Es ergeben sich 6 Anfragen. \newline \newline
+Diese Anfrage findet die Anzahl aller Verbindungen über die Relation RELATIONSHIP3 mit der exakten Tiefe 2. Es handelt sich um eine Nachbarschafts-Anfrage. Diese Grundanfrage wird erneut mit der Tiefe 3 ausgeführt und beide Anfragen werden in den APIs mit der Breath-First-Methode und Depth-First-Methode ausgeführt. Es ergeben sich 6 Anfragen. \newline
 \textbf{Grundanfrage 2.2} wird beschrieben als: 
 \begin{Verbatim}[frame=single]
 MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
@@ -91,7 +91,7 @@ MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p2) 
 RETURN COUNT(DISTINCT(p2))
 \end{Verbatim} 
-Diese Anfrage findet alle Personen, welche über die RELATIONSHIP3 mit dem direkten Nachbarn  p1 verbunden sind, aber nicht mit Person p verbunden sind. Ein Praktisches Szenario für diese Anfrage, wäre das Finden von neuen Freunden, die die Startperson nicht kennt. Diese Anfrage ist eine Erreichbarkeits- und Musterabgleich Anfrage. Als Permutation wird eine semantisch äquivalente Anfrage in den APIs formuliert und es wird folgende Anfrage in Cypher formuliert:
+Diese Anfrage findet alle Personen, welche über die RELATIONSHIP3 mit dem direkten Nachbarn  p1 verbunden sind, aber nicht mit Person p verbunden sind. Ein Praktisches Szenario für diese Anfrage, wäre das Finden von Freunden von Freunden, die die Startperson nicht kennt. Diese Anfrage ist eine Erreichbarkeits- und Muster-Passungs Anfrage. Als Permutation wird eine semantisch äquivalente Anfrage in den APIs formuliert und es wird folgende Anfrage in Cypher formuliert:
 \begin{Verbatim}[frame=single]
 MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p1)
@@ -103,12 +103,12 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 		path=shortestPath((p)-[:RELATIONSHIP4*..3]->(p1)) 
 RETURN LENGTH(path)
 \end{Verbatim} 
-Diese Anfrage gibt die Länge des kürzesten Pfades zwischen Person1 und Person42 über die Relation RELATIONSHIP4 an, die maximale Länge des Pfades soll  3 sein. Diese Anfrage ist eine Erreichbarkeits-Anfrage und nutzt den shortestPath Algorithmus von Cypher. Diese Anfrage wird erneut mit der Core API ausgeführt und als folgende Alternative in Cypher dargestellt: 
+Diese Anfrage gibt die Länge des kürzesten Pfades zwischen die Personen Person1 und Person42 über die Relation RELATIONSHIP4 an, die maximale länge beträgt 3. Diese Anfrage ist eine Erreichbarkeits-Anfrage und nutzt den shortestPath Algorithmus von Cypher. Diese Anfrage wird erneut mit der Core API ausgeführt und als folgende Alternative in Cypher dargestellt: 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 		path=(p)-[:RELATIONSHIP4*..3]->(p1) 
 RETURN LENGTH(path)
-ORDER BY length(path) ASC LIMIT 1
+ORDER BY length(path) asc LIMIT 1
 \end{Verbatim}
 Die alternative Formulierung von \textbf{Grundanfrage 1.3} wird in dieser Iteration als \textbf{Grundanfrage 2.4}  beschrieben :
 \begin{Verbatim}[frame=single]
@@ -116,7 +116,7 @@ MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
 <-[:Relationship3]-(Y:Person{name: 'Person2'})
 RETURN COUNT(DISTINCT(n1))
 \end{Verbatim}
-Die Anfrage findet gemeinsame Nachbarn zwischen der Person1 und Person2, dies ist eine  Nachbarschafts-Anfrage. Diese Anfrage wird mit der Breath-First- und Depth-First-Search formuliert und   wird zusätzlich mit der bidirektionalen Traversierung bearbeitet. Es ergeben sich 4 Anfragen, da die in Cypher formulierte Anfrage nicht betrachtet wird. 
+Die Anfrage findet gemeinsame Nachbarn zwischen der Person1 und Person2, dies ist eine  Nachbarschafts-Anfrage. Diese Anfrage wird mit der Breath-First- und Depth-First-Methode formuliert und die  wird zusätzlich mit der Bidirektionalen Traversierung bearbeitet. Es ergeben sich 3 Anfrage da die in Cypher formulierte Anfrage nicht betrachtet wird. 
 \subsection{Erwartungen zur zweiten Iteration}
 Es werden Hypothesen zu den komplexeren Grundanfrage aus der zweiten Iteration vorgestellt und Ursache für das erwartete Verhalten werden aufgestellt. Diese Hypothesen werden in dem Teil zur praktischen Arbeit überprüft und die Ausführbarkeit von sehr rechenaufwendigen Anfragen wird getestet.  \newline \newline
 Für \textbf{Grundanfrage 2.1} werden folgende Aspekte betrachet: 
@@ -125,7 +125,7 @@ Für \textbf{Grundanfrage 2.1} werden folgende Aspekte betrachet:
 	\item Das Verhalten von Breath-First und Depth-First
 	\item Der relative Anteil an erreichten Personen im gesamten Graphen
 \end{enumerate}
-Zum 1. Aspekt: Bei der Anfrage in Cypher wird davon ausgegangen, dass die Zeit für die Traversierung mit der Tiefe 3 in quadratischer Abhängigkeit zu der  mit Tiefe 2 steht. Für  Breath-First und Depth-First besteht die Annahme, dass ein linearer Unterschied entsteht  und eine der beide Algorithmen signifikant schneller ausgeführt wird. \newline
+Zum 1. Aspekt: Bei der Anfrage in Cypher wird davon ausgegangen, dass die Zeit für die Traversierung mit der Tiefe 3 in quadratischer Abhängigkeit zu der  mit Tiefe 2 steht. Für  Breath-First und Depth-First besteht die Annahme, dass ein linearer Unterschied entsteht  und eine der beide Methoden signifikant schneller ausgeführt wird. \newline
 Zum 2. Aspekt: Da der Graph ausgehend von dem Knoten der Person1 mit der Tiefe 3 eine relativ hohe Breite im Vergleich zu der Tiefe besitzt, wird vermutet dass die Anfrage mit Depth-First signifikant schneller  ausgeführt wird. \newline
 Zum 3. Aspekt: Durch die Tiefe 2 können  unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet ,dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
 Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
@@ -146,15 +146,10 @@ Für \textbf{Grundanfrage 2.4} wird folgender Aspekt betrachtet:
 \begin{enumerate}
 	\item Die relativen Berechnungszeit der 3 Traversierung-Methoden zueinander
 \end{enumerate}
-Zum 1. Aspekt: Durch die Größe des Graphen wird erwartet, dass die bidirektionale Traversierung mit Depth-First die kürzeste Bearbeitungszeit besitzen wird, da theoretisch die Hälfte der Berechnungsschritte notwendig ist. Ausgehend von den Vermutungen zur Grundanfrage 2.1 wird vermutet, dass die Anfrage mit Breath-First-Search die längste Berechnungszeit besitzen wird. 
+Zum 1. Aspekt: Ausgehend von den vorangegangen Vermutungen, dass die Depth-First Methode signifikant schneller sein wird  als die Breath-First-Methode wird erwartet ,dass die Anfrage mit dem Depth-First hier schneller bearbeitet wird. Durch die Größe des Graphen wird erwartet, dass die Bidirektionale Traversierung die kürzeste Bearbeitungszeit besitzen wird, da theoretisch die Hälfte der Berechnungsschritte notwendig ist. 
 \section{Dritte Iteration}
-In der dritten Iteration werden alle Grundanfragen außer Grundanfrage 2.4 auf dem Datenbank managment system OrientDB \footnote{https://orientdb.com/} ausgeführt. Es werden die Laufzeiten der performantesten Formulierungen der Grundanfragen auf Neo4j mit den Zeiten gleichwertiger Anfragen auf dem System OrientDB verglichen. In OrientDB werden in dieser Evaluation alle Anfragen in SQL formuliert und evaluiert.  
+In der dritten Iteration werden alle Grundanfragen außer Grundanfrage 2.4 auf dem Datenbank managment System OrientDB \footnote{https://orientdb.com/} ausgeführt. Die daraus resultierenden Werte dienen als Referenz. Es werden die Laufzeiten der performantesten Formulierungen der Grundanfragen auf Neo4j mit den Zeiten gleichwertiger Anfragen auf dem System OrientDB verglichen. In OrientDB werden in diesem Experiment alle Anfragen in SQL formuliert und evaluiert.  
 \section{OrientDB}
-OrientDB ist eine noSQL,  Multi-Model Datenbank von dem Entwickler OrientDB Ltd. Die Multi-Model Eigenschaft beschreibt die Fähigkeit, Daten als Dokumenten-Datenbank,Graph, Schlüssel/Wert-Modell oder als Objekte zu modellieren \footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html}. Die Daten werde mittels API für eine unterstützte Sprache oder mit den Anfragensprachen Gremlin oder SQL manipuliert. Als direktes Eingabe-Interface steht das OrientDB Studio für den Browser zur Verfügung. OrientDB ist in der Community- und der Enterprise-Version verfügbar. Die Enterprise-Version verfügt über zusätzliche Features, die das Überwachen der Anfragen ermöglicht bzw. erleichtert. Da die Enterprise-Version über keine Features verfügt, die Einfluss auf die  Performanz haben, wurde für dieses Evaluation die Community Version gewählt. Die verwendete Version ist V 3.0.19. 
+OrientDB ist eine noSQL,  Multi-Model Datenbank von dem Entwickler OrientDB Ltd. Die Multi-Model Eigenschaft beschreibt die Fähigkeit, Daten als Dokumenten-Datenbank,Graph, Schlüssel/Wert-Modell oder als Objekte zu modellieren \footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html}. Die Daten werde mittels API für eine unterstützte Sprache oder mit den Anfragensprachen Gremlin oder SQL manipuliert. Als direktes Eingabe-Interface für Gremlin und SQL steht das OrientDB Studio für den Browser zur Verfügung. Dieses DBMS ist der Community- und der Enterprise-Version verfügbar. Die Enterprise-Version verfügt über zusätzliche Features, die das Überwachen der Anfragen ermöglicht bzw. erleichtert. Da die Enterprise-Version über keine Features verfügt, die Einfluss auf die  Performanz haben, wurde für dieses Experiment die Community Version gewählt. Die verwendete Version ist V 3.0.19. 
 \subsection{Unterschiede von OrientDB und Neo4j}
-Der primäre Unterschied ist, dass Neo4j eine reine Graphdatenbank ist und OrientDB eine Multi-Model Datenbank. Dadurch ist es OrientDB möglich beispielsweise Dokumente in die Datenbank einzupflegen und die gesamte Datenbank als Graphen zu verwalten. Neo4j verwaltet alle Daten in einem reinem Graph. Dadurch besitzen beide Datenbanken verschiedene Mengen von akzeptierten Daten \parencite{fernandes2018graph}. 
-\newline
-Die Datenbanken verwenden unterschiedlichen Anfragesprachen. OrientDB verwendet die standardisierte Anfragesprache SQL  mit Musterabgleich oder Gremlin und Neo4j verwendet die eigenen Sprachen Cypher. Cypher ist im Vergleich zu Gremlin oder SQLcnicht Turing-Vollständig \footcite{https://www.quora.com/Should-I-learn-Cypher-or-Gremlin-for-operating-a-Neo4j-database (29.07.19)}. 
-\newline
-Das sogenannte Sharding ist unter Neo4j nicht möglich. Sharding ermöglich das zerlegen einer Datenbank in mehere kleine Bestandteile. Diese Bestandteile können mit den gleichen Operatoren modelliert werden, wie der gesamte Graph
-
+Der wesentlicher Unterschied ist, dass Neo4j eine reine Graphdatenbank ist und OrientDB eine Multi-Model Datenbank. Dadurch ist es OrientDB möglich beispielsweise Dokumente in die Datenbank einzupflegen und die gesamte Datenbank als Graphen zu verwalten. Neo4j verwaltet alle Daten in einem reinem Graph. Die schränkt die Varianz an möglichen Daten in Neo4j ein \parencite{fernandes2018graph}.
