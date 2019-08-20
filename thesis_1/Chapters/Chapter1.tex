@@ -140,8 +140,9 @@ Ein Knoten im Knotenspeicher wird folgendermaßen dargestellt: Das erste Byte ke
 \subsubsection{Verwaltung der Kanten im Speicher}
 Die Kanten werden in dem Relationsspeicher gespeichert. Jeder Eintrag besitzt die IDs zu den zugehörigen Knoten, einen Zeiger zu dem Relationstypen, welcher in dem Relationstypspeicher gespeichert ist, Zeiger zu den vorherigen und nächsten Relationen von den beiden zugehörigen Knoten und ein Flag, das angibt ob die betrachtete Relation die erste ist. \newline
 \subsubsection{Verwaltung der Eigenschaften im Speicher}
-Da Neo4j eine property graph database ist, kann jeder Knoten und jede Kante Attribute besitzen. Die Attribute befinden sich im Attributsspeicher. Jeder Eintrag zu einer Eigenschaft ist in 1-4 Blöcke und eine ID zu einer folgenden Eigenschaft unterteilt. Jeder dieser Blöcke beinhaltet Informationen über einen Typen, welcher ein Standard- Java-Typ, String oder ein Array sein kann und Informationen über einen Zeiger auf einen Index, der auf den Namen der Eigenschaft verweist, zeigt.  \newline
+Neo4j wird als property graph database bezeichnet, dort kann jeder Knoten und jede Kante Attribute besitzen. Die Attribute befinden sich im Attributsspeicher. Jeder Eintrag zu einem Attribute ist in 1-4 Blöcke und eine ID zu einer folgenden Eigenschaft unterteilt. Jeder dieser Blöcke beinhaltet Informationen über einen Typen, welcher ein Standard- Java-Typ, String oder ein Array sein kann und Informationen über einen Zeiger auf einen Index, der auf den Namen der Eigenschaft verweist, zeigt.  \newline
 \subsubsection{Indizies}
+Ein Index ist eine redundante Kopie von Daten in einer Datenbank, wodurch die Suche nach einigen Informationen beschleunigt wird. Sobald ein Index zu einem angegebenen Attribute erstellt wurde, wird dieser immer aktuell gehalten.  	
 \subsubsection {Traversierung im Speicher}
 Die festgelegte Größe der Knoten und Kanten hat als Ziel, die Traversierung zu beschleunigen \parencite{robinson2013graph}. Eine einfache Traversierung wird beschrieben wie folgt: 
 \begin{enumerate}
