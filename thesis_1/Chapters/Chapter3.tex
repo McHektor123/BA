@@ -61,7 +61,9 @@ Die genauen Zahlen befinden sich in Tabelle	\ref{tab:Query1_3}.
 		\label{tab:Query1_3}
 \end{table}
 \FloatBarrier
-TODO
+
+In der Grundanfrage 2.1 wurden bei der Traversierung bis zur Tiefe 2 alle Knoten des Graphen erreicht. Wie Tabelle \ref{tab:Query2_1} zeigt, besteht zwischen der Traversierung bis zur Tiefe 2 und Tiefe 3  eine minimaler Unterschied von durchschnittlich ca. 5,6\%. Entgegen der Vermutung besteht weder ein quadratischer Unterschied bei der Anfrage in Cypher, noch ein linearer Unterschied bei den Anfragen in mit der Core API. \newline 
+Es wurde bestätigt, dass die Anfrage mit Depth-First-Search signifikant schneller als die Anfrage mit Breath-First-Search ausgeführt wird, in diesem Fall ist die Anfrage für die Tiefe 2 ca. 84\% schneller. Dies wurde in Kapitel 3 durch den gegebenen Eigenschaften des Datensatzes begründet. 
 \FloatBarrier
 \begin{table}[h]
 \centering
@@ -70,10 +72,11 @@ TODO
 			Anfrage& Cypher & Breath-First&Depth-First\\
 			\hline
 			Tiefe 2   & 224431    & 1190&  100\\
-			Tiefe 3&    TODO  & 1278   & 65\\
+			Tiefe 3&    234132  & 1278   & 65\\
 			\hline
 		\end{tabular}
 		\caption{Grundanfrage 2.1}
+		\label{tab:Query2_1}
 \end{table}
 \FloatBarrier
 Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2 und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ 'Set' gebildet und durch den Aufruf der Funktion "removeAll()" wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem 'WHERE NOT' Ausdruck  in Java und ist offensichtlich schneller zu berechnen. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
@@ -91,8 +94,8 @@ Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zw
 		\label{tab:Query2_2}
 \end{table}
 \FloatBarrier
-Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als bei allen Grundanfragen außer 1.2. In diesem Fall ist die Anfrage erstmalig schneller als die alternative Formulierung in der Core API. Der Unterschied beträgt relativ betrachtet 37 \%, da der absolute Unterschied dennoch sehr gering ist, bleibt die Core API die performantere Alternative für alle Anfragen. \newline
-Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Die Alternative Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und vielen notwendigen Berechnungsschritten, die durch den Algorithmus entfallen würden. So entsteht eine extrem unperformante Berechnungsalternative.  
+Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als bei allen Grundanfragen außer 1.2. In diesem Fall ist die Anfrage erstmalig schneller als die alternative Formulierung in der Core API. Der relative Unterschied beträgt 37 \% und  der absolute Unterschied 3,1 ms. Durch die geringe absolute Differenz ist es nicht garantiert, dass der kürzeste Pfad mit der Verwendung von Cypher immer an schnellsten berechnet wird. \newline
+Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Die Alternative Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und vielen Berechnungsschritten, die durch den Algorithmus entfallen würden.
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
@@ -115,7 +118,7 @@ TODO
 		\hline
 		Breadth-First & Depth-First&Bidirektional-Breadth-First &Bidirektional-Depth-First\\
 		\hline
-		TODO    & TODO &  TODO  &  TODO\\
+		TODO    & TODO &  29558  &  26982\\
 		\hline
 	\end{tabular}
 	\caption{Grundanfrage 2.4}
@@ -142,6 +145,7 @@ TODO
 	\caption{Grundanfrage 2.1}
 \end{table}
 \FloatBarrier
-
+\section{Anwendungsszenario}
 \section{Fazit}
 \section{Limitierungen}
+\section{Ackowledgment}
