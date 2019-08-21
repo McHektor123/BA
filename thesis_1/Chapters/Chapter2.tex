@@ -110,13 +110,8 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 RETURN LENGTH(path)
 ORDER BY length(path) asc LIMIT 1
 \end{Verbatim}
-Die alternative Formulierung von \textbf{Grundanfrage 1.3} wird in dieser Iteration als \textbf{Grundanfrage 2.4}  beschrieben :
-\begin{Verbatim}[frame=single]
-MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1)
-<-[:Relationship3]-(Y:Person{name: 'Person2'})
-RETURN COUNT(DISTINCT(n1))
-\end{Verbatim}
-Die Anfrage findet gemeinsame Nachbarn zwischen der Person1 und Person2, dies ist eine  Nachbarschafts-Anfrage. Diese Anfrage wird mit der Breath-First- und Depth-First-Methode formuliert und die  wird zusätzlich mit der Bidirektionalen Traversierung bearbeitet. Es ergeben sich 3 Anfrage da die in Cypher formulierte Anfrage nicht betrachtet wird. 
+ \textbf{Grundanfrage 2.4} wir ausschließlich in der Core API formuliert. \newline
+Die Anfrage traversiert über den gesamten Graphen. Diese Anfrage wird mit der Breath-First- und Depth-First-Search formuliert und   wird zusätzlich mit der Bidirektionalen Traversierung bearbeitet. Es ergeben sich 4 Anfrage. 
 \subsection{Erwartungen zur zweiten Iteration}
 Es werden Hypothesen zu den komplexeren Grundanfrage aus der zweiten Iteration vorgestellt und Ursache für das erwartete Verhalten werden aufgestellt. Diese Hypothesen werden in dem Teil zur praktischen Arbeit überprüft und die Ausführbarkeit von sehr rechenaufwendigen Anfragen wird getestet.  \newline \newline
 Für \textbf{Grundanfrage 2.1} werden folgende Aspekte betrachet: 
