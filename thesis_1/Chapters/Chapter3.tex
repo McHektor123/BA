@@ -8,13 +8,20 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 \section{Versuchsaufbau}
-Für die Berechnung der Anfragen wurde die Dell Precision Workstation T5500 verwendet. Das System besitzt 16 Prozessoren vom Typ Intel Xeon  X5500 mit je 2,66GHz und  8 MB SmartCache. Insgesamt stehen 72 GB DDR3 RAM mit 1333 MHz zur Verfügung und das System läuft auf Ubuntu 18.04. Alle Datensätze werden auf einer SEAGATE ST3250318AS Festplatte mit insgesamt 250 GB Kapazität und 8 MB Cache, gespeichert.\newline
- Jede Anfrage der ersten Iteration wurde 50 mal aufgeführt und die Anfragen der zweiten Iteration wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. Alle Zeitangaben sind in ms angegeben. 
+Für die Berechnung der Anfragen wurde die Dell Precision Workstation T5500 verwendet. Das System besitzt 16 Prozessorenkerne vom Typ Intel Xeon  X5500 mit je 2,66GHz und  8 MB Level3 Cache. Insgesamt stehen 72 GB DDR3 RAM mit 1333 MHz zur Verfügung und das System läuft auf Ubuntu 18.04. Alle Datensätze werden auf einer SEAGATE ST3250318AS Festplatte mit insgesamt 250 GB Kapazität, 8 MB Cache und 7200 Umdrehungen in der Minute, gespeichert.\newline
+ Jede Anfrage des ersten Testlaufes wurde 50 mal aufgeführt und die Anfragen des zweiten Testlaufes wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. Alle Zeitangaben sind in ms angegeben. 
 \section{Auswertung}
-Im folgenden Abschnitt werden Ausführungszeiten der Iterationen tabellarisch präsentiert.  Darauf aufbauend werden die Vermutungen aus Kapitel 3 überprüft und es wird Bezug auf der beobachtet Verhalten genommen. \newline \newline
-Die Ergebnisse für Grundanfrage 1.1 werden  in Tabelle \ref{tab:Query1_1} gezeigt. Wie erwartet ist der Ausführungszeit in allen 3 Szenarien am längsten, wenn die Relationen unabhängig von ihrer Richtung betrachtet werden. Dies ist auf die hohe Zahl der vorhandenen Relationen zurückzuführen. Bei der Anfrage in Cypher und der Core API für die RELATIONSHIP3  ist die Ausführungszeit für die richtungsunabhängige Suche länger als die Suchen mit ausgehenden und eingehenden Kanten addiert. Für die Anfragen mit REELATIONSHIP3 ist wie vermutet, die Zeit am geringsten, wenn die ausgehenden Kanten betrachtet werden. \newline
-Die Anfrage für RELATIONSHIP3 wird mit der Core API in  allen Fällen fast doppelt so schnell berechnet wie in Cypher. Dieses Verhalten wird bei den weiteren Grundanfragen ebenfalls erwartet, die Ursachen hierfür wurden in den Kapitel 2 erläutert. \newline
-Die Anfragen wurden in Cypher für RELATIONSHIP2 mehr als 1000 mal schneller bearbeitet. Dies deutet auf eine schlechte Skalierbarkeit des Systems hin, da die notwendigen Berechnungen beinahe linear ansteigen. 
+Im folgenden Abschnitt werden Ausführungszeiten der Testläufe tabellarisch präsentiert.  Darauf aufbauend werden die Hypothesen aus Kapitel 3 überprüft.  
+\subsection{Ergebnisse des ersten Testlaufes}
+Die Ergebnisse für Grundanfrage 1.1
+\begin{Verbatim}[frame=single]
+MATCH (X:Person)-[:RELATIONSHIP3]->(Y:Person) 
+WHERE X.attribute>=250 AND Y.attribute>=15  
+RETURN COUNT(DISTINCT(Y))
+\end{Verbatim} 
+ werden  in Tabelle \ref{tab:Query1_1} gezeigt. Wie erwartet ist der Ausführungszeit in allen 3 Szenarien am längsten, wenn die Relationen unabhängig von ihrer Richtung betrachtet werden. Dies ist auf die hohe Zahl der vorhandenen Relationen zurückzuführen. Bei der Anfrage in Cypher und der Core API für die RELATIONSHIP3  ist die Ausführungszeit für die richtungsunabhängige Suche länger als die Suchen mit ausgehenden und eingehenden Kanten addiert. Für die Anfragen mit REELATIONSHIP3 ist wie vermutet, die Zeit am geringsten, wenn die ausgehenden Kanten betrachtet werden. \newline
+Die Anfrage für RELATIONSHIP3 wird mit der Core API in  allen Fällen fast doppelt so schnell berechnet wie in Cypher. Dieses Verhalten wird bei den weiteren Grundanfragen ebenfalls erwartet, da die Core API sehr nah an den Kernfunktionen von Neo4j arbeitet. \newline
+Die Anfragen wurden in Cypher für RELATIONSHIP2 mehr als 1000 mal schneller bearbeitet. Dies deutet auf eine gute Skalierbarkeit des Systems hin, da die notwendigen Berechnungen beinahe linear zu der Anzahl der zu betrachtenden Relationen ansteigen. 
 \FloatBarrier  
 \begin{table}[h]
 \centering
@@ -31,16 +38,20 @@ Die Anfragen wurden in Cypher für RELATIONSHIP2 mehr als 1000 mal schneller bea
 \label{tab:Query1_1}
 \end{table}
 \FloatBarrier
- Die beobachteten Zeiten für Grundanfrage 1.2 in Tabelle \ref{tab:Query1_2} sind im Vergleich zu den Zeiten der anderen Grundanfragen sehr gering. Durch die geringe Anzahl von 50004 Knoten und eine einfache Abbruchbedingung entstehen die geringen Zeiten. \newline Entgegen der Erwartung entsteht ein zeitlicher Unterschied, wenn sich die Bedingung im Where-Prädikat befindet. Die beobachtet Ausführungszeit ist 3-mal schneller, als bei der Anfrage mit der Bedingung im Match-Prädikat. Da der Cypher Query Optimizer alle Bedingungen des Match-Prädikates in ein Where verschiebt, wird hier gezeigt, dass diese Optimierungsschritt selber eine gewisse Berechnungszeit in Anspruch nimmt. Für ein optimalen Gebrauch von Neo4j sollten dementsprechend alle Bedingungen direkt in einem Where-Prädikat formuliert werden, dies wird auch von den Entwicklern empfohlen \footnote{https://neo4j.com/blog/tuning-cypher-queries/ (07.08.19)}. \newline
-In diesem Fall wird die Traversal API nicht genutzt, sondern nur die Core API. Eine Kernfunktion namens 'findNodes()' übernimmt die Suche nach einem Knoten mit angegebenen Eigenschaften, ohne dass der Nutzer das Vorgehen spezifizieren muss.  
+ Die beobachteten Zeiten für Grundanfrage 1.2
+ \begin{Verbatim}[frame=single]
+ MATCH (p:Person {name:'Person613'}) return p
+ \end{Verbatim} 
+  in Tabelle \ref{tab:Query1_2} sind im Vergleich zu den Zeiten der anderen Grundanfragen sehr gering. Durch die geringe Anzahl von 50004 Knoten und die einfache Abbruchbedingung entstehen die geringen Zeiten. \newline Entgegen der Erwartung entsteht ein zeitlicher Unterschied, wenn sich die Bedingung im Where-Prädikat statt im Match-Prädikat 	befindet. Die beobachtet Ausführungszeit bei der Anfrage mit der Bedingung in dem Where-Prädikat ist 3-mal schneller, als bei der Anfrage mit der Bedingung im Match-Prädikat. Da der Cypher Query Optimizer alle Bedingungen des Match-Prädikates in ein Where verschiebt, wird hier gezeigt, dass dieser Optimierungsschritt selber eine gewisse Berechnungszeit in Anspruch nimmt. Für ein optimalen Gebrauch von Neo4j sollten dementsprechend alle Bedingungen direkt in einem Where-Prädikat formuliert werden, dies wird auch von den Entwicklern empfohlen \footnote{https://neo4j.com/blog/tuning-cypher-queries/ (07.08.19)}. \newline
+In diesem Fall wird die Traversal API nicht genutzt, sondern nur die Core API. Eine Kernfunktion namens $findNodes()$ übernimmt die Suche nach einem Knoten mit angegebenen Eigenschaften, ohne dass der Nutzer das Vorgehen spezifizieren muss.  
 \FloatBarrier
 \begin{table}[h]
 	\centering
 		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
 			\hline
-			Ohne Where& Mit Where  &Core API\\
+			Ohne Where& Mit Where  \\
 			\hline
-			1,69   &  0,54  &0,29 \\
+			1,69   &  0,54   \\
 			\hline
 		\end{tabular}
 		\FloatBarrier
@@ -48,7 +59,15 @@ In diesem Fall wird die Traversal API nicht genutzt, sondern nur die Core API. E
 		\label{tab:Query1_2}
 \end{table}
 \FloatBarrier
-Für Grundanfrage 1.3 wurde beobachtet, dass die semantisch Äquivalente Anfrage ca. 35\% schneller bearbeitet wird. Wie in den Erwartungen bereits beschrieben, ist dies auf die effiziente Implementierung des IN-Operators zurückzuführen. Da die schnellere, äquivalente Anfrage diesen Operator verwendet.
+Für Grundanfrage 1.3
+\begin{Verbatim}[frame=single]
+MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1) 
+WITH COLLECT(n1) as n 
+MATCH (Y:Person{name: 'Person2'})-[:Relationship3]->(n1) 
+WHERE n1 in n
+RETURN COUNT(DISTINCT(n1))
+\end{Verbatim} 
+ wurde beobachtet, dass die semantisch äquivalente Anfrage ca. 35\% schneller bearbeitet wird. Dies ist auf die effiziente Implementierung des IN-Operators zurückzuführen. Da die schnellere, äquivalente Anfrage diesen Operator verwendet.
 Die genauen Ergebnisse befinden sich in Tabelle	\ref{tab:Query1_3}.
 \begin{table}[h]
 	\centering
@@ -63,8 +82,14 @@ Die genauen Ergebnisse befinden sich in Tabelle	\ref{tab:Query1_3}.
 		\label{tab:Query1_3}
 \end{table}
 \FloatBarrier
-In der Grundanfrage 2.1 wurden bei der Traversierung bis zur Tiefe 2 ausgehend von Person1 alle Knoten des Graphen erreicht. Wie Tabelle \ref{tab:Query2_1} zeigt, besteht zwischen der Traversierung bis zur Tiefe 2 und Tiefe 3  eine minimaler Unterschied von durchschnittlich ca. 5,6\%. Entgegen der Vermutung besteht weder ein quadratischer Unterschied bei der Anfrage in Cypher, noch ein linearer Unterschied bei den Anfragen in mit der Core API. \newline 
-Es wurde bestätigt, dass die Anfrage mit Tiefensuche signifikant schneller als die Anfrage mit Breitensuche ausgeführt wird, in diesem Fall ist die Anfrage für die Tiefe 2 ca. 84\% schneller. Dies wurde in Kapitel 3 durch den gegebenen Eigenschaften des Datensatzes begründet. 
+\subsection{Ergebnisse des zweiten Testlaufes}
+In der Grundanfrage 2.1
+\begin{Verbatim}[frame=single]
+MATCH(p:Person{name:'Person1'})-[:RELATIONSHIP3*2]->(p1:Person) 
+RETURN COUNT(DISTINCT(p1))
+\end{Verbatim}
+ wurden bei der Traversierung bis zur Tiefe 2 ausgehend von Person1 99 \% aller Knoten des Graphen erreicht. Wie Tabelle \ref{tab:Query2_1} zeigt, besteht zwischen der Traversierung bis zur Tiefe 2 und Tiefe 3  eine minimaler zeitlicher Unterschied von durchschnittlich ca. 5,6\%. Wie erwartet verändert sich die Berechnungszeit nur minimal bei der Breiten- und Tiefensuche, wenn die Tiefe um 1 erhöht wird \newline 
+Es wurde bestätigt, dass die Anfrage mit Tiefensuche signifikant schneller als die Anfrage mit Breitensuche ausgeführt wird, in diesem Fall ist die Anfrage für die Tiefe 2 ca. 84\% schneller. Dies wurde in Kapitel 3 durch das Verhältnis der Breite zur Tiefe begründet. 
 \FloatBarrier
 \begin{table}[h]
 \centering
@@ -80,7 +105,14 @@ Es wurde bestätigt, dass die Anfrage mit Tiefensuche signifikant schneller als 
 		\label{tab:Query2_1}
 \end{table}
 \FloatBarrier
-Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2 und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ 'Set' gebildet und durch den Aufruf der Funktion "removeAll()"  wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem 'WHERE NOT' Ausdruck  in Java und besitzt offensichtlich eine bessere Performanz. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
+Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zwischen Grundanfrage 2.2
+\begin{Verbatim}[frame=single]
+MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
+-[:RELATIONSHIP3]->(p2)
+WHERE NOT (p)-[:RELATIONSHIP3]->(p2) 
+RETURN COUNT(DISTINCT(p2))
+\end{Verbatim} 
+ und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage wurden 2 Ergebnismengen vom Java-typ $Set$ gebildet und durch den Aufruf der Funktion $removeAll()$  wurden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem 'WHERE NOT' Ausdruck  in Java und besitzt eine bessere Performanz. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohen Ausführungszeit und auch später beschriebene Anfragen besitzen meist eine deutlich geringere Zeit.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -95,8 +127,14 @@ Wie Tabelle \ref{tab:Query2_2} zeigt, besteht kein  signifikanter Unterschied zw
 		\label{tab:Query2_2}
 \end{table}
 \FloatBarrier
-Der kürzeste Pfade, welcher in Grundanfrage 2.3 untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, werden bei einer Pfadlänge von 2 mit hoher Wahrscheinlichkeit alle Knoten erreicht. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als alle anderen Grundanfragen außer Grundanfrage 1.2. Erstmalig ist die Anfrage schneller als die alternative Formulierung in der Core API. Der relative Unterschied beträgt 37 \% und  der absolute Unterschied 3,1 ms. Durch die geringe absolute Differenz ist es nicht garantiert, dass der kürzeste Pfad mit der Verwendung von Cypher immer die schnellsten Schnittstelle darstellt. \newline
-Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca.2,3 Stunden. Diese Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und besitzt viele Berechnungsschritten, die durch den Algorithmus entfallen würden.
+Der kürzeste Pfade, welcher in Grundanfrage 2.3
+\begin{Verbatim}[frame=single]
+MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
+path=shortestPath((p)-[:RELATIONSHIP4*..3]->(p1)) 
+RETURN LENGTH(path)
+\end{Verbatim} 
+ untersucht wurde, besitzt die Länge 2. Wie die Grundanfrage 2.1 zeigt, wurden bei einer Pfadlänge von 2 die meisten Knoten ausgehend von Person1 erreicht. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als alle anderen Grundanfragen außer Grundanfrage 1.2. Erstmalig ist die Anfrage schneller als die alternative Formulierung in der Core API. Der relative Unterschied beträgt 37 \% und  der absolute Unterschied 3,1 ms. Durch die geringe absolute Differenz ist es nicht garantiert, dass der kürzeste Pfad mit der Verwendung von Cypher immer die schnellsten Schnittstelle darstellt. \newline
+Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Diese Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und besitzt viele Berechnungsschritten, die durch den Algorithmus entfallen würden.
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
@@ -111,8 +149,9 @@ Die äquivalent Formulierung in Cypher besitzt die höchste beobachtete Ausführ
 		\label{tab:Query2_3}
 \end{table}
 \FloatBarrier
-Die Ergebnisse zur Grundanfrage 2.4 werden in Tabelle \ref{tab:Query2_4} dargestellt. Die einseitige Traversierung mit Breitensuche ist ca. 4,8\% langsamer als der gleiche Algorithmus bei einer bidirektionalen Traversierung. Beim Tiefensuche beträgt der Unterschied ca. 13 \%. In beiden Fällen sind die einseitigen Traversierungen wie erwartet langsamer als die bidirektionale Alternativen. Entgegen der Erwartungen ist die einseitige Anfrage mit Tiefensuche nicht die zweitschnellste Anfrage.  
-Die zeitlichen Unterschiede zwischen den Anfragen sind relativ gering und das Verhalten bedarf ein weiteren Untersuchung, da signifikante Unterschiede wie in \ref{tab:Query2_1} erwartet wurden. Valide Aussagen über eine optimale Traversierung für diesem Graphen lassen sich bei diesen Unterschiede nicht treffen.    
+Die Ergebnisse der Traversierung des gesamten Graphen in Grundanfrage 2.4 werden in Tabelle \ref{tab:Query2_4} dargestellt. Die einseitige Traversierung mit Breitensuche ist ca. 4,8\% langsamer als der gleiche Algorithmus bei einer bidirektionalen Traversierung. Bei der Tiefensuche beträgt der Unterschied ca. 13\%. In beiden Fällen sind die einseitigen Traversierungen wie erwartet langsamer als die bidirektionale Alternativen. Die bidirektionale Suche ist, wie in der Hypothese beschrieben, die schnellste beobachtete Traversierung für den Graphen.  
+Die zeitlichen Unterschiede zwischen den Anfragen sind relativ gering und das Verhalten bedarf einer weiteren Untersuchung, da signifikante Unterschiede wie in \ref{tab:Query2_1} erwartet wurden. Valide Aussagen über eine optimale Traversierung für diesem Graphen lassen sich bei diesen Unterschiede nicht treffen. \newline
+Trotz einer semantischen Äquivalenz von Grundanfrage 2.4 mit der Grundanfrage 2.1, bei der alle Knoten erreicht werden, ist eine signifikant höhere Ausführungszeit zu beobachten. Dieses Verhalten lässt sich nur mit dem Fehler einer frühzeitigen Abbruchbedingung erklären.    
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
@@ -127,6 +166,7 @@ Die zeitlichen Unterschiede zwischen den Anfragen sind relativ gering und das Ve
 	\label{tab:Query2_4}
 \end{table}
 \FloatBarrier
+\subsection{Ergebnisse des dritten Testlaufes}
 TODO
 \FloatBarrier
 \begin{table}[h]
@@ -141,20 +181,24 @@ TODO
 	Grundanfrage 1.2  & 0,29 & 0,54 & 0,17   \\
 	Grundanfrage 1.3  & 3,2  & 8,66& 83.955   \\
 	Grundanfrage 2.1 (Tiefe 2)  & 100 & 224.431 & 72.092   \\
-	Grundanfrage 2.1 (Tiefe 3) & 65  & 234.132& TODO   \\
+	Grundanfrage 2.1 (Tiefe 3) & 65  & 234.132& k. A.   \\
 	Grundanfrage 2.2  & 1609 & 4.740.646 & TODO   \\
 	Grundanfrage 2.3  & 11,5 & 8,4  & TODO   \\
 		\hline
 	\end{tabular}
-	\caption{Grundanfrage 2.1}
+	\caption{Dritter Testlauf}
 \end{table}
 \FloatBarrier
 \section{Anwendungsszenario}
 TODO
 \section{Limitierungen und zukünftige Arbeit}
-Die durchgeführte Evaluation hat nur eine Referenzdaten mit der OrientDB genutzt. Dies ist keine reine GDB und ist auf ein allgemeines Anwendungszenario spezialisiert. Für eine näherer Einordnung der Performanz von Neoj4 ist ein Vergleich mit einer reinen GDB wie beispielsweise der Sparksee Database\footnote{http://www.sparsity-technologies.com/ (28.08.19)} sinnvoll. Diese Datenbank konnte in dieser Evaluation durch Kommunikationsprobleme mit Sparsity-technologies nicht verwendet werden. Durch einen Vergleich mit der Sparksee Database könnte die Performanz von zahlreichen Graphalgorithmen   wie zum Beispiel Zentralitäts-Algorithmen überprüft werden. Dies ist mit OrientDB nicht direkt möglich, da keine genaue Implementierung der von Neo4j unterstützen Graphalgorithmen im vollen Ausmaß in der OrientDB gegeben ist. \newline 
-Ein Vergleich zwischen Neo4j und einer relationalen Datenbank wie in \parencite{vicknair2010comparison} beschrieben, ist für eine weitere Beschreibung der Vor- und Nachteile einer Graphdatenbank sinnvoll. Dieser Vergleich wurde aus zeitlichen Gründen nicht vollzogen. OrientDB als Referenzdatenbank hat einen Vergleich zu einer anderen noSQL-Datenbank dargestellt und so ein erste Einschätzung zu der Performanz von Neo4j ermöglicht.      
+Die durchgeführte Evaluation hat mit OrientDB nur eine Referenzdatenbank genutzt. Dies ist keine reine GDB und unterstützt weitere Typen von Datenbanken. Für eine näherer Einordnung der Performanz von Neoj4 ist ein Vergleich mit einer reinen GDB wie beispielsweise der Sparksee sinnvoll Database\footnote{http://www.sparsity-technologies.com/ (28.08.19)}. Diese Datenbank konnte in dieser Evaluation auf Grund von Kommunikationsprobleme mit Sparsity-technologies nicht verwendet werden. Durch einen Vergleich mit der Sparksee Database könnte die Performanz von zahlreichen Graphalgorithmen   wie zum Beispiel Zentralitäts-Algorithmen überprüft werden. Dies ist mit OrientDB nicht direkt möglich, da keine vergleichbare Implementierung der von Neo4j unterstützen Graphalgorithmen im vollen Ausmaß in der OrientDB gegeben ist. \newline 
+Ein Vergleich zwischen Neo4j und einer relationalen Datenbank, wie in \parencite{vicknair2010comparison} beschrieben, ist für eine weitere Beschreibung der Vor- und Nachteile einer Graphdatenbank sinnvoll. Dieser Vergleich wurde aus zeitlichen Gründen nicht vollzogen. Die Referenz zur OrientDB hat einen Vergleich zu einer anderen noSQL-Datenbank dargestellt und so ein erste Einschätzung zu der Performanz von Neo4j ermöglicht. \newline
+Ein weitere Aspekt der betrachtet werden kann, ist das Ausführen von Neo4j im Server Modus und auf mehreren Geräten verteilt. Durch diesen Aspekt können die ACID und CAP Eigenschaften genau untersucht werden und die Grenzen einer verteilten Neo4j-Datenbank getestet werden. Zudem kann ein Vergleich zwischen der Datenbank im eingebetteten Modus und dem Server Modus durchgeführt werden. So können genaue Vor- und Nachteile und eine Anwendungsszenario spezifiziert werden. \newline
+Eine kleinerer nicht betrachteter Aspekt ist der temporale Aspekt von Neo4j. Der vorgestellte Datensatz besitzt Attribute vom Typen Daten und stellt so eine temporale Datenbank dar, doch es fehlt ein Testlauf mit Anfragen zu diesem Attribute. Eine Allgemeine Betrachtung des temporalen Verhalten der Datenbank ist für eine genauere Einordnung von Neo4j im Vergleich zu anderen temporalen Graphdatenbanken sinnvoll. 
 \section{Fazit}
-TODO
+Neo4j unterstützt mit den Java-Standardtypen und zeitlichen Typen wie 'Date', eine Vielzahl von Datentypen, welche für die Modellierungen von Daten notwendig ist. Der temporale Eigenschaft der Datenbank wird durch zahlreiche unterstützte Datentypen wie 'Time', 'LocalTime' oder 'DateTime' in Neo4j gewährleistet \footnote{https://neo4j.com/docs/cypher-manual/current/syntax/values/ (28.08.19)}. Durch die Zurverfügungstellung der Anwendungen 'Neo4j Desktop' und 'Neo4j Browser' und einer dazu gegebenen Anfragesprache, werden die benötigten Kenntnisse zur Bedienung des System minimiert. Für eine spezifischeren Gebrauch der Datenbank, werden mehrere Programmiersprachen unterstützt. Durch diese Schnittstellen ist es mögliche, das System auf viele Weisen zu nutzten und eine große Zielgruppe kann das System für viele Szenarien nutzen. \newline
+Testlauf 1 und 2 zeigen, dass der Gebrauch der Java Core API in allen Fällen zu einer signifikant besseren Performanz führt. Mit Verwendung der Traversal API besitzt der Nutzer eine flexible Möglichkeit die Performanz seiner Anfragen zu beeinflussen. Zum Beispiel ist es möglich zwischen Breiten- und Tiefensuche zu wählen. Die Ergebnisse von Grundanfrage 2.4 werden für dieses Fazit nicht berücksichtigt. Die am schnellsten bearbeiteten Anfragen besitzen keine gemeinsame der vorgestellten Kategorien aus Absatz \ref{Kategorien}. Die am langsamsten bearbeiteten Anfragen besitzt jeweils verschiedene Kategorien. Dementsprechend lässt sich keine Bezug von Anfragen-Kategorie und Performanz in Neo4j treffen. \newline
+Wie Tabelle \ref{tab:Query1_2} und Tabelle \ref{tab:Query2_3} zeigen, können semantisch gleiche Anfragen in Cypher Unterschiede in ihrer Performanz aufzeigen. Dieses Verhalten ist in den APIs ebenfalls zu beobachten. Das System lässt sich durch eine hohe Anzahl von Schnittstellen leicht benutzten, aber das System effektiv zu nutzen und eine Anfrage effizient aufführen zu lassen, ist nicht trivial und erfordert technologische Kenntnisse. Durch Hinweise von Neo4j Inc. werden einige Möglichkeiten für das effiziente Ausführen gegeben \footnote{https://neo4j.com/blog/tuning-cypher-queries/ (07.08.19)}. Diese Hinweise befassen sich teilweise mit dem Umformulieren der Anfragen, um das volle Potenzial des Optimierers nutzen zu können. Wie in den Ergebnissen zur Grundanfrage 1.2 erläutert, deutet dies auf einen unperformanten Optimierer hin. 
 \section{Ackowledgment}
 Danke an Lasse und Melf!
