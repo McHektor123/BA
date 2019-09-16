@@ -133,18 +133,18 @@ private Traverser getEverytingBreathFirst(final Node person)
 	return td.traverse( person );
 }
 \end{Verbatim}
-Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfangsknoten über die Relation FRIEND bis zur Tiefe 2.  Beim Traversieren kann der  Nutzer zwischen 3 grundsätzlichen Vorgehen wählen: Breitensuche und Tiefensuche und bidirektionale Traversierung, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. In  Abbildung \ref{fig:Search} werden durch die blauen Linien die Reihenfolgen der beiden Suchalgorithmen dargestellt.
+Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfangsknoten über die Relation FRIEND bis zur Tiefe 2.  Beim Traversieren kann der  Nutzer zwischen 3 grundsätzlichen Vorgehen wählen: Breitensuche und Tiefensuche und bidirektionale Traversierung, diese haben abhängig von der Struktur des Graphen eine unterschiedliche Laufzeit \parencite{vukotic2015neo4j}. In  Abbildung \ref{fig:Search} werden durch die blauen Linien die Reihenfolgen der beiden Suchalgorithmen dargestellt. \newline
+\textbf {Breadth-First-Search(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
+\textbf {Depth-First-Search(Tiefen-Suche)}: Zunächst wird ein Knoten der Tiefe 1 gewählt, ausgehend von diesem Knoten wird ein nächsttieferer Knoten, der noch nicht betrachtet wurden, gewählt. Dies wird so lange wiederholt bis keine neuen nächsttieferen Knoten hinzugefügt werden können, danach so lange rückwärts gegangen bis ein Knoten zu erreichen ist, der noch nicht betrachtet wurde. \newline
+\textbf {Bidirektionale Traversierung}: Es werden 2 Knoten gewählt und von jedem Knoten wird eine Traversierung  mit Tiefen- oder Breitensuche gestartet, diese muss nicht über die gleichen Relationen verlaufen oder im selben Schrittintervall vollzogen werden. Bei dem Treffen der beiden Traversierungs-Pfade wird von dem Nutzer ein Verhalten definiert.
+\FloatBarrier
 \begin{figure}[!htb]
 	\centering
 	\includegraphics [width=14cm, height=6cm]{Figures/search}
 	\caption[Breiten- und Tiefensuche]{ aus http://mishadoff.com/blog/dfs-on-binary-tree-array/.}
 	\label{fig:Search}
-\end{figure} \newline
-\textbf {Breadth-First-Search(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
-\textbf {Depth-First-Search(Tiefen-Suche)}: Gegeben sei die maximale Distanz n, es wird zunächst ein Knoten mit der minimalen Distanz m betrachtet und ausgehend von diesem Knoten wird ein Knoten mit der Distanz m+1 ausgewählt. Dies wird solange wiederholt bis die aktuelle Distanz n-1 beträgt. Ausgehend von diesem Knoten werden alle Nachbarn betrachtet. Wenn alle Nachbarn betrachtet wurden, wird von Startknoten ein neuer Knoten mit der Distanz n-2 gewählt. Diese Suche wird gewählt, wenn der Nutzer kein Suchalgorithmus spezifiziert wurde. \newline
-\textbf {Bidirektionale Traversierung}: Es werden 2 Knoten gewählt und von jedem Knoten wird eine Traversierung  mit Tiefen- oder Breitensuche gestartet, diese muss nicht über die gleichen Relationen verlaufen oder im selben Schrittintervall vollzogen werden. Bei dem Treffen der beiden Traversierungs-Pfade wird von dem Nutzer ein Verhalten definiert.
-\newline
-\newline
+\end{figure} 
+\FloatBarrier
 Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann die ausgewählte Methode eine erheblichen Performanzunterschied  hervorbringen \parencite{vukotic2015neo4j}. 
 
 \subsection{Anfragebearbeitung und Planoptimierung}
