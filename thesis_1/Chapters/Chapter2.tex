@@ -77,7 +77,7 @@ Diese Anfrage ermittelt alle gemeinsamen Nachbarn von Person1 und Person2, so is
 Für alle Anfragen, die mit der Traversal API geschrieben wurden, wird die Breitensuche für die Traversierungen verwendet. 
 \subsection{Hypothesen zum ersten Testlauf}
 Im Folgenden werden Hypothesen über das Verhalten der Grundanfragen zum ersten Testlauf aufgestellt. In der Auswertung werden diese Hypothesen überprüft. \newline \newline
-Für \textbf{Grundanfrage 1.1.1} entstehen 3 Aspekte, welche betrachtet werden.
+Für die \textbf{Grundanfragen 1.1.1-1.1.3} entstehen 3 Aspekte, welche betrachtet werden.
 \begin{enumerate}
 \item Die Performanzunterschiede zwischen den Grundanfragen 1.1.1-1.1.3
 \item Die Performanzunterschiede zwischen Cypher und den APIs
@@ -155,11 +155,28 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 RETURN LENGTH(path)
 ORDER BY length(path) asc LIMIT 1
 \end{Verbatim}
- \textbf{Grundanfrage 2.4} wird ausschließlich in der Core API formuliert. \newline
-Die Anfrage traversiert solange über den Graphen, bis jeder Knoten einmal betrachtet wurde. Diese Anfrage wird mit der Breitensuche und Tiefensuche formuliert und wird zusätzlich durch die bidirektionale Traversierung mit Breiten - und Tiefensuche bearbeitet. Es ergeben sich 4 Anfrage. 
+ \textbf{Grundanfragen  2.4.1 - 2.4.4} wird ausschließlich in der Core API formuliert. \newline
+Die Anfrage traversiert solange über den Graphen, bis jeder Knoten einmal betrachtet wurde. Diese Anfrage wird mit der Breitensuche und Tiefensuche formuliert und wird zusätzlich durch die bidirektionale Traversierung mit Breiten - und Tiefensuche bearbeitet. Es ergeben sich die Anfragen 2.4.1 bis 2.4.4. 
+\FloatBarrier
+\begin{table}[h]
+	\centering
+	\begin{tabular}{ |p{5cm}||p{5cm}|p{3cm}  }
+		\hline
+		Anfrage& Name\\
+		\hline
+		Grundanfrage 2.4.1 &  Einseitig Breitensuche\\
+		Grundanfrage 2.4.2 &  Einseitig - Tiefensuche \\
+		Grundanfrage 2.4.3 &  Bidirektional - Breitensuche\\
+		Grundanfrage 2.4.4 &  Tiefensuche - Tiefensuche\\
+		\hline
+	\end{tabular}
+	\caption{Grundanfragen 2.4.1 und 2.4.4}
+	\label{tab:Intro_Query2_4}
+\end{table}
+\FloatBarrier
 \subsection{Hypothesen zum zweiten Testlauf}
 Es werden Hypothesen zu den komplexeren Grundanfrage aus dem zweiten Testlauf vorgestellt. Die Hypothesen werden ebenfalls in der Auswertung überprüft. \newline \newline
-Für \textbf{Grundanfrage 2.1.1} werden folgende Aspekte betrachet: 
+Für die \textbf{Grundanfragen 2.1.1 und 2.1.2} werden folgende Aspekte betrachet: 
 \begin{enumerate}
 	\item Ein Unterschied zwischen der Traversierung zur Tiefen 2 und 3 
 	\item Die Performanzunterschiede zwischen der Breitensuche und Tiefensuche
@@ -182,15 +199,15 @@ Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet:
 \end{enumerate}
 Zum 1. Aspekt: Durch die Annahme, dass meisten Personen über RELATIONSHIP3/ RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.1.1 zusammenhängen und es wird keine höhere Ausführungszeit als in Grundanfrage 2.1.1 erwartet. \newline
 Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wurde, wird die Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. Die alternative Formulierung ist ein naiver Ansatz mit vielen aufwendigen Berechnungen, welcher eine große Ergebnismenge berechnet, die zu 1 Ergebnis minimiert wird. \newline \newline
-Für \textbf{Grundanfrage 2.4} werden folgende Aspekte betrachtet:
+Für die \textbf{Grundanfragen 2.4.1-2.4.4} werden folgende Aspekte betrachtet:
 \begin{enumerate}
 	\item Der Unterschied zwischen der bidirektionalen Suche und einseitiger Suche mit dem selben Algorithmus
-	\item Die relativen Berechnungszeit der 4 Traversierung-Methoden zueinander
+	\item Die relativen Berechnungszeit der 4 Traversierungs-Methoden zueinander
 \end{enumerate}
-Zum 1.Aspekt: Die bidirektionale Suche wird schneller ausgeführt, da durch 2 parallele Pfade  weniger Berechnungsschritte zum Suchen eines Pfades, der  durch den gesamten Graphen verläuft, benötigt werden. \newline 
-Zum 2. Aspekt: Da durch den gesamten Graphen ohne Abbruchbedingung traversiert wird, besitzen die beiden Suchalgorithmen die gleiche Komplexität. Beide Algorithmen werden dementsprechend bei einer einseitigen Ausführung die gleiche Ausführungszeit besitzen. Bei der bidirektionalen Traversierung wird vermutet, das die Tiefensuche schneller ausgeführt wird und insgesamt die schnellste Traversierung darstellen wird. Darauf wird die bidirektionale Breitensuche folgen und danach die beiden einseitigen Traversierungen. 
+Zum 1.Aspekt: Die bidirektionale Suche wird schneller ausgeführt, da potenziell durch 2 parallele Pfade  weniger Berechnungsschritte zum Suchen eines Pfades, der  durch den gesamten Graphen verläuft, benötigt werden. \newline 
+Zum 2. Aspekt: Da durch den gesamten Graphen ohne Abbruchbedingung traversiert wird, besitzen die beiden Suchalgorithmen die gleiche Komplexität. Beide Algorithmen werden dementsprechend bei einer einseitigen Ausführung die gleiche Ausführungszeit besitzen. Bei der bidirektionalen Traversierung wird vermutet, das Grundanfrage 2.4.4 mit der Tiefensuche schneller ausgeführt wird und insgesamt die schnellste Traversierung darstellen wird. Darauf wird die Grundanfrage 2.4.3 folgen und danach die beiden einseitigen Traversierungen. 
 \section{Dritter Testlauf}
-In dem dritten Testlauf werden alle Grundanfragen außer Grundanfrage 2.4 auf dem Datenbank Managment System OrientDB ausgeführt\footnote{https://orientdb.com/}. Die daraus resultierenden Werte dienen als Referenz für eine bessere Performanzeinschätzung. Es werden die schnellsten Laufzeiten der Grundanfragen mit den Bearbeitungszeiten der Anfragen in OrientDB verglichen. In OrientDB werden alle Anfragen in SQL formuliert und evaluiert. Für diesen Testlauf werden keine Hypothesen aufgestellt, die Performanzunterschiede von viele Faktoren wie interner Implementierungen abhängig sind. 
+In dem dritten Testlauf werden alle Grundanfragen außer die Grundanfragen 2.4.3 und 2.4.4 auf dem Datenbank Managment System OrientDB ausgeführt\footnote{https://orientdb.com/}. Da OrientDB keine bidirektionale Traversierung zur Verfügung stellt, konnten die Grundanfragen 2.4.3 und 2.4.4 nicht ausgeführt werden. Die benötigten Bearbeitungszeiten für die Anfragen dienen als Referenz für eine bessere Performanzeinschätzung. In OrientDB werden alle Anfragen in SQL formuliert und evaluiert. Für diesen Testlauf werden keine Hypothesen aufgestellt, da die Performanzunterschiede von viele Faktoren wie interner Implementierungen abhängig sind. 
 \subsection{OrientDB}
 OrientDB ist eine noSQL,  Multi-Model Datenbank von dem Entwickler OrientDB Ltd. Die Multi-Model Eigenschaft beschreibt die Fähigkeit, Daten als Dokumente, Graph, Schlüssel/Wert-Modell oder als Objekte zu modellieren\footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html (21.07.19)}. Die Daten werden mittels API für eine unterstützte Sprache oder mit den Anfragensprachen Gremlin oder SQL manipuliert. Als direktes Eingabe-Interface für Gremlin und SQL steht das OrientDB Studio für den Browser zur Verfügung.  Dieses DBMS ist der Community- und der Enterprise-Version verfügbar. Die Enterprise-Version verfügt über zusätzliche Features, die das Überwachen der Anfragen ermöglicht bzw. erleichtert. Da die Enterprise-Version über keine Features verfügt ,die nicht auf der Community-Version laufen, die Einfluss auf die  Performanz haben, wurde für dieses Experiment die Community Version gewählt. Die verwendete Version von OrientDB ist V 3.0.19. 
 \subsection{Unterschiede von OrientDB und Neo4j}

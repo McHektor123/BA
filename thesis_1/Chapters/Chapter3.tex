@@ -135,7 +135,7 @@ Es wurde bestätigt, dass die Anfrage mit Tiefensuche signifikant schneller als 
 			Tiefe 3&    234132  & 1278   & 89\\
 			\hline
 		\end{tabular}
-		\caption{Grundanfrage 2.1.1}
+		\caption{Grundanfragen 2.1.1 und 2.1.2}
 		\label{tab:Query2_1}
 \end{table}
 \FloatBarrier
@@ -152,7 +152,7 @@ RETURN COUNT(DISTINCT(p2))
 	\centering
 		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
 			\hline
-			Grundanfrage & Äquivalent&Core API\\
+			Grundanfrage 2.2 & Äquivalent&Core API\\
 			\hline
 			4.740.646    & 4.753.414 &  1.609\\
 			\hline
@@ -174,7 +174,7 @@ Die äquivalente Formulierung in Cypher besitzt die höchste beobachtete Ausfüh
 	\centering
 		\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
 			\hline
-			Grundanfrage & Äquivalent&Core API\\
+			Grundanfrage 2.3 & Äquivalent&Core API\\
 			\hline
 			8,4    & 8.370.298 &  11,5\\
 			\hline
@@ -189,14 +189,20 @@ Trotz einer semantischen Äquivalenz von Grundanfrage 2.4 mit der Grundanfrage 2
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
-	\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}|  }
+	\begin{tabular}{ |p{5cm}||p{3cm}|p{3cm}|p{3cm}|  }
 		\hline
-		Breitensuche & Tiefensuche&bidirektionale Breitensuche &bidirektional Tiefensuche\\
+		Anfrage & Zeit\\
 		\hline
-		 31050 & 31020    &  29558  &  26982\\
+		Grundanfrage 2.4.1 & 31.050\\
+		\hline
+		 Grundanfrage 2.4.2 & 31.020  \\
+		\hline
+		Grundanfrage 2.4.3 &  29.558  \\
+		\hline
+		Grundanfrage 2.4.4 &  26.982\\
 		\hline
 	\end{tabular}
-	\caption{Grundanfrage 2.4}
+	\caption{Grundanfragen 2.4.1-2.4.4}
 	\label{tab:Query2_4}
 \end{table}
 \FloatBarrier
@@ -219,6 +225,8 @@ TODO
 	Grundanfrage 2.1.2& 234.132& k. A.  & 65    \\
 	Grundanfrage 2.2& 4.740.646 & TODO    & 1609  \\
 	Grundanfrage 2.3& 8,4  & TODO   & 11,5   \\
+	Grundanfrage 2.4.1& k.A. & TODO    & 31.050  \\
+	Grundanfrage 2.4.2& k.A.  & TODO   & 31.020   \\
 		\hline
 	\end{tabular}
 	\caption{Dritter Testlauf}
