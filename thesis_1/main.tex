@@ -40,7 +40,10 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{caption}
 \usepackage{fancyvrb}
 \usepackage{enumitem}
+\usepackage{capt-of}
 
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.8}
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 \usepackage{hyperref}
@@ -71,7 +74,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4J} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4j} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Prof. Dr. Ralf Möller \textsc{Smith}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Bachelor of Science} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -103,21 +106,21 @@ headsepline, % Uncomment to get a line under the header
 \begin{titlepage}
 
 	\Large
-	\title{Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4J }
+	\title{Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4j }
 	\includegraphics[width=8cm]{Figures/ifis_logo.png}
 	\vskip 44pt
-		{\LARGE Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4J \par}
+		 \noindent {\LARGE Evaluierung von temporalen Graphdatenbanken am Beispiel von Neo4j \par}
 		\vskip 20pt
-		\textbf{Bachelorarbeit}
+	\noindent	\textbf{Bachelorarbeit}
 		\vskip 20pt
-		im Rahmen des Studiengangs \\
+	 \noindent	im Rahmen des Studiengangs \\
 		\textbf{Medieninformatik} \\
 		der Universität zu Lübeck
 		\vskip 20pt
-		vorgelegt von \\
+		\noindent vorgelegt von \\
 		\textbf{Ove Folger}
 		\vskip 20pt
-		ausgegeben und betreut von \\
+	\noindent	ausgegeben und betreut von \\
 		\textbf{Prof. Dr. Ralf Möller}
 		\vfill
 		Lübeck, den \today
@@ -130,7 +133,7 @@ headsepline, % Uncomment to get a line under the header
 %	DECLARATION PAGE
 %----------------------------------------------------------------------------------------
 \begin{declaration}
-	\addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+
 	\bigskip\noindent Hiermit erkl{\"a}re ich an Eides statt, dass
 	ich die vorliegende Arbeit selbst\-st{\"a}n\-dig verfasst und keine
 	anderen als die angegebenen Quellen und Hilfsmittel verwendet habe.\par
@@ -148,12 +151,16 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-In Kapitel 1 werden die Datenmodelle der relationale und NoSQL Datenbanken vorgestellt. Als Untergruppe der NoSQL Datenbanken werden die Graphdatenbanken erläutert, zu welcher das vorgestellte System Neo4j gehört. \newline
- In Kapitel 2 , wird eine Definition für die Datenstruktur Graph dargelegt und es wird beschrieben wie diese in Neo4j verwendet wird. Es wird ein Überblick von den zur Verfügung stehenden Features und die grundlegende Architektur gegeben. Anschließend werden die einzelnen Bestandteile der Architektur, die zusammen das Datenbank Management System bilden, genauer beschrieben. Abschließend wird auf die Modi eingegangen, in den Neo4j bedient werden kann. \newline
-Das Kapitel 3  beschreibt den verwendeten Datensatz und stellt eine Kategorisierung für Anfragen vor. Aufbauend auf diesen Kategorien, werden 3 Testläufe vorgestellt, welche aus mehreren Anfragen bestehen. Es werden verschiedene Aspekte bei den Anfragen betrachtet und es werden Vermutungen über das Verhalten der Anfragen aufgestellt.  \newline
-Für Kapitel 4 werden alle Anfrage aus Kapitel 3 ausgeführt und die Ergebnisse werden tabellarisch aufgeführt. Mit Hilfe der Ergebnisse folgt eine Überprüfung der aus Kapitel 3 aufgestellten Hypothesen. Es wird gezeigt, wie sich Umformulierungen der Anfragen auf die Performanz ausübt und dass alle Anfragen in der Core API schneller ausgeführt werden als in Cypher. Ein Vergleich von Neoj4 und OrientDB zeigt, dass Neo4j alle gestellten Anfragen schneller bearbeiten kann.  Anschließend wird ein praktisches Anwendungsszenario für Neo4j beschrieben. Aufbauend auf den erfassten Erkenntnissen wird eine Bewertung von Neo4j getroffen und es werden Limitierungen und zukünftige Arbeiten zu den Testläufen aufgelistet.
+Durch das steigende Interesse an der Analyse von Netzwerken werden besonders Datenbanken des NoSQL-Ansatzes weiterentwickelt und für diese Analyse genutzt \parencite{han2011survey}. Eine Untergruppe dieses Ansatzes stellen die Graphdatenbanken dar, einer der populärsten Vertreter dieser Gruppe ist Neo4j. In dieser Arbeit wird beschrieben, wie sich verschiedene Arten von Anfragen auf dem System Neo4j verhalten. Zu diesem Zweck wurden mehrere Anfragen mit semantisch gleichen Vergleichsanfragen an das System gestellt und die Differenz in den Bearbeitungszeiten wurde betrachtet. Jeder Anfrage wurde eine oder mehrere Kategorien zugeordnet, um so eine potenziellen Zusammenhang zwischen Kategorie und Bearbeitungszeit einer Anfrage zu erkennen. Nach der Ausführung aller Anfragen, konnte kein allgemeiner Zusammenhang festgestellt werden. \newline
+Für eine Einordnung der Performanz von Neo4j, wurden alle aufgestellten Anfragen auf dem Database Management System OrientDB ausgeführt\footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html (5.09.19)}. Die benötigten Zeiten für das Bearbeiten der Anfragen auf dem System OrientDB wurden mit den Zeiten der Anfragen auf Neo4j verglichen. Die Analyse zeigte, dass Neo4j bei den meisten Anfragen eine signifikant schnellere Bearbeitungszeit aufweist und so das performantere System darstellt. Unter Berücksichtigung der Limitierungen werden die Nutzungsvielfalt und gute Performanz als Stärke und die erforderlichen technischen Kenntnisse und schlechte Speicherverwaltung als Schwäche von Neo4j hervorgehoben. \newline
+\begin{center}
+\textbf{Evaluation of temporal graph databases using the example of Neo4j}
+\end{center}
+Due to the increasing interest in the analysis of networks especially databases of the NoSQL approach are further developed and used for this analysis  \parencite{han2011survey}. A subset of this approach is represented by the graph databases, one of the most popular members of this group is Neo4j. This work describes how different types of queries behave on the system Neo4j. For this purpose, several queries with semantically equal comparison-queries were made to the system and the difference in the processing times was considered. Each query has been assigned one or more categories to identify a potential relationship between the category and the processing time of a request. After the execution of all queries, no general connection could be established. \newline
+To rank the performance of Neo4j, all queries that were made were run on the Database Management System OrientDB \footnotemark[1]. The times needed to process requests on the System OrientDB were compared to the times of requests on Neo4j. The analysis showed that Neo4j has a significantly faster turnaround time for all queries and thus represents the more efficient system. Taking into account these limitations, the versatility and good performance are highlighted as strengths and the required technical knowledge and poor memory management are highlighted as weaknesses of Neo4j.
 \end{abstract}
+
+
 
 
 %----------------------------------------------------------------------------------------
@@ -176,7 +183,7 @@ Für Kapitel 4 werden alle Anfrage aus Kapitel 3 ausgeführt und die Ergebnisse 
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedicatory{For/Dedicated to/To my\ldots} 
+
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS

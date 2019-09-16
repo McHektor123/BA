@@ -36,7 +36,7 @@ Ein Datenbank Management System(DBMS) ist für die Verarbeitung von Anfragen ver
 \begin{figure}[H]
 	\centering
 	\includegraphics [width=12cm, height=8cm]{Figures/architecture}
-	\caption[Architecture]{ aus https://dzone.com/articles/graph-databases-for-beginners-native-vs-non-native(26.08.19)}
+	\caption[Architekur von Neo4j]{ aus https://dzone.com/articles/graph-databases-for-beginners-native-vs-non-native(26.08.19)}
 	\label{fig:Architecure}
 \end{figure}
 
@@ -85,32 +85,33 @@ try ( Transaction tx = graphDb.beginTx() )
 	Node Peter = graphDb.getNodeById(Peter_ID);
 	Set<Node> friends = new HashSet<Node>();
 	for (Relationship R : Peter.getRelationships(FRIEND)) {  
-		Node friend = R.getOtherNode(userJohn);
-		friends.add(friend);                        
+	  Node friend = R.getOtherNode(userJohn);
+	  friends.add(friend);                        
 	}
 	for (Node friend : friends) {
 	  logger.info("Found friend: " + friend.getProperty("name")); 
+	}
 }
 
 try ( Transaction tx = graphDb.beginTx() )
 {
 	try ( ResourceIterator<Node> users =
-	graphDb.findNodes( labelPerson, "name", "Person213" ) )
+	graphDb.findNodes( labelPerson, "name", "Peter" ) )
 	{
-		ArrayList<Node> userNodes = new ArrayList<>();
-		while ( users.hasNext() ){
-			userNodes.add( users.next() );
-		}
-		for ( Node node : userNodes ){
-			System.out.println("The attribute of user " 
-			+ 213 + " is " 
-			+ node.getProperty( "attribute" ));
-		}
+	  ArrayList<Node> userNodes = new ArrayList<>();
+	  while ( users.hasNext() ){
+		userNodes.add( users.next() );
+	  }
+	  for ( Node node : userNodes ){
+		System.out.println("The attribute of user " 
+		+ Peter + " is " 
+		+ node.getProperty( "attribute" ));
+	  }
 	}
 }
 \end{Verbatim}
 
-In diesem Beispiel werden alle Freunde von Peter gefunden und zurückgegeben. Der Nutzer gibt jede Transaktion explizit an, so ist es dem System möglich die Transaktionen zu parallelisieren und nicht ausgelastete Prozessorkerne zu nutzen.
+In dem ersten Beispiel werden alle Freunde von Peter gefunden und zurückgegeben. Der Nutzer gibt jede Transaktion explizit an, so ist es dem System möglich die Transaktionen zu parallelisieren und nicht ausgelastete Prozessorkerne zu nutzen.
 
 \subsubsection{Traversal API}
 Die deklarative Travesal API dient zum spezifizieren von Traversierungen im Graph, sie ist näher an den Kernfunktionen von Neo4j als Cypher und weiter entfernt als die Core API. Die Traversal API erlaubt einen Zugriff auf Neo4j, welcher  abstrakter als die Core API ist. Der Nutzer muss keine genaues Verständnis von den Daten im Graphen haben. Es wird eine Beschreibung angegeben, wie eine Traversierung  ausgeübt werden soll und diese wird auf einen Graphen anwenden. Betrachte folgende Beispiele:
@@ -136,7 +137,7 @@ Zusammengefasst wäre diese Traversierung: Suche alle Verbindungen von dem Anfan
 \begin{figure}[!htb]
 	\centering
 	\includegraphics [width=14cm, height=6cm]{Figures/search}
-	\caption[Search]{ aus http://mishadoff.com/blog/dfs-on-binary-tree-array/.}
+	\caption[Breiten- und Tiefensuche]{ aus http://mishadoff.com/blog/dfs-on-binary-tree-array/.}
 	\label{fig:Search}
 \end{figure} \newline
 \textbf {Breadth-First-Search(Breiten-Suche)} : Zuerst werden alle Knoten mit derselben Distanz betrachtet, danach werden alle Knoten mit der nächst höheren Distanz betrachtet, dies wird solange ausgeübt bis alle Knoten betrachtet wurden. \newline
@@ -207,8 +208,8 @@ Wenn der Nutzer Neo4j nicht über die Anwendungen 'Neo4j Browser/Desktop' sonder
 Der eingebettete Modus erlaubt, es dem Nutzer die  Bibliotheken von Neo4j mittels jeder Programmiersprache, die von der JVM unterstützt wird und für die ein Treiber zur Verfügung steht, zu nutzen und so Anfragen an die Datenbank zu stellen. Alle Bibliotheken von Neo4j werden durch den GraphDataBaseService von Neo4j verwaltet. Der Eingebettete Modus wird für die meisten Anwendungen, die auf einem einzelnen System laufen, empfohlen \parencite{raj2015neo4j}. Dies ist dadurch begründet, dass das Gesamtsystem im einbetteten Modus schneller läuft als im Server Modus, aber auch nur auf einem System genutzt werden kann, da sowohl alle Neo4j Funktionen als auch die Anfragen in der selben JVM agieren. Der Nutzer hat so volle und alleinige Kontrolle über jede Transaktion und kann jede zur Verfügung stehenden Funktion der API nutzen. Daraus resultiert, dass er Nutzer für ein sicheres Starten und Beenden der Datenbank in seiner Sitzung verantwortlich ist \parencite{robinson2013graph}.  Verdeutlicht wird diese Struktur in Abbildung \ref{fig:Embedded}.
 \begin{figure}[!htb]
 	\centering	
-	\includegraphics [width=10cm, height=6cm]{Figures/embedded}
-	\caption[Eingebettet]{aus https://livebook.manning.com/book/neo4j-in-action/chapter-10/9 (16.07.19)}
+	\includegraphics [width=10cm, height=5cm]{Figures/embedded}
+	\caption[Eingebetteter Modus]{aus https://livebook.manning.com/book/neo4j-in-action/chapter-10/9 (16.07.19)}
 	\label{fig:Embedded}
 \end{figure}
 
@@ -217,8 +218,8 @@ Im Server Modus werden alle Anfragen von den Nutzern in einem eigenen Prozess ve
 Der Server Modus ist für die Verwendung der High-Availability Fuktion empfohlen, welche das Nutzen der Datenbank auf mehren Systemen erlaubt.\parencite{raj2015neo4j}. Da die Anfragen des Nutzer getrennt von der Neo4j JVM verwaltet werden und so mehrere Nutzer die Möglichkeit besitzen, diese Funktionen zu Nutzen. Durch die  Übertragungsverzögerung innerhalb der Netzwerks und dem Übertragen durch eine weitere API ist die Verzögerung höher als die des eingebetteten Modus. Dieser Modus wird in Abbildung \ref{fig:Server} verdeutlicht.
 \begin{figure}[!htb]
 	\centering
-	\includegraphics [width=10cm, height=6cm]{Figures/server}
-	\caption[Server]{aus https://livebook.manning.com/book/neo4j-in-action/chapter-10/9 (16.07.19)}
+	\includegraphics [width=10cm, height=5cm]{Figures/server}
+	\caption[Server Modus]{aus https://livebook.manning.com/book/neo4j-in-action/chapter-10/9 (16.07.19)}
 	\label{fig:Server}
 \end{figure}
 
