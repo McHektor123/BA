@@ -222,7 +222,7 @@ TODO
 	Grundanfrage 2.1.1& 224431 & 72092   & 100   \\
 	Grundanfrage 2.1.2& 234132& -  & 65    \\
 	Grundanfrage 2.2& 4740646 & TODO    & 1609  \\
-	Grundanfrage 2.3& 8,4  & TODO   & 11,5   \\
+	Grundanfrage 2.3& 8,4  & 37,6   & 11,5   \\
 	Grundanfrage 2.4.1& - & 768830    & 31050  \\
 	Grundanfrage 2.4.2& -  & TODO   & 31020   \\
 		\hline
@@ -244,7 +244,7 @@ LIMIT 20
 \end{Verbatim}
 Diese Anfrage erstellt eine Liste von 20 Filme, die für eine Veranstaltung mit Verbrechen-Filmen passen. Weitere Bedingungen können durch die Cypher Syntax einfach eingefügt werden, beispielsweise wenn gut bewertete Filme von einem Schauspieler gesucht werden:
 \begin{Verbatim}[frame=single]
-MATCH(s:Schauspieler)-[Spielte]->(f:Film) 
+MATCH(s:Schauspieler)-[SpielteIn]->(f:Film) 
 WHERE s.Name = 'Peter Dinklage' AND f.Wertung >= 5
 RETURN f.Name as Name, f.Regie as Regie, 
 	f.Länge as Länge, f.Plot as Plot 
