@@ -29,9 +29,9 @@ Die Anfragen wird in Cypher für RELATIONSHIP2 etwas mehr als 1000 mal schneller
 	\hline
 	Anfrage& RELATIONSHIP3 &Core API&RELATIONSHIP2\\
 	\hline
-	Ausgehend	& 212.620  & 82.057   & 160\\
-	Eingehend   & 215.383    &123.963&  64\\
-	Beides&496.704 & 222.150&  165\\
+	Ausgehend	& 212620  & 82057   & 160\\
+	Eingehend   & 215383    &123963&  64\\
+	Beides&496704 & 222150&  165\\
 	\hline
 \end{tabular}
 \caption{Grundanfrage 1.1.1}
@@ -101,8 +101,7 @@ xtick=data,
 nodes near coords,
 nodes near coords align={vertical},
 ymin=0,ymax=1,
-ylabel={\%},
-xlabel={Grundanfrage},
+xlabel={Grundanfragen},
 ]
 
 \addplot coordinates {(1.1.2,0.6345) (1.1.1,0.7211)(1.1.3,0.6908)(1.2,0.7025) (1.3,0.5297)};
@@ -154,7 +153,7 @@ RETURN COUNT(DISTINCT(p2))
 			\hline
 			Grundanfrage 2.2 & Äquivalent&Core API\\
 			\hline
-			4.740.646    & 4.753.414 &  1.609\\
+			4740646    & 4753414 &  1609\\
 			\hline
 		\end{tabular}
 		\caption{Grundanfrage 2.2}
@@ -168,7 +167,7 @@ path=shortestPath((p)-[:RELATIONSHIP4*..3]->(p1))
 RETURN LENGTH(path)
 \end{Verbatim} 
  untersucht wurde, besitzt die Länge 2. Die Grundanfrage 2.1.1 zeigt, dass bei einer Pfadlänge von 2 die meisten Knoten ausgehend von Person1 erreicht werden. Wie in Tabelle \ref{tab:Query2_3} zu sehen, ist die Ausführungszeit der Anfrage in Cypher unter Verwendung des gegebenen Algorithmus, geringer als alle anderen Grundanfragen außer Grundanfrage 1.2. Erstmalig ist die Anfrage schneller als die alternative Formulierung in der Core API. Der relative Unterschied beträgt 37 \% und  der absolute Unterschied 3,1 ms. Durch die geringe absolute Differenz ist es nicht garantiert, dass der kürzeste Pfad mit der Verwendung von Cypher immer die schnellste Schnittstelle darstellt. \newline
-Die äquivalente Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Diese Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und besitzt viele Berechnungsschritten, die durch den Algorithmus entfallen würden.
+Die äquivalente Formulierung in Cypher besitzt die höchste beobachtete Ausführungszeit mit ca. 2,3 Stunden. Diese Formulierung ist eine naiver Ansatz ohne Verwendung des Algorithmus und besitzt viele Berechnungsschritten, die durch den Algorithmus entfallen würden. Zudem stoppt das Limit nicht vorzeitig, sondern filtert erst nach der Berechnung die Ergebnismenge, dieses Verhalten ist mit der konservativen Stop-Strategie aus SQL zu vergleichen \parencite{carey1997saying}. 
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
@@ -176,16 +175,15 @@ Die äquivalente Formulierung in Cypher besitzt die höchste beobachtete Ausfüh
 			\hline
 			Grundanfrage 2.3 & Äquivalent&Core API\\
 			\hline
-			8,4    & 8.370.298 &  11,5\\
+			8,4    & 8370298 &  11,5\\
 			\hline
 		\end{tabular}
 		\caption{Grundanfrage 2.3}
 		\label{tab:Query2_3}
 \end{table}
 \FloatBarrier
-\noindent Die Ergebnisse der Traversierungen des gesamten Graphen in Grundanfrage 2.4 werden in Tabelle \ref{tab:Query2_4} dargestellt. Die einseitige Traversierung mit Breitensuche ist ca. 4,8\% langsamer als der gleiche Algorithmus bei einer bidirektionalen Traversierung. Bei der Tiefensuche beträgt der Unterschied ca. 13\%. In beiden Fällen sind die einseitigen Traversierungen wie erwartet langsamer als die bidirektionale Alternativen. Die bidirektionale Suche ist, wie in der Hypothese vermutet, die schnellste beobachtete Traversierung für den Graphen.  
-Die zeitlichen Unterschiede zwischen den Anfragen sind relativ gering und das Verhalten bedarf einer weiteren Untersuchung, da signifikante Unterschiede wie in Tabelle \ref{tab:Query2_1} erwartet wurden.\newline
-Trotz einer semantischen Äquivalenz von Grundanfrage 2.4 mit der Grundanfrage 2.1.2, bei der alle Knoten erreicht werden, ist eine signifikant höhere Ausführungszeit zu beobachten. Dieses Verhalten lässt sich nur mit dem Fehler einer frühzeitigen Abbruchbedingung erklären.    
+\noindent Die Ergebnisse der Traversierungen des gesamten Graphen in Grundanfrage 2.4 werden in Tabelle \ref{tab:Query2_4} dargestellt. Die einseitige Traversierung mit Breitensuche ist ca. 4,8\% langsamer als der gleiche Algorithmus bei einer bidirektionalen Traversierung. Bei der Tiefensuche beträgt der Unterschied ca. 13\%. In beiden Fällen sind die einseitigen Traversierungen wie erwartet langsamer als die bidirektionale Alternativen. Die bidirektionale Suche ist, wie in der Hypothese vermutet, die schnellste beobachtete Traversierung für den Graphen.  \newline
+Trotz einer semantischen Äquivalenz von Grundanfrage 2.4.1 mit der Grundanfrage 2.1.2, bei der alle Knoten erreicht werden, ist eine signifikant höhere Ausführungszeit zu beobachten. Dieses Verhalten lässt sich nur mit dem Fehlen einer frühzeitigen Abbruchbedingung erklären.    
 \FloatBarrier
 \begin{table}[!htb]
 	\centering
@@ -193,13 +191,13 @@ Trotz einer semantischen Äquivalenz von Grundanfrage 2.4 mit der Grundanfrage 2
 		\hline
 		Anfrage & Zeit\\
 		\hline
-		Grundanfrage 2.4.1 & 31.050\\
+		Grundanfrage 2.4.1 & 31050\\
 		\hline
-		 Grundanfrage 2.4.2 & 31.020  \\
+		 Grundanfrage 2.4.2 & 31020  \\
 		\hline
-		Grundanfrage 2.4.3 &  29.558  \\
+		Grundanfrage 2.4.3 &  29558  \\
 		\hline
-		Grundanfrage 2.4.4 &  26.982\\
+		Grundanfrage 2.4.4 &  26982\\
 		\hline
 	\end{tabular}
 	\caption{Grundanfragen 2.4.1-2.4.4}
@@ -216,17 +214,17 @@ TODO
 		\hline
 		Anfrage& Cypher & OrientDB & Core API \\
 		\hline
-	Grundanfrage 1.1.1  & 215.383 & 3.495.459    &  64\\
-	Grundanfrage 1.1.2& 212.620 & 1.674.758   & 160   \\
-	Grundanfrage 1.1.3& 496.704 & 6.350.806 & 165  \\
+	Grundanfrage 1.1.1  & 215383 & 3495459    &  64\\
+	Grundanfrage 1.1.2& 212620 & 1.674758   & 160   \\
+	Grundanfrage 1.1.3& 496704 & 6350806 & 165  \\
 	Grundanfrage 1.2& 0,54 & 0,17   & 0,29   \\
-	Grundanfrage 1.3 & 8,66& 83.955  & 3,2    \\
-	Grundanfrage 2.1.1& 224.431 & 72.092   & 100   \\
-	Grundanfrage 2.1.2& 234.132& k. A.  & 65    \\
-	Grundanfrage 2.2& 4.740.646 & TODO    & 1609  \\
+	Grundanfrage 1.3 & 8,66& 83955  & 3,2    \\
+	Grundanfrage 2.1.1& 224431 & 72092   & 100   \\
+	Grundanfrage 2.1.2& 234132& -  & 65    \\
+	Grundanfrage 2.2& 4740646 & TODO    & 1609  \\
 	Grundanfrage 2.3& 8,4  & TODO   & 11,5   \\
-	Grundanfrage 2.4.1& k.A. & TODO    & 31.050  \\
-	Grundanfrage 2.4.2& k.A.  & TODO   & 31.020   \\
+	Grundanfrage 2.4.1& - & 768830    & 31050  \\
+	Grundanfrage 2.4.2& -  & TODO   & 31020   \\
 		\hline
 	\end{tabular}
 	\caption{Dritter Testlauf}
@@ -236,7 +234,7 @@ TODO
 Neoj4 Inc. stellt zahlreiche Nutzungen von Graphen in verschiedenen Themenkomplexen vor\footnote{https://neo4j.com/graphgists/ (10.09.18)}. Für jeden Themenkomplex werden mehrere Beispielgraphen von eigenständigen Entwicklern, welche nicht für Neo4j arbeiten, zur Verfügung gestellt. Das folgende Anwendungsszenario stellt den Zweck eines Graphen für Kinofilme dar.\newline
 In diesem Beispiel ist der Nutzer ein Betreiber eines Kinos, welches aktuellen Kinofilm ausstrahlt und besondere Veranstaltungen betreibt. Bei diesen Veranstaltungen werden mehrere Filme von einer Kategorie oder einem bestimmten Schauspieler oder Regisseur gezeigt. Diese Veranstaltungen werden mehrere Wochen vor dem Veranstaltungstermin verplant und finden über mehrere Tage statt. Pro Veranstaltungstag werden im Durchschnitt 4 Filme benötigt. Solche Veranstaltungen wurden schon mehrmals betrieben und die Planung besitzt einen routinierten Ablauf, sodass viele Schritte effizient bearbeitet werden. Der zeitaufwendigste Arbeitsschritt, stellt das Finden von Filmen für das Veranstaltungsprogramm dar. \newline
 Aktuell stellt der Kinobetreiber eine Liste mit Filmen für die Veranstaltung manuell zusammen, hierfür werden Filme ausgewählt, die der Betreiber selber kennt und es werden verschiedene Quellen aus dem Internet für eine Auswahl verwendet. Die Liste besitzt die Namen der Filme, zusätzliche Informationen wie Länge sind durch die Vielzahl von Quellen nicht immer vorhanden. Fehlende Informationen müssen für eine optimale Planung des Kinoprogramms erneut herausgesucht werden und einige Filme müssen nach dem initialen Aufstellen der Liste  aussortiert werden. \newline  
-Für eine weitgehende Automatisierung dieses Arbeitsschrittes kann das Datenbank Management System Neo4j verwendet werden. Unabhängig von dem Betriebssystem steht die kostenfreie Anwendung $Neo4j\; Desktop$ zur Verfügung. Durch diese Desktop-Anwendung ist die Bedienung von Neo4j über ein grafischen User Interface(GUI) möglich. Für die Automatisierung wird die Erweiterung Awesome  Procedures on Cypher(APOC) benötigt, welche per Mausklick in $Neo4j\; Dekstop$ hinzugefügt werden kann. Mit dieser Erweiterung ist es möglich Daten mit verschiedenen Dateiformaten wie CSV in die lokale Neo4j Datenbank zu importieren. Für das Thema Kino stehen im Internet zahlreiche große Datensätze mit Filme kostenfrei zur Verfügung, beispielsweise auf der Seite kaagle.com \footnote{https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset}. Nach dem Importieren eines solchen Datensatzes, kann der Nutzer durch die Eingabemaske eine Anfrage stellen, um so eine übersichtliche vollständige Liste von Filme zu erhalten. Eine beispielhafte Anfrage in Cypher für eine Liste von Verbrechen-Filmen wäre: 
+Für eine weitgehende Automatisierung dieses Arbeitsschrittes kann das Datenbank Management System Neo4j verwendet werden. Unabhängig von dem Betriebssystem steht die kostenfreie Anwendung $Neo4j\; Desktop$ zur Verfügung. Durch diese Desktop-Anwendung ist die Bedienung von Neo4j über ein grafischen User Interface(GUI) möglich. Für die Automatisierung wird die Erweiterung APOC benötigt, welche per Mausklick in $Neo4j\; Dekstop$ hinzugefügt werden kann. Mit dieser Erweiterung ist es möglich Daten mit verschiedenen Dateiformaten wie CSV in die lokale Neo4j Datenbank zu importieren. Für das Thema Kino stehen im Internet zahlreiche große Datensätze mit Filme kostenfrei zur Verfügung, beispielsweise auf der Seite kaagle.com \footnote{https://www.kaggle.com/carolzhangdc/imdb-5000-movie-dataset}. Nach dem Importieren eines solchen Datensatzes, kann der Nutzer durch die Eingabemaske eine Anfrage stellen, um so eine übersichtliche vollständige Liste von Filme zu erhalten. Eine beispielhafte Anfrage in Cypher für eine Liste von Verbrechen-Filmen wäre: 
 \begin{Verbatim}[frame=single]
 MATCH(m:Film) 
 WHERE m.Katergorie = Verbrechen
@@ -259,7 +257,7 @@ Ein Vergleich zwischen Neo4j und einer relationalen Datenbank, wie in \parencite
 Ein weitere Aspekt der betrachtet werden kann, ist das Ausführen von Neo4j im Server Modus und auf mehreren Geräten verteilt. Durch diesen Aspekt können die ACID und CAP Eigenschaften genau untersucht werden und die Grenzen einer verteilten Neo4j-Datenbank getestet werden. Zudem kann ein Vergleich zwischen der Datenbank im eingebetteten Modus und dem Server Modus durchgeführt werden. So können genaue Vor- und Nachteile und ein Anwendungsszenario spezifiziert werden. \newline
 Eine kleinerer nicht betrachteter Aspekt ist die temporale Eigenschaft von Neo4j. Der vorgestellte Datensatz besitzt Attribute vom Typen Daten und stellt so eine temporale Datenbank dar, doch es fehlt ein Testlauf mit Anfragen zu diesem Attribute. Eine Allgemeine Betrachtung des temporalen Verhalten der Datenbank ist für eine genauere Einordnung von Neo4j im Vergleich zu anderen temporalen Graphdatenbanken sinnvoll. 
 \section{Fazit}
-Neo4j unterstützt mit den Java-Standardtypen und zahlreichen zeitlichen Typen wie $Time$, $LocalTime$ oder $DateTime$ eine Vielzahl von Datentypen, welche für die Modellierungen von Daten notwendig sind\footnote{https://neo4j.com/docs/cypher-manual/current/syntax/values/ (28.08.19)}. Durch die Zurverfügungstellung der Anwendungen 'Neo4j Desktop' und 'Neo4j Browser' und einer dazu gegebenen Anfragesprache, werden die benötigten Kenntnisse zur Bedienung des System minimiert. Für eine spezifischeren Gebrauch der Datenbank, werden mehrere Programmiersprachen unterstützt. Durch diese Schnittstellen ist es mögliche, das System auf viele Weisen zu nutzten und eine große Zielgruppe kann das System für viele Szenarien nutzen. \newline
+Neo4j unterstützt mit den Java-Standardtypen und zahlreichen zeitlichen Typen wie $Time$, $LocalTime$ oder $DateTime$ eine Vielzahl von Datentypen, welche für die Modellierungen von Daten notwendig sind\footnote{https://neo4j.com/docs/cypher-manual/current/syntax/values/ (28.08.19)}. Durch die Zurverfügungstellung der Anwendungen $Neo4j\; Dekstop$ und $Neo4j\; Browser$ und einer dazu gegebenen Anfragesprache, werden die benötigten Kenntnisse zur Bedienung des System minimiert. Für eine spezifischeren Gebrauch der Datenbank, werden mehrere Programmiersprachen unterstützt. Durch diese Schnittstellen ist es mögliche, das System auf viele Weisen zu nutzten und eine große Zielgruppe kann das System für viele Szenarien nutzen. \newline
 Testlauf 1 und 2 zeigen, dass der Gebrauch der Java Core API in allen Fällen zu einer signifikant besseren Performanz führt. Mit Verwendung der Traversal API besitzt der Nutzer eine flexible Möglichkeit die Performanz seiner Anfragen zu beeinflussen. Zum Beispiel ist es möglich zwischen Breiten- und Tiefensuche zu wählen. Die am schnellsten bearbeiteten Anfragen besitzen keine gemeinsame Kategorie von vorgestellten Kategorien aus Absatz \ref{Kategorien}. Die am langsamsten bearbeiteten Anfragen besitzt ebenfalls keine gemeinsamen Kategorien. Grundanfrage 2.2.1, welche die einzige Mustervergleichs-Anfrage ist, besitzt eine besonders hohe Ausführungszeit. Dementsprechend lässt sich nur für Mustervergleichs-Anfragen ein Bezug von Anfragen-Kategorie und Performanz in Neo4j treffen, die anderen Kategorien weisen keinen solchen Bezug auf. \newline
 Wie Tabelle \ref{tab:Query1_2} und Tabelle \ref{tab:Query2_3} zeigen, können semantisch gleiche Anfragen in Cypher Unterschiede in ihrer Performanz aufzeigen. Dieses Verhalten ist in den APIs ebenfalls zu beobachten. Das System lässt sich durch eine hohe Anzahl von Schnittstellen leicht benutzten, aber das System effektiv zu nutzen und eine Anfrage effizient aufführen zu lassen, ist nicht trivial und erfordert technologische Kenntnisse. Durch Hinweise von Neo4j Inc. werden einige Möglichkeiten für das effiziente Ausführen gegeben \footnote{https://neo4j.com/blog/tuning-cypher-queries/ (07.08.19)}. Diese Hinweise befassen sich teilweise mit dem Umformulieren der Anfragen, um das volle Potenzial des Optimierers nutzen zu können. Wie in den Ergebnissen zur Grundanfrage 1.2 erläutert, deutet dies auf einen unperformanten Optimierer hin. \newline
 Im Vergleich zu der Muli-Model Datenbank OrientDB unter Verwendung von SQL besitzt Neo4j mit der Core API ein signifikant bessere Performanz. Mit  Anfragesprache Cypher ist die Performanz von Neo4j nicht mehr eindeutig besser. Der verwendete Datensatz ist unter Neo4j ca. 58 \% größer, als bei OrientDB. Allgemein besitzt Neo4j so eine bessere Performanz, wenn die Kenntnisse durch den Nutzer gegeben sind, aber die Speicherverwaltung unter Neo4j ist schlechter. Wie die Performanz im globalen Kontext im Vergleich zu mehreren anderen Datenbank Management Systemen ist, wie in \parencite{jouili2013empirical} ausgeführt,  lässt im Rahmen dieses Experiments nicht sagen.  \newline
