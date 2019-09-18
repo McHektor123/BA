@@ -206,7 +206,14 @@ Trotz einer semantischen Äquivalenz von Grundanfrage 2.4.1 mit der Grundanfrage
 \FloatBarrier
 
 \subsection{Ergebnisse des dritten Testlaufes}
-TODO
+Die folgenden Aussagen beziehen sich auf die ermittelten Werte, welche in Tabelle \ref{tab:Query3} dargelegt werden. \newline
+Die Grundanfrage 1.1.1-1.1.3 werden in Cypher durchschnittlich ca. 12 mal schneller ausgeführt als in der OrientDB, die relativ langen Bearbeitungszeiten bei beiden System entstehen durch die Bedingungen im Where-Prädikat. In allen Fällen benötigt die Grundanfrage 1.1.3 die längste Zeit zur Bearbeitung. Im Vergleich zu Neo4j und im Vergleich zu den anderen Anfragen, die an OrientDB gestellt wurden, benötigten die Grundanfragen 1.1.1-1.1.3 extrem viel Zeit zur Bearbeitung, nur Grundanfrage 2.2 benötigt eine vergleichbar lange Zeit. Dies zeigt, dass OrientDB wie Neo4j durch das Einfügen einer Bedingung im Where-Prädikat sehr stark beeinflusst wird und bei solchen Anfragen eine schlechtere Performanz aufweist. \newline
+Bei Grundanfrage 1.2, welche einen einzigen Knoten im Graphen sucht, weist OrientDB eine schnellere Bearbeitungszeit als die Core API von Neo4j und Cypher auf.  Grundanfrage 2.1.1 und 2.1.2, welche ebenfalls mit einer Abbruchbedingung über den Graphen traversieren, besitzen auch eine schnellere Zeit als Cypher. Daraus lässt sich schließen, dass OrientDB  bei einer Traversierung mit frühzeitigen Abbruch eine bessere Performanz besitzt, als Neo4j unter der Verwendung von Cypher. Bei einer kompletten Traversierung des Graphen wie in 2.4.1 und 2.4.2 besitzt die Core API von Neo4j, wie in den meisten anderen Anfragen, eine bessere Performanz als OrientDB. \newline
+Grundanfrage 1.3, welche eine einfache Anfragen zum Finden von gemeinsamen Nachbarn darstellt, besitzt in Cypher und der Core API eine relativ geringe Bearbeitungszeit in der Größenordnung von einigen Millisekunden. In OrientDB befindet sich Grundanfrage 1.3 mit einer benötigten Zeit von 83955 ms in einer anderen Größenordnung und deutet darauf hin, dass der benötigte Vergleich von 2 Mengen miteinander in Neo4j effizienter implementiert ist. Dies ist auch in Grundanfrage 2.2 zu beobachten, für diese Anfrage muss bis in Tiefe 2 traversiert werden und 2 Mengen müssen miteinander verglichen werden. Die Anfrage besitzt eine hohe Bearbeitungszeit, obwohl das Traversieren in der Tiefe 2, wie bei Grundanfrage 2.1.1 mit 72092 ms zu beobachten, nur eine geringe Zeit benötigt, der Vergleich der beiden Mengen bildet so den rechenaufwendigeren Schritt. \newline
+{\color{red} TODO} Die Traversierungen in den Tiefen 2 und 3, welche durch die Grundanfragen 2.1.1 und 2.1.2 dargestellt werden, besitzen in OrientDB eine geringere Bearbeitungszeit {\color{red} TODO}. \newline  
+Mit 37,6 ms besitzt OrientDB bei Grundanfrage 2.3 ähnlich wie Neo4j eine relativ geringe Bearbeitungszeit, dies lässt sich durch eine effiziente Implementierung des shortestpath-Algorithmus erklären. Da das Finden des kürzesten Pfades eine grundlegendes Problem bei Graphen ist, wurde der Algorithmus bereits in der OrientDB Version 1.7.8 vom 13. August 2014 veröffentlicht\footnote{https://orientdb.com/released-orientdb-1-7-8/}. Durch eine lange Zurverfügungstellung ist es wahrscheinlich, dass der Algorithmus mit einer effizienten Implementierung veröffentlicht wurde oder über die Jahre optimiert wurde. \newline
+Für die Grundanfragen 2.4.1 und 2.4.2 ist nur ein Vergleich zwischen OrientDB und Core API von Neoj4 möglich, da der Such-Algorithmus in Cypher nicht explizit angegeben werden kann. Durch die gleiche Komplexität von O(V+E) bei der Tiefen- und Breitensuche, benötigten die beiden Anfragen in OrientDB ungefähr die gleiche Bearbeitungszeit. Mit Verwendung der Core API werden die Grundanfragen 2.4.1 und 2.4.2 durchschnittlich ca. 24.8 mal schneller beantwortet als auf OrientDB ausgeführt. Dabei muss berücksichtigt werden, dass die Core API ein hohes technisches Verständnis voraussetzt und nahe an den Kernfunktionen arbeitet und OrientDB die Anfragesprache SQL verwendet, welche eine weniger abstrakte Schnittstelle für den Nutzer darstellt und durch diesen Abstand zum Kern eine geringere Performanz besitzt. \newline
+Insgesamt besitzt die Core API von Neo4j in fast allen Fällen aus den oben genannten Gründen eine signifikant bessere Performanz als OrientDB. Der direkte Vergleich zwischen den Anfragesprachen der beiden Systeme zeigt, dass OrientDB in einigen Fällen, wie dem nicht-vollständigen Traversieren des Graphen, eine bessere Performanz aufweist. Unter der Berücksichtigung aller beobachteten Zeiten besitzen beide Anfragesprachen Stärken und Schwächen, wodurch sich keine allgemeine Aussage über eine bessere Performanz von einer der beiden Sprachen treffen lässt. 
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -215,19 +222,20 @@ TODO
 		Anfrage& Cypher & OrientDB & Core API \\
 		\hline
 	Grundanfrage 1.1.1  & 215383 & 3495459    &  64\\
-	Grundanfrage 1.1.2& 212620 & 1.674758   & 160   \\
+	Grundanfrage 1.1.2& 212620 & 1674758   & 160   \\
 	Grundanfrage 1.1.3& 496704 & 6350806 & 165  \\
 	Grundanfrage 1.2& 0,54 & 0,17   & 0,29   \\
 	Grundanfrage 1.3 & 8,66& 83955  & 3,2    \\
 	Grundanfrage 2.1.1& 224431 & 72092   & 100   \\
-	Grundanfrage 2.1.2& 234132& -  & 65    \\
+	Grundanfrage 2.1.2& 234132& k.A  & 65    \\
 	Grundanfrage 2.2& 4740646 & TODO    & 1609  \\
 	Grundanfrage 2.3& 8,4  & 37,6   & 11,5   \\
 	Grundanfrage 2.4.1& - & 768830    & 31050  \\
-	Grundanfrage 2.4.2& -  & TODO   & 31020   \\
+	Grundanfrage 2.4.2& -  & 774040   & 31020   \\
 		\hline
 	\end{tabular}
 	\caption{Dritter Testlauf}
+	\label{tab:Query3}
 \end{table}
 \FloatBarrier
 \section{Anwendungsszenario}
