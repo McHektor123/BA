@@ -155,8 +155,11 @@ MATCH (p:Person{name :'Person1'}),(p1:Person{name :'Person42'}),
 RETURN LENGTH(path)
 ORDER BY length(path) asc LIMIT 1
 \end{Verbatim}
- \textbf{Grundanfragen  2.4.1 - 2.4.4} wird ausschließlich in der Core API formuliert. \newline
-Die Anfrage traversiert solange über den Graphen, bis jeder Knoten einmal betrachtet wurde. Diese Anfrage wird mit der Breitensuche und Tiefensuche formuliert und wird zusätzlich durch die bidirektionale Traversierung mit Breiten - und Tiefensuche bearbeitet. Es ergeben sich die Anfragen 2.4.1 bis 2.4.4 aufgelistet in Tabelle \ref{tab:Intro_Query2_4}. 
+ Das ist Grundanfrage \textbf{Grundanfragen 2.4.1}:
+ \begin{Verbatim}[frame=single]
+ MATCH (a)-[RELATIONSHIP4]->(b) RETURN COUNT(DISTINCT(b))
+ \end{Verbatim}
+Die Anfrage traversiert über den gesamten Graphen, bis jeder Knoten einmal betrachtet wurde. In Cypher kann nur mit Tiefensuche traversiert werden und es ist nicht möglich einen anderer Suchalgorithmus anzugeben. Die Vergleichsanfrage traversiert in der Core API mit Tiefensuche über den Graphen. Für weitere Grundanfragen, wird diese Anfrage mit  Breitensuche formuliert und wird zusätzlich durch die bidirektionale Traversierung mit Breiten - und Tiefensuche bearbeitet. Es ergeben sich die in  Tabelle \ref{tab:Intro_Query2_4} aufgelisteten Anfragen. 
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -164,13 +167,14 @@ Die Anfrage traversiert solange über den Graphen, bis jeder Knoten einmal betra
 		\hline
 		Anfrage& Name\\
 		\hline
-		Grundanfrage 2.4.1 &  Einseitig Breitensuche\\
-		Grundanfrage 2.4.2 &  Einseitig - Tiefensuche \\
-		Grundanfrage 2.4.3 &  Bidirektional - Breitensuche\\
-		Grundanfrage 2.4.4 &  Tiefensuche - Tiefensuche\\
+		Grundanfrage 2.4.1 &  Cypher - Tiefensuche\\
+		Vergleichsanfrage 1 &  Einseitig - Tiefensuche \\
+		Grundanfrage 2.4.2 &  Einseitig Breitensuche\\
+		Grundanfrage 2.4.3&  Bidirektional - Breitensuche\\
+		Grundanfrage 2.4.4 &  Bidirektional - Tiefensuche\\
 		\hline
 	\end{tabular}
-	\caption{Grundanfragen 2.4.1 und 2.4.4}
+	\caption{Grundanfragen 2.4.1 bis 2.4.4}
 	\label{tab:Intro_Query2_4}
 \end{table}
 \FloatBarrier
@@ -202,7 +206,7 @@ Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wu
 Für die \textbf{Grundanfragen 2.4.1-2.4.4} werden folgende Aspekte betrachtet:
 \begin{enumerate}
 	\item Der Unterschied zwischen der bidirektionalen Suche und einseitiger Suche mit dem selben Algorithmus
-	\item Die relativen Berechnungszeit der 4 Traversierungs-Methoden zueinander
+	\item Die relativen Berechnungszeit der 4 Traversierungs-Methoden in der Core API zueinander
 \end{enumerate}
 Zum 1.Aspekt: Die bidirektionale Suche wird schneller ausgeführt, da potenziell durch 2 parallele Pfade  weniger Berechnungsschritte zum Suchen eines Pfades, der  durch den gesamten Graphen verläuft, benötigt werden. \newline 
 Zum 2. Aspekt: Da durch den gesamten Graphen ohne Abbruchbedingung traversiert wird, besitzen die beiden Suchalgorithmen die gleiche Komplexität. Beide Algorithmen werden dementsprechend bei einer einseitigen Ausführung die gleiche Ausführungszeit besitzen. Bei der bidirektionalen Traversierung wird vermutet, das Grundanfrage 2.4.4 mit der Tiefensuche schneller ausgeführt wird und insgesamt die schnellste Traversierung darstellen wird. Darauf wird die Grundanfrage 2.4.3 folgen und danach die beiden einseitigen Traversierungen. 
