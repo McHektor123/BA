@@ -109,7 +109,7 @@ Das ist die \textbf{Grundanfrage 2.1.1}:
 MATCH (p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person) 
 RETURN COUNT(DISTINCT(p1))
 \end{Verbatim} 
-Diese Anfrage findet die Anzahl aller Personen, die über die Relation RELATIONSHIP3 in der Tiefe 2 erreicht werden. Grundanfrage 2.1.2 sucht in der Tiefe 3. Es handelt sich um Nachbarschafts-Anfragen. Als Vergleichsanfragen werden beide Anfragen in den APIs mit der Breitensuche und Tiefensuche ausgeführt. Es ergeben sich 6 Anfragen.
+Diese Anfrage findet die Anzahl aller Nachbarn, die über die Relation RELATIONSHIP3 in der Tiefe 2 erreicht werden. Grundanfrage 2.1.2 sucht in der Tiefe 3. Es handelt sich um Nachbarschafts-Anfragen. Als Vergleichsanfragen werden beide Anfragen in den APIs mit der Breitensuche und Tiefensuche ausgeführt. Es ergeben sich 6 Anfragen.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -136,7 +136,7 @@ MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p2) 
 RETURN COUNT(DISTINCT(p2))
 \end{Verbatim} 
-Diese Anfrage findet alle Personen, welche über die RELATIONSHIP3 mit dem direkten Nachbarn  p1 verbunden sind, aber nicht mit Person p verbunden sind. Diese Anfrage ist eine Erreichbarkeits- und Mustervergleichs-Anfrage. Als Vergleichsanfragen wird eine semantisch äquivalente Anfrage in den APIs formuliert und es wird folgende Anfrage in Cypher formuliert:
+Diese Anfrage findet alle Personen, welche über die RELATIONSHIP3 mit dem direkten Nachbarn  p1 verbunden sind, aber nicht mit Person p verbunden sind. Die Anfrage ist eine Erreichbarkeits- und Mustervergleichs-Anfrage. Als Vergleichsanfragen wird eine semantisch äquivalente Anfrage in den APIs formuliert und es wird folgende Anfrage in Cypher formuliert:
 \begin{Verbatim}[frame=single]
 MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3*2]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p1)
@@ -188,7 +188,7 @@ Für die \textbf{Grundanfragen 2.1.1 und 2.1.2} werden folgende Aspekte betrache
 \end{enumerate}
 Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens doppelt so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Für  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche zu einer höheren Tiefe einen minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
 Zum 2. Aspekt: Bei der Erhöhung von Tiefe 2 zu Tiefe 3 steigt die Tiefe um 1 an, aber die Breite erhöht sich pro Element in der Tiefe 2 um 2500. Der Graph besitzt ausgehend von dem Knoten der Person1 eine relativ hohe Breite im Vergleich zu der Tiefe, dadurch wird die Anfrage mit der Tiefensuche signifikant schneller ausgeführt werden. Es entsteht die Möglichkeit einer schnellen und langsamer Ausführung einer Anfrage durch den Nutzer. \newline
-Zum 3. Aspekt: Durch die Tiefe 2 können unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet, dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
+Zum 3. Aspekt: Durch die Tiefe 2 können unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet, dass die meisten Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
 Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
 \begin{enumerate}
 	\item Ein Unterschied in der Laufzeit bei  semantischer Äquivalenz  
@@ -202,7 +202,7 @@ Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet:
 	\item Die Ausführungszeit in Cypher ohne Verwenden des Algorithmus
 \end{enumerate}
 Zum 1. Aspekt: Durch die Annahme, dass meisten Personen über RELATIONSHIP3/ RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.1.1 zusammenhängen und es wird keine höhere Ausführungszeit als in Grundanfrage 2.1.1 erwartet. \newline
-Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wurde, wird die Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. Die alternative Formulierung ist ein naiver Ansatz mit vielen aufwendigen Berechnungen, welcher eine große Ergebnismenge berechnet, die zu 1 Ergebnis minimiert wird. \newline \newline
+Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wurde, wird die Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. Die alternative Formulierung ist ein naiver Ansatz mit vielen aufwendigen Berechnungen, welcher eine große Ergebnismenge berechnet, die zu einem Ergebnis minimiert wird. \newline \newline
 Für die \textbf{Grundanfragen 2.4.1-2.4.4} werden folgende Aspekte betrachtet:
 \begin{enumerate}
 	\item Der Unterschied zwischen der bidirektionalen Suche und einseitiger Suche mit dem selben Algorithmus
