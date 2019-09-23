@@ -8,7 +8,7 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 \section{Vorraussetzungen}
-Im Folgenden werden alle Einstellungen und Kategorisierungen, die für die Evaluation getroffen wurden, beschrieben. In den Testläufen werden Grundanfragen aufgestellt und Umformulierungen dieser vorgestellt. So entstehen mehrere Anfragen, die betrachtet werden.  
+Im Folgenden werden alle Einstellungen und Kategorisierungen, die für die Evaluation getroffen wurden, beschrieben. In den Testläufen werden Grundanfragen aufgestellt und Vergleichsanfragen zu diesen vorgestellt.  
 \subsection{Der verwendete Datensatz}
 Für das Experiment wurde ein selbsterstellter Datensatz gewählt, welcher aus einem selbst geschriebenen Programm erstellt wurde \footnote{https://github.com/McHektor123/BA/tree/master/src}. Die Datenbank läuft im eingebetteten Modus von Neo4j und besteht aus insgesamt 50.004 Entitäten, welche die Objekte der Datenbank bilden. 4 der Entitäten sind  vom Typ Aktion und 50000 vom Typ Person. Der Typ Aktion besitzt 3 mit einem Index versehende Attribute, mit den Namen $name$, welches aus einem String besteht, $attribute$, welches aus einem Integer besteht und $time$, welches von dem Typen Date ist. Der Typ Person besitzt ebenfalls 3 mit einem Index versehende Attribute namens $name$, $attribute$ und $time$. Jeder Wert der einzelnen Attribute tritt genau einmal auf, sodass alle Werte disjunkt sind. \newline
 Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 bilden eine Relation von einer Entität des Typen Person zu einer Entität des Typen Aktion  und  RELATIONSHIP3 und RELATIONSHIP4 eine Relation von Person zu Person. Jede Person besitzt jeweils eine Relation vom Typen RELATIONSHIP1 und eine vom Typen RELATIONSHIP2, wobei die Ziel-Aktionen disjunkt sind. Pro Person wurden 2.500 Relationen vom Typen RELATIONSHIP3 und 2.500 Relationen vom Typen RELATIONSHIP4 generiert, da die Ziel-Personen nicht disjunkt sind, kommt es zu einer variablen Anzahl von zugehörigen disjunkten Relationen pro Person. Jede Person besitzt maximal 5002 Relationen. Da die Relationen als Kanten und die Entitäten als Knoten aufgefasst werden, besitzt der generierte Graph 50.004 Knoten und 250.100.000 Kanten mit einer physischen Gesamtgröße von 102,9 GB. 
@@ -16,11 +16,11 @@ Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 
 Für die Evaluation werden die Anfragen in folgende Kategorien von Angles unterteilt \parencite{angles2012comparison}: Nachbarschafts-Anfragen, Erreichbarkeits-Anfragen,Mustervergleichs-Anfragen und  Zusammenfassungen. 
 \begin{enumerate}
 	\item Nachbarschafts-Anfragen: Es wird geprüft, ob ein Knoten direkt über eine  Kante mit einem anderen Knoten verbunden ist oder  es werden alle Knoten die über eine bestimmte Menge an Kanten erreichbar sind zu einer Menge zusammengefasst, dies ist auch als k-nächste Nachbarn Problem bekannt. Beide Fälle lassen sich auch auf die Verbundenheit von Kanten über Knoten übertragen.
-	\item Erreichbarkeits-Anfragen: Die Suche nach einem Pfad, welcher 2 Knoten bzw. Kanten verbindet. Wenn ein Pfad zwischen den Knoten bzw. Kanten besteht,ist das Ziel von dem Start aus erreichbar, bei einem ungerichteten Graphen gilt der umgekehrte Fall ebenfalls. Beim dem Auffinden von mehreren Pfaden, entsteht zudem das Problem des Finden des kürzesten Pfades. Bei einem gewichteten Graphen kann dieses Problem um die Suche des schnellsten/leichtesten Pfades  erweitert werden. 
-	\item Mustervergleichs-Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Zu dieser Kategorie gehört beispielsweise das NP-Vollständige Problem des Sub-Graph Isomorphismus bekannt. 
+	\item Erreichbarkeits-Anfragen: Die Suche nach einem Pfad, welcher 2 Knoten bzw. Kanten verbindet. Wenn ein Pfad zwischen den Knoten bzw. Kanten besteht, ist das Ziel von dem Start aus erreichbar, bei einem ungerichteten Graphen gilt der umgekehrte Fall ebenfalls. Beim dem Auffinden von mehreren Pfaden, entsteht zudem das Problem des Finden des kürzesten Pfades. Bei einem gewichteten Graphen kann dieses Problem um die Suche des schnellsten/leichtesten Pfades  erweitert werden. 
+	\item Mustervergleichs-Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Zu dieser Kategorie gehört beispielsweise das NP-Vollständige Problem des Sub-Graph Isomorphismus. 
 	\item Zusammenfassungen: Diese Anfragen fassen eine Ergebnismenge zu einem Wert zusammen, dies ist durch Aggregations-Funktionen wie MAX,AVG oder COUNT ,aber auch dem Lesen von Eigenschaften des Graphen wie die Menge alle Knoten, realisiert. 
 \end{enumerate}
-Eine Anfrage kann dabei mehrere Kategorien beinhalten. Das Experiment ermittelt, ob in Neo4j eine Korrelation zwischen Kategorie und Performanz einer Anfrage besteht. Hierfür werden 3 Testläufen durchgeführt, in denen eine Menge von Anfragen gestellt und analysiert werden. 
+Einer Anfrage können mehrere Kategorien zugeordnet werden. Das Experiment ermittelt, ob in Neo4j eine Korrelation zwischen Kategorie und Performanz einer Anfrage besteht. Hierfür werden 3 Testläufen durchgeführt, in denen eine Menge von Anfragen gestellt und analysiert werden. 
 \section{Erster Testlauf}
 Der erste Testlauf besteht primär aus einfachen Nachbarschafts-Anfragen und Zusammenfassungen, um einen ersten Überblick von Neo4j zu erhalten. Im folgenden Abschnitt werden die Grundanfragen des ersten Testlaufes und Vergleichsanfragen der Grundanfragen vorgestellt. 
 \subsection{Grundanfragen zu ersten Testlauf}
@@ -30,8 +30,8 @@ Das ist die \textbf{Grundanfrage 1.1.1}:
  WHERE X.attribute>=250 AND Y.attribute>=15  
  RETURN COUNT(DISTINCT(Y))
 \end{Verbatim} 
-Grundanfrage 1.1.1 findet alle Personen, die über eine ausgehende RELATIONSHIP3-Kante erreichbar sind, unter der Voraussetzung, dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Es handelt sich um eine Erreichbarkeits-Anfrage.
-Grundanfrage 1.1.2 verwendet die gleichen Bedingungen wie Grundanfrage 1.1.1 und betrachtet alle eingehenden statt ausgehenden Kanten. Grundanfrage 1.1.3 betrachtet sowohl ausgehende, als auch eingehende Kanten mit Verwendung der gleichen Bedingungen. In den Vergleichsanfragen werden diese 3 Grundanfragen mit der Relation RELATIONSHIP2 gestellt und zusätzlich semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1.1.1, dargestellt in Tabelle \ref{tab:Intro_Query2_1}.
+Grundanfrage 1.1.1 findet alle Nachbarn, die über eine ausgehende RELATIONSHIP3-Kante erreichbar sind, unter der Voraussetzung, dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Es handelt sich um eine Nachbarschafts-Anfrage.
+ Grundanfrage 1.1.2 verwendet die gleichen Bedingungen wie Grundanfrage 1.1.1 und betrachtet alle eingehenden statt ausgehenden Kanten. Grundanfrage 1.1.3 betrachtet sowohl ausgehende, als auch eingehende Kanten mit Verwendung der gleichen Bedingungen. In den Vergleichsanfragen werden diese 3 Grundanfragen mit der Relation RELATIONSHIP2 gestellt und zusätzlich semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1.1.1, dargestellt in Tabelle \ref{tab:Intro_Query2_1}.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -89,7 +89,7 @@ Zum 3. Aspekt: Da jede Person zwei Relationen vom Typ RELATIONSHIP2 besitzt aber
 Für \textbf{Grundanfrage 1.2} werden 2 Aspekte betrachtet .
 \begin{enumerate}
 	\item Die allgemeine Performanz 
-	\item Die entstehenden Unterschiede für das Suchen eines Knotens
+	\item Die entstehenden Unterschiede zwischen Cypher und der Core API
 	\item Der Vergleich zwischen Filtern in dem Where-Prädikat und der Match-Prädikat
 \end{enumerate}
 Zum 1. Aspekt: Alle 3 Anfragen werden eine sehr schnelle Ausführungszeit besitzen, da besonders der Gebrauch von Indizes ein schnelles Finden von Eigenschaften erlaubt. \newline
@@ -102,7 +102,7 @@ Für \textbf{Grundanfrage 1.3} wird nur ein Aspekt betrachtet.
 Zum 1. Aspekt: Es wird vermutet, dass es keine signifikante Differenz zwischen den Laufzeiten der Anfragen in Cypher gibt, falls ein Unterschied bestehen sollte, wird diese auf eine effiziente Implementierung des IN-Operator zurückgeführt. Die Anfrage in der Core API sollte wie in Grundanfrage 1.1 die schnellste Bearbeitungszeit besitzen.
 
 \section{Zweiter Testlauf}
-Der zweite Testlauf verwendet die Nachbarschafts-Anfragen in einer erhöhten Tiefe, wodurch eine höherer Rechenaufwand simuliert wird. Es wird der Performanzunterschied zwischen der Breitensuche, Tiefensuche und der bidirektionale Traversierung betrachtet. Es werden komplexere Anfragen im Vergleich zum ersten Testlauf gestellt und die Skalierbarkeit des Systems wird analysiert. Durch komplexere Anfragen, wird ein tieferes Verständnis der Funktionsweise von Neo4j erzeugt. 
+Der zweite Testlauf verwendet die Nachbarschafts-Anfragen in einer erhöhten Tiefe, wodurch eine höherer Rechenaufwand erzeugt wird. Es wird der Performanzunterschied zwischen der Breitensuche, Tiefensuche und der bidirektionale Traversierung betrachtet. Es werden komplexere Anfragen im Vergleich zum ersten Testlauf gestellt und die Skalierbarkeit des Systems wird analysiert. Durch komplexere Anfragen, wird ein tieferes Verständnis der Funktionsweise von Neo4j erzeugt. 
 \subsection{Grundanfragen zum zweiten Testlauf}
 Das ist die \textbf{Grundanfrage 2.1.1}: 
 \begin{Verbatim}[frame=single]
@@ -163,15 +163,15 @@ Die Anfrage traversiert über den gesamten Graphen, bis jeder Knoten einmal betr
 \FloatBarrier
 \begin{table}[h]
 	\centering
-	\begin{tabular}{ |p{5cm}||p{5cm}|p{3cm}  }
+	\begin{tabular}{ |p{5cm}||p{7cm}|p{3cm}  }
 		\hline
 		Anfrage& Name\\
 		\hline
-		Grundanfrage 2.4.1 &  Cypher - Tiefensuche\\
-		Vergleichsanfrage 1 &  Einseitig - Tiefensuche \\
-		Grundanfrage 2.4.2 &  Einseitig Breitensuche\\
-		Grundanfrage 2.4.3&  Bidirektional - Breitensuche\\
-		Grundanfrage 2.4.4 &  Bidirektional - Tiefensuche\\
+		Grundanfrage 2.4.1 &  Cypher - Einseitig -Tiefensuche\\
+		Vergleichsanfrage 1 &  Core API - Einseitig - Tiefensuche \\
+		Grundanfrage 2.4.2 &  Core API - Einseitig Breitensuche\\
+		Grundanfrage 2.4.3&  Core API - Bidirektional - Breitensuche\\
+		Grundanfrage 2.4.4 &  Core API -  Bidirektional - Tiefensuche\\
 		\hline
 	\end{tabular}
 	\caption{Grundanfragen 2.4.1 bis 2.4.4}
@@ -186,7 +186,7 @@ Für die \textbf{Grundanfragen 2.1.1 und 2.1.2} werden folgende Aspekte betrache
 	\item Die Performanzunterschiede zwischen der Breitensuche und Tiefensuche
 	\item Der relative Anteil an erreichten Personen im gesamten Graphen
 \end{enumerate}
-Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens doppelt so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Für  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche zu einer höheren Tiefe eine minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
+Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens doppelt so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Für  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche zu einer höheren Tiefe einen minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
 Zum 2. Aspekt: Bei der Erhöhung von Tiefe 2 zu Tiefe 3 steigt die Tiefe um 1 an, aber die Breite erhöht sich pro Element in der Tiefe 2 um 2500. Der Graph besitzt ausgehend von dem Knoten der Person1 eine relativ hohe Breite im Vergleich zu der Tiefe, dadurch wird die Anfrage mit der Tiefensuche signifikant schneller ausgeführt werden. Es entsteht die Möglichkeit einer schnellen und langsamer Ausführung einer Anfrage durch den Nutzer. \newline
 Zum 3. Aspekt: Durch die Tiefe 2 können unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet, dass alle Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
 Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
@@ -194,7 +194,7 @@ Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet:
 	\item Ein Unterschied in der Laufzeit bei  semantischer Äquivalenz  
 	\item Die allgemeine Performanz von dem Ausdruck $WHERE$ $NOT$.
 \end{enumerate}
-Zum 1. Aspekt: Zwischen den kleiner Anfragen wird Unterschied bestehen, da der Optimierer eine der beiden Ausdrücke in den anderen überführen wird und der Optimierer selbst Ressourcen beansprucht. \newline
+Zum 1. Aspekt: Zwischen den Anfragen wird ein kleiner Unterschied bestehen, da der Optimierer eine der beiden Ausdrücke in den anderen überführen wird und der Optimierer selbst Ressourcen beansprucht. \newline
 Zum 2. Aspekt: Da eine weitere Anfrage im WHERE-Prädikat gestellt wird und beide Ergebnismengen verglichen werden, wird vermutet dass die Ausführungszeit sehr hoch ist. Durch die Eigenschaften der Parallelisierung wird die Anfrage in der Core-API um ein vielfaches schneller beantwortet werden. \newline  \newline
 Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet: 
 \begin{enumerate}
@@ -211,7 +211,7 @@ Für die \textbf{Grundanfragen 2.4.1-2.4.4} werden folgende Aspekte betrachtet:
 Zum 1.Aspekt: Die bidirektionale Suche wird schneller ausgeführt, da potenziell durch 2 parallele Pfade  weniger Berechnungsschritte zum Suchen eines Pfades, der  durch den gesamten Graphen verläuft, benötigt werden. \newline 
 Zum 2. Aspekt: Da durch den gesamten Graphen ohne Abbruchbedingung traversiert wird, besitzen die beiden Suchalgorithmen die gleiche Komplexität. Beide Algorithmen werden dementsprechend bei einer einseitigen Ausführung die gleiche Ausführungszeit besitzen. Bei der bidirektionalen Traversierung wird vermutet, das Grundanfrage 2.4.4 mit der Tiefensuche schneller ausgeführt wird und insgesamt die schnellste Traversierung darstellen wird. Darauf wird die Grundanfrage 2.4.3 folgen und danach die beiden einseitigen Traversierungen. 
 \section{Dritter Testlauf}
-In dem dritten Testlauf werden alle Grundanfragen außer die Grundanfragen 2.4.3 und 2.4.4 auf dem Datenbank Managment System OrientDB ausgeführt\footnote{https://orientdb.com/}. Da OrientDB keine bidirektionale Traversierung zur Verfügung stellt, konnten die Grundanfragen 2.4.3 und 2.4.4 nicht ausgeführt werden. Die benötigten Bearbeitungszeiten für die Anfragen dienen als Referenz für eine bessere Performanzeinschätzung. In OrientDB werden alle Anfragen in SQL formuliert und evaluiert. Für diesen Testlauf werden keine Hypothesen aufgestellt, da die Performanzunterschiede von viele Faktoren wie interner Implementierungen abhängig sind. 
+In dem dritten Testlauf werden alle Grundanfragen außer die Grundanfragen 2.4.3 und 2.4.4 auf dem Datenbankmanagementsystem OrientDB ausgeführt\footnote{https://orientdb.com/}. Da OrientDB keine bidirektionale Traversierung zur Verfügung stellt, konnten die Grundanfragen 2.4.3 und 2.4.4 nicht ausgeführt werden. Die benötigten Bearbeitungszeiten für die Anfragen dienen als Referenz für eine bessere Performanzeinschätzung. In OrientDB werden alle Anfragen in SQL formuliert und evaluiert. Für diesen Testlauf werden keine Hypothesen aufgestellt, da die Performanzunterschiede von viele Faktoren wie interner Implementierungen abhängig sind. 
 \subsection{OrientDB}
 OrientDB ist eine noSQL,  Multi-Model Datenbank von dem Entwickler OrientDB Ltd. Die Multi-Model Eigenschaft beschreibt die Fähigkeit, Daten als Dokumente, Graph, Schlüssel/Wert-Modell oder als Objekte zu modellieren\footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html (21.07.19)}. Die Daten werden mittels API für eine unterstützte Sprache oder mit den Anfragensprachen Gremlin oder SQL manipuliert. Als direktes Eingabe-Interface für Gremlin und SQL steht das OrientDB Studio für den Browser zur Verfügung.  Dieses DBMS ist der Community- und der Enterprise-Version verfügbar. Die Enterprise-Version verfügt über zusätzliche Features, die das Überwachen der Anfragen ermöglicht bzw. erleichtert. Da die Enterprise-Version über keine Features verfügt ,die nicht auf der Community-Version laufen, die Einfluss auf die  Performanz haben, wurde für dieses Experiment die Community Version gewählt. Die verwendete Version von OrientDB ist V 3.0.19. 
 \subsection{Unterschiede von OrientDB und Neo4j}
