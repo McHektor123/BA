@@ -10,7 +10,7 @@
 \section{Vorraussetzungen}
 Im Folgenden werden alle Einstellungen und Kategorisierungen, die für die Evaluation getroffen wurden, beschrieben. In den Testläufen werden Grundanfragen aufgestellt und Vergleichsanfragen zu diesen vorgestellt.  
 \subsection{Der verwendete Datensatz}
-Für das Experiment wurde ein selbsterstellter Datensatz gewählt, welcher aus einem selbst geschriebenen Programm erstellt wurde \footnote{https://github.com/McHektor123/BA/tree/master/src}. Die Datenbank läuft im eingebetteten Modus von Neo4j und besteht aus insgesamt 50.004 Entitäten, welche die Objekte der Datenbank bilden. 4 der Entitäten sind  vom Typ Aktion und 50000 vom Typ Person. Der Typ Aktion besitzt 3 mit einem Index versehende Attribute, mit den Namen $name$, welches aus einem String besteht, $attribute$, welches aus einem Integer besteht und $time$, welches von dem Typen Date ist. Der Typ Person besitzt ebenfalls 3 mit einem Index versehende Attribute namens $name$, $attribute$ und $time$. Jeder Wert der einzelnen Attribute tritt genau einmal auf, sodass alle Werte disjunkt sind. \newline
+Für das Experiment wurde ein selbsterstellter Datensatz gewählt, welcher aus einem selbstgeschriebenen Programm erstellt wurde \footnote{https://github.com/McHektor123/BA/tree/master/src}. Die Datenbank läuft im eingebetteten Modus von Neo4j und besteht aus insgesamt 50.004 Entitäten, welche die Objekte der Datenbank bilden. 4 der Entitäten sind  vom Typ Aktion und 50000 vom Typ Person. Der Typ Aktion besitzt 3 mit einem Index versehende Attribute, mit den Namen $name$, welches aus einem String besteht, $attribute$, welches aus einem Integer besteht und $time$, welches von dem Typen Date ist. Der Typ Person besitzt ebenfalls 3 mit einem Index versehende Attribute namens $name$, $attribute$ und $time$. Jeder Wert der einzelnen Attribute tritt genau einmal auf, sodass alle Werte disjunkt sind. \newline
 Es existieren insgesamt 4 Arten von Relationen: RELATIONSHIP1 und RELATIONSHIP2 bilden eine Relation von einer Entität des Typen Person zu einer Entität des Typen Aktion  und  RELATIONSHIP3 und RELATIONSHIP4 eine Relation von Person zu Person. Jede Person besitzt jeweils eine Relation vom Typen RELATIONSHIP1 und eine vom Typen RELATIONSHIP2, wobei die Ziel-Aktionen disjunkt sind. Pro Person wurden 2.500 Relationen vom Typen RELATIONSHIP3 und 2.500 Relationen vom Typen RELATIONSHIP4 generiert, da die Ziel-Personen nicht disjunkt sind, kommt es zu einer variablen Anzahl von zugehörigen disjunkten Relationen pro Person. Jede Person besitzt maximal 5002 Relationen. Da die Relationen als Kanten und die Entitäten als Knoten aufgefasst werden, besitzt der generierte Graph 50.004 Knoten und 250.100.000 Kanten mit einer physischen Gesamtgröße von 102,9 GB. 
 \subsection{Anfragen} \label{Kategorien}
 Für die Evaluation werden die Anfragen in folgende Kategorien von Angles unterteilt \parencite{angles2012comparison}: Nachbarschafts-Anfragen, Erreichbarkeits-Anfragen,Mustervergleichs-Anfragen und  Zusammenfassungen. 
@@ -20,7 +20,7 @@ Für die Evaluation werden die Anfragen in folgende Kategorien von Angles untert
 	\item Mustervergleichs-Anfragen: Prüfen, ob der Graph ein Sub-Graph enthält, welcher Ähnlichkeiten zu einem gegebenen Muster oder zu anderen Sub-Graphen aufweist. Zu dieser Kategorie gehört beispielsweise das NP-Vollständige Problem des Sub-Graph Isomorphismus. 
 	\item Zusammenfassungen: Diese Anfragen fassen eine Ergebnismenge zu einem Wert zusammen, dies ist durch Aggregations-Funktionen wie MAX,AVG oder COUNT ,aber auch dem Lesen von Eigenschaften des Graphen wie die Menge alle Knoten, realisiert. 
 \end{enumerate}
-Einer Anfrage können mehrere Kategorien zugeordnet werden. Das Experiment ermittelt, ob in Neo4j eine Korrelation zwischen Kategorie und Performanz einer Anfrage besteht. Hierfür werden 3 Testläufen durchgeführt, in denen eine Menge von Anfragen gestellt und analysiert werden. 
+Einer Anfrage können mehrere Kategorien zugeordnet werden. Das Evaluation ermittelt, ob in Neo4j eine Korrelation zwischen Kategorie und Performanz einer Anfrage besteht. Hierfür werden 3 Testläufen durchgeführt, in denen eine Menge von Anfragen gestellt und analysiert werden. 
 \section{Erster Testlauf}
 Der erste Testlauf besteht primär aus einfachen Nachbarschafts-Anfragen und Zusammenfassungen, um einen ersten Überblick von Neo4j zu erhalten. Im folgenden Abschnitt werden die Grundanfragen des ersten Testlaufes und Vergleichsanfragen der Grundanfragen vorgestellt. 
 \subsection{Grundanfragen zu ersten Testlauf}
@@ -31,7 +31,7 @@ Das ist die \textbf{Grundanfrage 1.1.1}:
  RETURN COUNT(DISTINCT(Y))
 \end{Verbatim} 
 Grundanfrage 1.1.1 findet alle Nachbarn, die über eine ausgehende RELATIONSHIP3-Kante erreichbar sind, unter der Voraussetzung, dass bestimmte Bedingungen für die Eigenschaften 'attribute' erfüllt sind. Es handelt sich um eine Nachbarschafts-Anfrage.
- Grundanfrage 1.1.2 verwendet die gleichen Bedingungen wie Grundanfrage 1.1.1 und betrachtet alle eingehenden statt ausgehenden Kanten. Grundanfrage 1.1.3 betrachtet sowohl ausgehende, als auch eingehende Kanten mit Verwendung der gleichen Bedingungen. In den Vergleichsanfragen werden diese 3 Grundanfragen mit der Relation RELATIONSHIP2 gestellt und zusätzlich semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1.1.1, dargestellt in Tabelle \ref{tab:Intro_Query2_1}.
+ Grundanfrage 1.1.2 verwendet die gleichen Bedingungen wie Grundanfrage 1.1.1 und betrachtet alle eingehenden statt ausgehenden Kanten. Grundanfrage 1.1.3 betrachtet sowohl ausgehende, als auch eingehende Kanten mit Verwendung der gleichen Bedingungen. In den Vergleichsanfragen werden diese 3 Grundanfragen semantisch äquivalent in der JAVA Core API unter Verwendung der Traversal API formuliert und zusätzlich mit der Relation RELATIONSHIP2 gestellt. Insgesamt entstehen 9 Anfragen aus Grundanfrage 1.1.1, dargestellt in Tabelle \ref{tab:Intro_Query2_1}.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -59,7 +59,7 @@ Grundanfrage 1.1.1 findet alle Nachbarn, die über eine ausgehende RELATIONSHIP3
 \begin{Verbatim}[frame=single]
 MATCH (p:Person {name:'Person613'}) return p
 \end{Verbatim} 
-Diese Anfrage findet die Person mit dem Namen "Person613". In einer Vergleichsanfrage wird die Überprüfung des Attributes 'name' in ein WHERE Prädikat verschoben wird und die Anfrage  in der Core API formuliert wird. Es werden drei Anfragen verglichen, denen semantisch Grundanfrage 1.2 zu Grunde liegt.\newline \newline
+Diese Anfrage findet die Person mit dem Namen "Person613". In einer Vergleichsanfrage wird die Überprüfung des Attributes $name$ in ein WHERE-Prädikat verschoben und die Anfrage wird in der Core API formuliert wird. Es werden drei Anfragen verglichen, denen semantisch Grundanfrage 1.2 zu Grunde liegt.\newline \newline
 Das ist die \textbf{Grundanfrage 1.3}: 
 \begin{Verbatim}[frame=single]
 MATCH (X:Person{name: 'Person1'})-[:Relationship3]->(n1) 
@@ -84,9 +84,9 @@ Für die \textbf{Grundanfragen 1.1.1-1.1.3} entstehen 3 Aspekte, welche betracht
 \item Die Unterschiede zwischen der Anfrage mit Verwendung von RELATIONSHIP3 und RELATIONSHIP2.
 \end{enumerate}
 Zum 1. Aspekt: Die Ausführungszeit ist am höchsten bei Grundanfrage 1.1.3, da dort am meisten Pfade betrachtet werden müssen. Die Zeit ist minimal bei Grundanfrage 1.1.1, da dort die Anzahl der zu betrachtenden Pfade minimal ist. \newline
- Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs flexibler arbeiten und Cypher als hardware-fernere Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird erwartet, dass die Performanz bei den verwendeten Anfragen deutlich höher ist, wenn die Java Core API genutzt wird. \newline
-Zum 3. Aspekt: Da jede Person zwei Relationen vom Typ RELATIONSHIP2 besitzt aber maximal 2.500 vom Typ RELATIONSHIP3 werden die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1.000 schneller ausgeführt werden. Dies entspricht einer linearen Skalierung des Systems. \newline \newline
-Für \textbf{Grundanfrage 1.2} werden 2 Aspekte betrachtet .
+ Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs flexibler arbeiten und Cypher als hardware-fernere Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird die Performanz bei den verwendeten Anfragen deutlich höher sein, wenn die Java Core API genutzt wird. \newline
+Zum 3. Aspekt: Da jede Person eine Relationen vom Typ RELATIONSHIP2 besitzt aber maximal 2.500 vom Typ RELATIONSHIP3 werden die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1.000 schneller ausgeführt werden. Dies entspricht einer linearen Skalierung des Systems. \newline \newline
+Für \textbf{Grundanfrage 1.2} werden 3 Aspekte betrachtet .
 \begin{enumerate}
 	\item Die allgemeine Performanz 
 	\item Die entstehenden Unterschiede zwischen Cypher und der Core API

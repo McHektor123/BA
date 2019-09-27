@@ -151,7 +151,7 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-Durch das steigende Interesse an der Analyse von Netzwerken werden Datenbanken des NoSQL-Ansatzes weiterentwickelt und für diese Analyse genutzt \parencite{angles2018property}. Eine Untergruppe dieses Ansatzes stellen die Graphdatenbanken dar, einer der populärsten Vertreter dieser Gruppe ist Neo4j. In dieser Arbeit wird beschrieben, wie sich verschiedene Arten von Anfragen auf dem System Neo4j verhalten. Zu diesem Zweck wurden mehrere Anfragen mit semantisch gleichen Vergleichsanfragen an das System gestellt und die Differenz in den Bearbeitungszeiten wird betrachtet. Jeder Anfrage wird eine oder mehreren Kategorien zugeordnet, um so eine Korrelation zwischen Kategorie und Bearbeitungszeit einer Anfrage zu erkennen. Nach Ausführen der Anfragen konnte keine Korrelation festgestellt werden. \newline
+Durch das steigende Interesse an der Analyse von Netzwerken werden Datenbanken des NoSQL-Ansatzes weiterentwickelt und für diese Analyse genutzt \parencite{angles2018property}. Eine Untergruppe dieses Ansatzes stellen die Graphdatenbanken dar, einer der populärsten Vertreter dieser Gruppe ist Neo4j. In dieser Arbeit wird beschrieben, wie sich verschiedene Arten von Anfragen auf dem System Neo4j verhalten. Zu diesem Zweck wurden mehrere Anfragen mit semantisch gleichen Vergleichsanfragen an das System gestellt und die Differenz in den Bearbeitungszeiten wird betrachtet. Jeder Anfrage wird einer oder mehreren Kategorien zugeordnet, um so eine Korrelation zwischen Kategorie und Bearbeitungszeit einer Anfrage zu erkennen. Nach Ausführen der Anfragen konnte keine allgemeine Korrelation festgestellt werden. \newline
 Für eine Einordnung der Performanz von Neo4j wurden alle aufgestellten Anfragen auf dem Datenbankmanagementsystem OrientDB ausgeführt\footnote{http://orientdb.com/docs/3.0.x/misc/Overview.html (5.09.19)}. Die benötigten Zeiten für das Bearbeiten der Anfragen auf dem System OrientDB wurden mit den Bearbeitungszeiten der Anfragen auf Neo4j verglichen. Die Analyse zeigt, dass Neo4j bei den meisten Anfragen eine signifikant schnellere Bearbeitungszeit aufweist und so das performantere System darstellt. Unter Berücksichtigung der Limitierungen werden die Nutzungsvielfalt und gute Performanz als Stärke und die erforderlichen technischen Kenntnisse und schlechte Speicherverwaltung als Schwäche von Neo4j hervorgehoben. \newline
 \begin{center}
 \textbf{Evaluation of temporal graph databases using the example of Neo4j}
@@ -195,7 +195,10 @@ To rank the performance of Neo4j, all queries that were made were run on the Dat
 	\textbf{CAP} & \textbf{C}onsistency \textbf{A}vailibility \textbf{P}artition Tolerance  \\
 	\textbf{LFU} &\textbf{L}east \textbf{F}requently \textbf{U}sed \\
 	\textbf{ASB} & \textbf{A}bstrakter \textbf{S}yntax \textbf{B}aum\\
+	\textbf{GUI} & \textbf{G}rafisches \textbf{U}ser \textbf{I}nterface\\
+	\textbf{HTTP} & \textbf{H}yper\textbf{t}ext \textbf{T}ransfer \textbf{P}rotocol\\
 	
+
 \end{abbreviations}
 %----------------------------------------------------------------------------------------
 %	DEDICATION
