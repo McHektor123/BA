@@ -83,7 +83,7 @@ Für die \textbf{Grundanfragen 1.1.1-1.1.3} entstehen 3 Aspekte, welche betracht
 \item Die Performanzunterschiede zwischen Cypher und den APIs
 \item Die Unterschiede zwischen der Anfrage mit Verwendung von RELATIONSHIP3 und RELATIONSHIP2.
 \end{enumerate}
-Zum 1. Aspekt: Die Ausführungszeit ist am höchsten bei Grundanfrage 1.1.3, da dort am meisten Pfade betrachtet werden müssen. Die Zeit ist minimal bei Grundanfrage 1.1.1, da dort die Anzahl der zu betrachtenden Pfade minimal ist. \newline
+Zum 1. Aspekt: Die Bearbeitungszeit ist am höchsten bei Grundanfrage 1.1.3, da dort am meisten Pfade betrachtet werden müssen. Die Zeit ist minimal bei Grundanfrage 1.1.1, da dort die Anzahl der zu betrachtenden Pfade minimal ist. \newline
  Zum 2. Aspekt: Wie in \parencite{raj2015neo4j} beschrieben, wird es empfohlen die APIs für eine erhöhte Performanz zu nutzen, da diese APIs flexibler arbeiten und Cypher als hardware-fernere Sprache in Neo4j aufgefasst wird. Aus diesem Grund wird die Performanz bei den verwendeten Anfragen deutlich höher sein, wenn die Java Core API genutzt wird. \newline
 Zum 3. Aspekt: Da jede Person eine Relationen vom Typ RELATIONSHIP2 besitzt aber maximal 2.500 vom Typ RELATIONSHIP3 werden die Anfragen mit der Relation RELATIONSHIP2 mindestens um den Faktor 1.000 schneller ausgeführt werden. Dies entspricht einer linearen Skalierung des Systems. \newline \newline
 Für \textbf{Grundanfrage 1.2} werden 3 Aspekte betrachtet .
@@ -92,7 +92,7 @@ Für \textbf{Grundanfrage 1.2} werden 3 Aspekte betrachtet .
 	\item Die entstehenden Unterschiede zwischen Cypher und der Core API
 	\item Der Vergleich zwischen Filtern in dem Where-Prädikat und der Match-Prädikat
 \end{enumerate}
-Zum 1. Aspekt: Alle 3 Anfragen werden eine sehr schnelle Ausführungszeit besitzen, da besonders der Gebrauch von Indizes ein schnelles Finden von Eigenschaften erlaubt. \newline
+Zum 1. Aspekt: Alle 3 Anfragen werden eine sehr kurze Bearbeitungszeit besitzen, da besonders der Gebrauch von Indizes ein schnelles Finden von Eigenschaften erlaubt. \newline
 Zum 2. Aspekt: Wie bei der Grundanfrage 1.1 wird   die Anfrage mit der Java Core API eine bessere Performanz besitzen, insbesondere weil keine Traversal API verwendet wurde. \newline
 Zum 3. Aspekt: Da der Optimierer, die meisten Bedingungen in das WHERE Prädikat verschiebt sollte nur ein minimaler bis nicht vorhandener Performanzunterschied zwischen den beiden Anfragen bestehen. \newline \newline
 Für \textbf{Grundanfrage 1.3} wird nur ein Aspekt betrachtet.
@@ -179,14 +179,14 @@ Die Anfrage traversiert über den gesamten Graphen, bis jeder Knoten einmal betr
 \end{table}
 \FloatBarrier
 \subsection{Hypothesen zum zweiten Testlauf}
-Es werden Hypothesen zu den komplexeren Grundanfrage aus dem zweiten Testlauf vorgestellt. Die Hypothesen werden ebenfalls in der Auswertung überprüft. \newline \newline
+Es werden Hypothesen zu den komplexeren Grundanfrage aus dem zweiten Testlauf vorgestellt. \newline \newline
 Für die \textbf{Grundanfragen 2.1.1 und 2.1.2} werden folgende Aspekte betrachet: 
 \begin{enumerate}
 	\item Ein Unterschied zwischen der Traversierung in den Tiefen 2 und 3 
 	\item Die Performanzunterschiede zwischen der Breitensuche und Tiefensuche
 	\item Der relative Anteil an erreichten Personen im gesamten Graphen
 \end{enumerate}
-Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens doppelt so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Bei den Vergleichsanfragen mit der  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche zu einer höheren Tiefe einen minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
+Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens 1000 mal so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Bei den Vergleichsanfragen mit der  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche in einer höheren Tiefe einen minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
 Zum 2. Aspekt: Bei der Erhöhung von Tiefe 2 zu Tiefe 3 steigt die Tiefe um 1 an, aber die Breite erhöht sich pro Element in der Tiefe 2 um 2500. Der Graph besitzt ausgehend von dem Knoten der Person1 eine relativ hohe Breite im Vergleich zu der Tiefe, dadurch wird die Anfrage mit der Tiefensuche signifikant schneller ausgeführt werden. Es entsteht die Möglichkeit einer schnellen und langsamer Ausführung einer Anfrage durch den Nutzer. \newline
 Zum 3. Aspekt: Durch die Tiefe 2 können unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet, dass die meisten Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
 Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
