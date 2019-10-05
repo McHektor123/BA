@@ -53,9 +53,9 @@ Optional kann zur  Performanzsteigerung ein Cache verwaltet werden. Die vorgeste
 Im Folgenden werden die Möglichkeiten zum Programmieren mit Neo4j beschrieben. Da es über die Neo4j Treiber möglich ist, Neo4j in mehreren Programmiersprachen zu nutzen und die Anzahl der unterstützten Sprachen stetig steigt, werden im folgenden nur die Kernfunktionen in Java beschrieben und verwendet. Durch die Einbindung einer Erweiterung  ist der Gebrauch der Anfragesprache $GraphQL$ möglich, welche in dieser Evaluation nicht betrachtet wurde.
 
 \subsubsection{Cypher}
-Im Gegensatz zu den relationalen Datenbanken gibt es bei Graphdatenbanken keine standardisierte Anfragesprache, welche in den meisten Graphdatenbanken Verwendung findet \parencite{han2011survey}. In Neo4j besteht seit 2000 die Möglichkeit, die deklarative Anfragesprache $Cypher$ zu verwendenden  \parencite{francis2018cypher}. Cypher wird von Neo4j Inc. entwickelt und wurde ursprünglich ausschließlich für die Neo4j Datenbank verwendet. Seit Oktober 2015  findet Cypher als $openCypher$ Gebrauch in anderen Datenbanken \parencite{francis2018cypher}. Für die APIs von Neo4j sind Kenntnisse in Java bzw. einer durch die Neo4j-Treiber unterstützten Programmiersprachen notwendig. Cypher bildet eine Möglichkeit ohne diese Kenntnisse die  Datenbank anzusteuern\parencite{vukotic2015neo4j}. Die Syntax ist an SQL und Gremlin orientiert. In Cypher wird ein Muster durch den Nutzer angegeben und alle Objekte, die dieses Muster erfüllen, werden zurückgegeben. Die wichtigsten  Prädikate sind: \newline
+Im Gegensatz zu den relationalen Datenbanken gibt es bei Graphdatenbanken keine standardisierte Anfragesprache, welche in den meisten Graphdatenbanken Verwendung findet \parencite{han2011survey}. In Neo4j besteht seit dem Jahr 2000 die Möglichkeit, die deklarative Anfragesprache $Cypher$ zu verwendenden  \parencite{francis2018cypher}. Cypher wird von Neo4j Inc. entwickelt und wurde ursprünglich ausschließlich für die Neo4j Datenbank verwendet. Seit Oktober 2015  findet Cypher als $openCypher$ Gebrauch in anderen Systemen \parencite{francis2018cypher}. Für die APIs von Neo4j sind Kenntnisse in der Programmiersprache Java bzw. einer durch die Neo4j-Treiber unterstützten Programmiersprachen notwendig. Cypher bildet eine Möglichkeit ohne diese Kenntnisse die  Datenbank anzusteuern \parencite{vukotic2015neo4j}. Die Syntax ist an SQL orientiert. In Cypher wird ein Muster durch den Nutzer angegeben und alle Objekte, die dieses Muster erfüllen, werden zurückgegeben. Die wichtigsten  Prädikate sind: \newline
 \textbf{Where}: Wie in SQL werden Objekte hierbei anhand von Attributen gefiltert. \newline
-\textbf{Match}: Spezifiziert das Muster in dem Neo4j sucht. Beispielsweise:
+\textbf{Match}: Spezifiziert das Muster in dem Neo4j sucht.
 \begin{Verbatim}[frame=single]
 MATCH (p1:Person)-[:Friends*2]->(p2:Person) 
 WHERE p1.name= ‘Peter’ 
@@ -63,31 +63,31 @@ RETURN p2.name
 \end{Verbatim}
 Hier werden alle Personen-Knoten durchsucht, die mit einer “Friends”-Relation mit dem Personen-Knoten von “Peter” verbunden sind. p1 stellt einen Bezeichner für den Knoten vom Typ “Person” dar, [:Friends] ist eine Relation vom Typ “Friends” und durch “->” wird angegeben, dass es sich um eine ausgehende Kante vom Knoten p1 handelt. Mit der Schreibweise [:Friends*2] wird ausgedrückt, dass es sich um die Tiefe 2 handelt, das heißt es werden Freunde von Freunden gesucht. \newline
 \textbf{Return}: Es wird angegeben, welche Objekte bzw. welche Attribute der Objekte, die das Muster erfüllen zurückgegeben werden sollen.\newline
-\textbf{Delete}: Wie in SQL  wird ein  oder mehrere Objekte aus der Datenbank entfernt. Beispielsweise:
+\textbf{Delete}: Wie in SQL  wird ein  oder mehrere Objekte aus der Datenbank entfernt.
 \begin{Verbatim}[frame=single]
 DELETE (p:Person{name: ‘Peter’})  
 \end{Verbatim}
-\textbf{With}: Dadurch lassen sich in einer Anfrage Objekte manipulieren bevor sie zu einer weiteren Anfrage gegeben werden. Beispielsweise:
+\textbf{With}: Dadurch lassen sich in einer Anfrage Objekte manipulieren bevor sie zu einer weiteren Anfrage gegeben werden. 
 \begin{Verbatim}[frame=single]
 MATCH (p:Person{name: ‘Peter’})  
 WITH COUNT(p) as count  
 RETURN count
 \end{Verbatim} 
-\textbf{Create}: Erzeugt ein Objekt in der Datenbank. Beispielsweise:
+\textbf{Create}: Erzeugt ein Objekt in der Datenbank. 
 \begin{Verbatim}[frame=single]
 Create (p:Person)
 \end{Verbatim}
 Hier wird ein Knoten vom Typ Person erzeugt. Es ist auch möglich, mehrere Knoten mit den dazugehörigen Relationen zu erzeugen. Indizes  für die Objekte oder Attribute von Objekten können ebenfalls über Create erzeugt werden.\newline
-\textbf{Limit}: Beschränkt die Anzahl, welche durch das Return-Statement zurückgegeben wird Beispielsweise:
+\textbf{Limit}: Beschränkt die Anzahl, welche durch das Return-Statement zurückgegeben wird 
 \begin{Verbatim}[frame=single]
 MATCH (p:person) RETURN p.name LIMIT 10
 \end{Verbatim} 
 Hier werden nur die Namen  von 10 Personen zurückgegeben\newline
 \textbf{SUM/COUNT/AVG}: Wie in SQL wird die Summe, die Anzahl oder der Durchschnitt von einer gegebenen Menge gebildet. Solch eine Funktionen ist wird Aggregations-Funktion bezeichnet. \newline \newline
-Durch die gegebenen Prädikate beeinflusst der Nutzer so welche Daten mittels des Musters gesucht und zurückgegeben werden. Es besteht keine Möglichkeit, die Art der Berechnung zu beeinflussen. Cypher wird dadurch als nutzerfreundlichere aber auch weniger performante Alternative zu den direkten APIs empfohlen \parencite{vukotic2015neo4j}. In den folgenden Experimenten wurde sowohl Cypher als auch die Core API für einen direkten Vergleich verwendet. Cypher wird in Neo4j ausschließlich auf einem Prozessorkern ausgeführt. Durch das Einbinden von User Defined Functions(UDF) für Cypher ist das Ausführen auf mehreren Prozessorkernen in einigen Fällen möglich. Diese UDFs können von den Nutzer erstellt und zur Verfügung gestellt werden und beispielsweise durch die Awesome Procedures on Cypher(APOC) Bibliothek verbreitet werden \footnote{APOC}.
+Durch die gegebenen Prädikate beeinflusst der Nutzer so welche Daten mittels des Musters gesucht und zurückgegeben werden. Es besteht keine Möglichkeit, die Art der Berechnung zu beeinflussen. Cypher wird dadurch als nutzerfreundlichere aber auch weniger performante Alternative zu den direkten APIs empfohlen \parencite{vukotic2015neo4j}. In den folgenden Experimenten wurde sowohl Cypher als auch die Core API für einen direkten Vergleich verwendet. Cypher wird in Neo4j ausschließlich auf einem Prozessorkern ausgeführt. Durch das Einbinden von User Defined Functions(UDF) für Cypher ist das Ausführen auf mehreren Prozessorkernen in einigen Fällen möglich. Diese UDFs können von den Nutzer erstellt und zur Verfügung gestellt werden und  durch Bibliotheken wie die Awesome Procedures on Cypher(APOC) verbreitet werden \parencite{APOC}.
 
 \subsubsection{Java Core API}
-Als nahe Schnittstelle zu den Kernfunktionen von Neo4j bietet die Java Core API die meisten Kontrolle und besitzt bei richtigem Gebrauch die schnellste Laufzeit \parencite{vukotic2015neo4j}. Zur Verwendung dieser imperativen API sind weitreichende Programmierkenntnisse und Wissen über die Neo4j-Bibliotheken, sowie ein genaues Verständnis  über die Daten in dem Graph erforderlich. Wenn diese Kenntnisse gegeben sind, ist die API flexible verwendbar  und der Nutzer hat einen hohen Einfluss darauf, wie die Anfragen bearbeitet werden sollen und kann eine optimale Berechnungsstrategie angeben \parencite{vukotic2015neo4j}. Gegeben seien folgende Beispiele: \newline
+Als nahe Schnittstelle zu den Kernfunktionen von Neo4j bietet die Java Core API die meisten Kontrolle und besitzt bei richtigem Gebrauch die schnellste Laufzeit \parencite{vukotic2015neo4j}. Zur Verwendung dieser imperativen API sind weitreichende Programmierkenntnisse und Wissen über die Neo4j-Bibliotheken, sowie ein genaues Verständnis  über die Daten in dem Graph erforderlich. Wenn diese Kenntnisse gegeben sind, ist die API flexible verwendbar  und der Nutzer hat einen hohen Einfluss darauf, wie die Anfragen bearbeitet werden sollen und kann eine optimale Berechnungsstrategie angeben \parencite{vukotic2015neo4j}. Gegeben seien folgende Transaktionen: \newline
 \begin{Verbatim}[frame=single]
 try ( Transaction tx = graphDb.beginTx() )
 {
@@ -120,10 +120,10 @@ try ( Transaction tx = graphDb.beginTx() )
 }
 \end{Verbatim}
 
-\noindent In dem ersten Beispiel werden alle Freunde von Peter gefunden und zurückgegeben. Das zweite Beispiel gibt die Eigenschaft $attribute$ von  Peter zurück. Der Nutzer gibt jede Transaktion explizit an, so ist es dem System möglich die Transaktionen zu parallelisieren und nicht ausgelastete Prozessorkerne zu nutzen.
+\noindent In der ersten Transaktion werden alle Freunde von Peter gefunden und zurückgegeben. Die zweite Transaktion gibt die Eigenschaft $attribute$ von  Peter zurück. Der Nutzer gibt jede Transaktion explizit an, so ist es dem System möglich die Transaktionen zu parallelisieren und nicht ausgelastete Prozessorkerne zu nutzen.
 
 \subsubsection{Traversal API}
-Die deklarative Travesal API dient zum spezifizieren von Traversierungen im Graph, sie ist näher an den Kernfunktionen von Neo4j als Cypher und weiter entfernt als die Core API. Die Traversal API erlaubt einen Zugriff auf Neo4j, welcher  abstrakter als die Core API ist. Der Nutzer muss keine genaues Verständnis von den Daten im Graphen haben. Es wird eine Beschreibung angegeben, wie eine Traversierung  ausgeübt werden soll und diese wird auf einen Graphen anwenden. Betrachte folgende Beispiele:
+Die deklarative Travesal API dient zum spezifizieren von Traversierungen im Graph, sie ist näher an den Kernfunktionen von Neo4j als Cypher und weiter entfernt als die Core API. Die Traversal API erlaubt einen Zugriff auf Neo4j, welcher  abstrakter als die Core API ist. Der Nutzer muss keine genaues Verständnis von den Daten im Graphen haben. Es wird eine Beschreibung angegeben, wie eine Traversierung  ausgeübt werden soll und diese wird auf einen Graphen anwenden. Gegeben seine folgende Traversierungen:
 \begin{Verbatim}[frame=single]
 private Traverser getFriends(final Node person)
 {
@@ -157,7 +157,7 @@ Zusammengefasst wäre die erste Traversierung: Suche alle Verbindungen von dem A
 \noindent Wenn der Nutzer mit der Struktur der Daten in dem Graph vertraut ist, kann die ausgewählte Methode eine erheblichen Performanzunterschied  hervorbringen \parencite{vukotic2015neo4j}. 
 
 \subsection{Anfragebearbeitung und Planoptimierung}
-Nach Angaben von Neo4j werden Anfragen in Cypher, nach folgendem Muster bearbeitet\footnote{https://neo4j.com/blog/introducing-new-cypher-query-optimizer/  (11.06.19)}:
+Nach Angaben von Neo4j werden Anfragen in Cypher, nach folgendem Muster bearbeitet \parencite{Optimizer}:
 \begin{enumerate}
 	\item Umwandeln der Eingabe in einen abstrakten Syntax Baum (ASB)
 	\item Optimieren des ASB
@@ -174,9 +174,9 @@ Die Schritte 2-5 werden vom Cypher Query Optimizer übernommen. \newline \newlin
 \begin{enumerate}[label=(\roman*)]
 	\item Alle Labels, die sich in einem \textbf{Match} befinden, werden in das \textbf{Where}-Prädikat verschoben
 	\item  Semantisch-äquivalente \textbf{Where}-Prädikate werden zusammengefasst
-	\item Ersetze alle Synonyme zum Beispiel: \textbf{RETURN * => RETURN x as x, y as y}
-	\item Fasse Konstanten zusammen zum Beispiel: \textbf{3 + 3 => 6}
-	\item Setze bei anonymen Knoten einen Namen ein zum Beispiel: \textbf{ MATCH () => MATCH (n:Person)}
+	\item Ersetze alle Synonyme zum wie: \textbf{RETURN * => RETURN x as x, y as y}
+	\item Fasse Konstanten zusammen zum wie: \textbf{3 + 3 => 6}
+	\item Setze bei anonymen Knoten einen Namen ein zum wie: \textbf{ MATCH () => MATCH (n:Person)}
 	\item Ersetze das Gleichheitszeichen durch ein 'IN'wie: \textbf{MATCH (n) WHERE id(n) = 12 => MATCH n WHERE id(n) IN [12]}
 \end{enumerate}
 3. Durch das Erstellen eines Anfragegraphen wird ein abstraktere Darstellung für die Anfrage erzeugt.\newline \newline
@@ -187,7 +187,7 @@ Die Schritte 2-5 werden vom Cypher Query Optimizer übernommen. \newline \newlin
 
 
 \subsection{Speicherverwaltung in Neo4j}
-Graphdatenbanken besitzen eine andere Speicherverwaltung als relationale Datenbanken \parencite{angles2012comparison}. In Neo4j wird der Speicher in sogenannten Record Files unterteilt. Diese Dateien speichern jeweils einen Teil des Graphen wie Knoten, Kanten, Attribute etc. ab. Die Objekte besitzen in den Dateien eine feste Größe, dies erlaubt einen Zugriff in konstanter Zeit \parencite{robinson2013graph}. Wenn zum Beispiel der Knoten mit der ID 100 gesucht wird und ein einzelner Knoten X Bytes groß ist, wird der gesuchte Knoten bei Byte 100*X beginnen. Die genaue Größe  variiert, je nach betrachteter Neo4j Version, seit Neo4j Version 3 besitzt ein Knoten die Größe 15 Byte und werden in der Datei node-store gespeichert \footnote{https://neo4j.com/developer/kb/understanding-data-on-disk/ (13.06.19)}. Nach \parencite{robinson2013graph} werden die Objekte wie folgt verwaltet:
+Graphdatenbanken besitzen eine andere Speicherverwaltung als relationale Datenbanken \parencite{angles2012comparison}. In Neo4j wird der Speicher in sogenannten Record Files unterteilt. Diese Dateien speichern jeweils einen Teil des Graphen wie Knoten, Kanten, Attribute etc. ab. Die Objekte besitzen in den Dateien eine feste Größe, dies erlaubt einen Zugriff in konstanter Zeit \parencite{robinson2013graph}. Wenn der Knoten mit der ID 100 gesucht wird und ein einzelner Knoten X Bytes groß ist, wird der gesuchte Knoten bei Byte 100*X beginnen. Die genaue Größe  variiert, je nach betrachteter Neo4j Version, seit Neo4j Version 3 besitzt ein Knoten die Größe 15 Byte und werden in der Datei node-store gespeichert \parencite{Storage}. Nach \parencite{robinson2013graph} werden die Objekte wie folgt verwaltet:
 \subsubsection{Verwaltung der Knoten im Speicher}
 Ein Knoten im Knotenspeicher wird folgendermaßen dargestellt: Das erste Byte kennzeichnet, ob der Knoten verwendet wird bzw. genutzt werden kann. Die nachfolgenden 4 Bytes kennzeichnen die ID für die erste Relation, die mit dem Knoten verbunden ist. Die darauffolgenden 4 Bytes beschreiben das erste Attribute des Knoten. Die nächsten 5 Bytes verweisen auf ein Label, welches gegebenenfalls verwendet wurde und sich im Label-Store befindet. Das letzte Byte ist für bestimmte Flags und für zukünftige Verwendungszwecke. 
 \subsubsection{Verwaltung der Kanten im Speicher}
@@ -195,8 +195,8 @@ Die Kanten werden in dem Relationsspeicher gespeichert. Jeder Eintrag besitzt di
 \subsubsection{Verwaltung der Attribute im Speicher}
 Neo4j wird als property graph database bezeichnet, dort kann jeder Knoten und jede Kante Attribute besitzen. Die Attribute befinden sich im Attributsspeicher. Jeder Eintrag zu einem Attribut ist in 1-4 Blöcke und einer ID zu einem nächstfolgenden Attribut unterteilt. Jeder der Blöcke beinhaltet Informationen über einen Typen, welcher ein String, ein Array oder ein Java-Standard Typ sein kann und einen Zeiger auf ein Index zu dem Namen des Attributs.  
 \subsubsection{Indizies}
-Ein Index ist eine redundante Kopie von Daten in einer Datenbank, es kann auf ein Element direkt zugegriffen werden, ohne dass über die gesamte Datenstruktur iteriert werden muss. Dadurch wird die Suche nach diesen Daten beschleunigt.Neo4j besitzt die Index-freie Nachbarschafts Eigenschaft, dadurch sind die Knoten nicht über einen Index  sondern, direkt über Relationen verbunden. Bei einer GDB ohne diese Eigenschaft werden die Knoten durch einen globalen Index verbunden und eine weitere Datenstruktur wie zum Beispiel ein Binärbaum oder eine Hash-Tabelle wird für das Traversieren verwendet \parencite{robinson2013graph}. \newline
-Neo4j nutzt Indizes ausschließlich für Attribute und erlaubt das Erstellen eines Index zu einem oder mehreren Attributen. Sobald ein Index zu einem angegebenen Attribute erstellt wurde, wird dieser immer aktuell gehalten \footnote{https://neo4j.com/docs/cypher-manual/current/schema/index/ (20.08.19)}.  	
+Ein Index ist eine redundante Kopie von Daten in einer Datenbank, es kann auf ein Element direkt zugegriffen werden, ohne dass über die gesamte Datenstruktur iteriert werden muss. Dadurch wird die Suche nach diesen Daten beschleunigt.Neo4j besitzt die Index-freie Nachbarschafts Eigenschaft, dadurch sind die Knoten nicht über einen Index  sondern, direkt über Relationen verbunden. Bei einer GDB ohne diese Eigenschaft werden die Knoten durch einen globalen Index verbunden und eine weitere Datenstruktur wie zum wie ein Binärbaum oder eine Hash-Tabelle wird für das Traversieren verwendet \parencite{robinson2013graph}. \newline
+Neo4j nutzt Indizes ausschließlich für Attribute und erlaubt das Erstellen eines Index zu einem oder mehreren Attributen. Sobald ein Index zu einem angegebenen Attribute erstellt wurde, wird dieser immer aktuell gehalten \parencite{Index}.  	
 \subsubsection {Traversierung im Speicher}
 Die festgelegte Größe der Knoten und Kanten hat als Ziel, die Traversierung zu beschleunigen \parencite{robinson2013graph}. Eine einfache Traversierung wird beschrieben wie folgt: 
 \begin{enumerate}
