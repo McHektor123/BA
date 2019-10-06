@@ -99,7 +99,7 @@ Für \textbf{Grundanfrage 1.3} wird nur ein Aspekt betrachtet.
 \begin{enumerate}
 	\item Der Unterschied der Laufzeiten bei semantisch äquivalenten Anfragen 
 \end{enumerate}
-Zum 1. Aspekt: Es wird vermutet, dass es keine signifikante Differenz zwischen den Laufzeiten der Anfragen in Cypher gibt, falls ein Unterschied bestehen sollte, wird diese auf eine effiziente Implementierung des IN-Operator zurückgeführt. Die Anfrage in der Core API sollte wie in Grundanfrage 1.1 die schnellste Bearbeitungszeit besitzen.
+Zum 1. Aspekt: Es wird vermutet, dass es keine hohe Differenz zwischen den Laufzeiten der Anfragen in Cypher gibt, falls ein Unterschied bestehen sollte, wird diese auf eine effiziente Implementierung des IN-Operator zurückgeführt. Die Anfrage in der Core API sollte wie in Grundanfrage 1.1 die schnellste Bearbeitungszeit besitzen.
 
 \section{Zweiter Testlauf}
 Der zweite Testlauf verwendet die Nachbarschafts-Anfragen in einer erhöhten Tiefe, wodurch eine höherer Rechenaufwand erzeugt wird. Es wird der Performanzunterschied zwischen der Breitensuche, Tiefensuche und der bidirektionale Traversierung betrachtet. Es werden komplexere Anfragen im Vergleich zum ersten Testlauf gestellt und die Skalierbarkeit des Systems wird analysiert. Durch komplexere Anfragen, wird ein tieferes Verständnis der Funktionsweise von Neo4j erzeugt. 
@@ -170,8 +170,8 @@ Die Anfrage traversiert über den gesamten Graphen, bis jeder Knoten einmal betr
 		Grundanfrage 2.4.1 &  Cypher - Einseitig -Tiefensuche\\
 		Vergleichsanfrage 1 &  Core API - Einseitig - Tiefensuche \\
 		Grundanfrage 2.4.2 &  Core API - Einseitig Breitensuche\\
-		Grundanfrage 2.4.3&  Core API - Bidirektional - Breitensuche\\
 		Grundanfrage 2.4.4 &  Core API -  Bidirektional - Tiefensuche\\
+		Grundanfrage 2.4.3&  Core API - Bidirektional - Breitensuche\\
 		\hline
 	\end{tabular}
 	\caption{Grundanfragen 2.4.1 bis 2.4.4}
@@ -187,7 +187,7 @@ Für die \textbf{Grundanfragen 2.1.1 und 2.1.2} werden folgende Aspekte betrache
 	\item Der relative Anteil an erreichten Personen im gesamten Graphen
 \end{enumerate}
 Zum 1. Aspekt: Die Bearbeitungszeit der Grundanfrage 2.1.2 wird mindestens 1000 mal so hoch sein wie die Zeit der Grundanfrage 2.1.1, da pro Knoten in der Ergebnismenge weitere 2500 Knoten betrachtet werden müssen. Bei den Vergleichsanfragen mit der  Breitensuche und Tiefensuche besteht die Annahme, dass die Suche in einer höheren Tiefe einen minimal höheren Rechenaufwand bedeutet, da beide Algorithmen eine Komplexität von O(V+E) besitzen. \newline
-Zum 2. Aspekt: Bei der Erhöhung von Tiefe 2 zu Tiefe 3 steigt die Tiefe um 1 an, aber die Breite erhöht sich pro Element in der Tiefe 2 um 2500. Der Graph besitzt ausgehend von dem Knoten der Person1 eine relativ hohe Breite im Vergleich zu der Tiefe, dadurch wird die Anfrage mit der Tiefensuche signifikant schneller ausgeführt werden. Es entsteht die Möglichkeit einer schnellen und langsamer Ausführung einer Anfrage durch den Nutzer. \newline
+Zum 2. Aspekt: Bei der Erhöhung von Tiefe 2 zu Tiefe 3 steigt die Tiefe um 1 an, aber die Breite erhöht sich pro Element in der Tiefe 2 um 2500. Der Graph besitzt ausgehend von dem Knoten der Person1 eine relativ hohe Breite im Vergleich zu der Tiefe, dadurch wird die Anfrage mit der Tiefensuche  schneller ausgeführt werden. Es entsteht die Möglichkeit einer schnellen und langsamer Ausführung einer Anfrage durch den Nutzer. \newline
 Zum 3. Aspekt: Durch die Tiefe 2 können unter der Annahme, dass alle Personen über die RELATIONSHIP3 genau 2500 Ziel-Personen besitzen, maximal 6.250.000 Knoten erreicht werden. Da der Graph 50.000 Personen-Knoten besitzt, gibt es eine hohe Redundanz unter den Ziel-Personen. Durch die theoretisch hohe Anzahl von zu erreichenden Knoten bei der Tiefe 2 wird vermutet, dass die meisten Personen bei der Traversierung zur Tiefe 2 erreicht werden. \newline \newline
 Für \textbf{Grundanfrage 2.2} werden folgende Aspekte betrachet: 
 \begin{enumerate}
@@ -202,7 +202,7 @@ Für \textbf{Grundanfrage 2.3} werden folgende Aspekte betrachtet:
 	\item Die Ausführungszeit in Cypher ohne Verwenden des Algorithmus
 \end{enumerate}
 Zum 1. Aspekt: Durch die Annahme, dass meisten Personen über RELATIONSHIP3/ RELATIONSHIP4 mit der Tiefe 2 erreicht werden können, wird davon ausgegangen dass der Pfad die Länge 1 oder 2 besitzen  wird. Die Ergebnisse werden mit den Ausführungszeiten von Grundanfrage 2.1.1 zusammenhängen und es wird keine höhere Ausführungszeit als in Grundanfrage 2.1.1 erwartet. \newline
-Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wurde, wird die Anfrage mit dem Algorithmus eine signifikant schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. Die alternative Formulierung ist ein naiver Ansatz mit vielen aufwendigen Berechnungen, welcher eine große Ergebnismenge berechnet, die zu einem Ergebnis minimiert wird. \newline \newline
+Zum 2. Aspekt: Ausgehend von der Annahme,dass der Algorithmus lange optimiert wurde, wird die Anfrage mit dem Algorithmus eine schnellere Ausführungszeit aufweisen als die Anfrage ohne gegebenen Algorithmus. Die alternative Formulierung ist ein naiver Ansatz mit vielen aufwendigen Berechnungen, welcher eine große Ergebnismenge berechnet, die zu einem Ergebnis minimiert wird. \newline \newline
 Für die \textbf{Grundanfragen 2.4.1-2.4.4} werden folgende Aspekte betrachtet:
 \begin{enumerate}
 	\item Der Unterschied zwischen der bidirektionalen Suche und einseitiger Suche mit dem selben Algorithmus
