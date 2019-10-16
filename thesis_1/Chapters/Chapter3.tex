@@ -9,7 +9,7 @@
 %----------------------------------------------------------------------------------------
 \section{Versuchsaufbau}
 Für die Berechnung der Anfragen wurde die Dell Precision Workstation T5500 verwendet. Das System besitzt 16 Prozessorkerne vom Typ Intel Xeon  X5500 mit je 2,66 GHz und  8 MB Level3 Cache. Insgesamt stehen 72 GB DDR3 RAM mit 1333 MHz zur Verfügung und das System läuft auf Ubuntu 18.04. Alle Datensätze werden auf einer SEAGATE ST3250318AS Festplatte mit insgesamt 250 GB Kapazität, 8 MB Cache und 7200 Umdrehungen pro Minute gespeichert.\newline
- Jede Anfrage des ersten Testlaufes wurde 50 mal aufgeführt und die Anfragen des zweiten Testlaufes wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. In OrientDB ist die erste Bearbeitungen der Anfrage im Durschnitt ca. 43\% langsamer, als die Wiederholungen  der Anfragen. In Neo4j ist die erste Bearbeitung mit Cypher ca. 40 \% langsamer und mit der Core API ca. 17\% langsamer.  Alle Zeitangaben sind in ms angegeben. 
+ Jede Anfrage des ersten Testlaufes wurde 50 mal ausgeführt und die Anfragen des zweiten Testlaufes wurden 25 mal ausgeführt. In OrientDB wurden alle Anfragen 25 mal wiederholt. Als repräsentativer Wert für die Bearbeitungszeit einer Anfrage  wurde das Arithmetische Mittel aus allen Wiederholungen gewählt. Bei der Berechnung wurde die Zeit für die allererste Ausführung einer Anfrage nicht berücksichtigt, da durch das Caching eine unverhältnismäßig hohe Bearbeitungszeit beim ersten Ausführen beobachtet wurde. In OrientDB ist die erste Bearbeitungen der Anfrage im Durschnitt ca. 43\% langsamer, als die Wiederholungen  der Anfragen. In Neo4j ist die erste Bearbeitung mit Cypher ca. 40 \% langsamer und mit der Core API ca. 17\% langsamer.  Alle Zeitangaben sind in ms angegeben. 
 \section{Auswertung}
 Im folgenden Abschnitt werden Bearbeitungszeiten der Testläufe tabellarisch präsentiert.  Darauf aufbauend werden die Hypothesen aus Kapitel 3 überprüft.  
 \subsection{Ergebnisse des ersten Testlaufes}
@@ -19,7 +19,7 @@ MATCH (X:Person)-[:RELATIONSHIP3]->(Y:Person)
 WHERE X.attribute>=250 AND Y.attribute>=15  
 RETURN COUNT(DISTINCT(Y))
 \end{Verbatim} 
- werden  in Tabelle \ref{tab:Query1_1} gezeigt. Im Vergleich zu den darauffolgenden Anfragen ist Bearbeitungszeit relativ hoch, dies ist durch die Bedingungen im Where-Prädikat zu erklären. Wie erwartet ist die benötigte Bearbeitungszeit in allen 3 Szenarien am längsten, wenn die Relationen in beide Richtungen betrachtet werden. Dies ist auf die hohe Anzahl der vorhandenen Relationen zurückzuführen. Bei der Anfrage in Cypher und der Core API für die RELATIONSHIP3  ist die Bearbeitungszeit der Suche für beide Richtungen länger als die Suchen für ausgehende und eingehende Kanten addiert. Für die Anfragen mit RELATIONSHIP3 ist die Zeit am geringsten, wenn die ausgehenden Kanten betrachtet werden. \newline
+ werden  in Tabelle \ref{tab:Query1_1} gezeigt. Im Vergleich zu den darauffolgenden Anfragen ist Bearbeitungszeit relativ hoch, dies ist durch die Bedingungen im Where-Prädikat zu erklären. Die benötigte Bearbeitungszeit ist in allen 3 Szenarien am längsten, wenn die Relationen in beide Richtungen betrachtet werden. Dies ist auf die hohe Anzahl der vorhandenen Relationen zurückzuführen. Bei der Anfrage in Cypher und der Core API für die RELATIONSHIP3  ist die Bearbeitungszeit bei der Suche für beide Richtungen länger als die Suchen für ausgehende und eingehende Kanten addiert. Für die Anfragen mit RELATIONSHIP3 ist die Zeit am geringsten, wenn die ausgehenden Kanten betrachtet werden. \newline
 Die Anfrage für RELATIONSHIP3 wird mit der Core API in  allen Fällen fast doppelt so schnell berechnet wie in Cypher. Dieses Verhalten wird bei den weiteren Grundanfragen ebenfalls erwartet, da die Core API sehr nah an den Kernfunktionen von Neo4j arbeitet. \newline
 Die Anfragen werden in Cypher für RELATIONSHIP2 etwas mehr als 1000 mal schneller als für REALTIONSHIP3 bearbeitet. Dies deutet auf eine gute Skalierbarkeit des Systems hin, da die Berechnungen beinahe linear zu der Anzahl der zu betrachtenden Relationen ansteigen. 
 \FloatBarrier  
@@ -34,7 +34,7 @@ Die Anfragen werden in Cypher für RELATIONSHIP2 etwas mehr als 1000 mal schnell
 	Beides&496704 & 222150&  165\\
 	\hline
 \end{tabular}
-\caption{Grundanfrage 1.1.1}
+\caption{Ergebnisse der Grundanfrage 1.1.1}
 \label{tab:Query1_1}
 \end{table}
 \FloatBarrier
@@ -42,7 +42,7 @@ Die Anfragen werden in Cypher für RELATIONSHIP2 etwas mehr als 1000 mal schnell
  \begin{Verbatim}[frame=single]
  MATCH (p:Person {name:'Person613'}) return p
  \end{Verbatim} 
-  in Tabelle \ref{tab:Query1_2} sind im Vergleich zu den Zeiten der anderen Grundanfragen sehr gering. Durch die geringe Anzahl von 50004 Knoten, die einfache Abbruchbedingung und dem Verwenden von Indizes entstehen die geringen Zeiten. \newline Entgegen der Hypothese entsteht ein zeitlicher Unterschied, wenn sich die Bedingung im Where-Prädikat statt im Match-Prädikat 	befindet. Die beobachtete Bearbeitungszeit bei der Anfrage mit der Bedingung in dem Where-Prädikat ist 3 mal schneller, als bei der Anfrage mit der Bedingung im Match-Prädikat. Da der Cypher Query Optimizer alle Bedingungen des Match-Prädikates in ein Where-Prädikat verschiebt, wird hier gezeigt, dass dieser Optimierungsschritt selber eine gewisse Berechnungszeit in Anspruch nimmt. Für ein optimalen Gebrauch von Neo4j sollten dementsprechend alle Bedingungen direkt in einem Where-Prädikat formuliert werden, dies wird auch von den Entwicklern empfohlen \parencite{Optimizer}. \newline
+  in Tabelle \ref{tab:Query1_2} sind im Vergleich zu den Zeiten der anderen Grundanfragen sehr gering. Durch die geringe Anzahl von 50004 Knoten, die einfache Abbruchbedingung und dem Verwenden von Indizes entstehen die geringen Zeiten. \newline Entgegen der Hypothese entsteht ein zeitlicher Unterschied, wenn sich die Bedingung im Where-Prädikat statt im Match-Prädikat 	befindet. Die beobachtete Bearbeitungszeit bei der Anfrage mit der Bedingung in dem Where-Prädikat ist 3 mal schneller, als bei der Anfrage mit der Bedingung im Match-Prädikat. Da der Cypher Query Optimizer alle Bedingungen des Match-Prädikates in ein Where-Prädikat verschiebt, wird hier gezeigt, dass dieser Optimierungsschritt selber eine  Berechnungszeit in Anspruch nimmt. Für ein optimalen Gebrauch von Neo4j sollten dementsprechend alle Bedingungen direkt in einem Where-Prädikat formuliert werden, dies wird auch von den Entwicklern empfohlen \parencite{Optimizer}. \newline
 In diesem Fall wird die Traversal API nicht genutzt, sondern nur die Core API. Eine Kernfunktion namens $findNodes()$ übernimmt die Suche nach einem Knoten mit angegebenen Eigenschaften, ohne dass der Nutzer das Vorgehen spezifizieren muss.  
 \FloatBarrier
 \begin{table}[h]
@@ -55,7 +55,7 @@ In diesem Fall wird die Traversal API nicht genutzt, sondern nur die Core API. E
 			\hline
 		\end{tabular}
 		\FloatBarrier
-		\caption{Grundanfrage 1.2}
+		\caption{Ergebnisse der Grundanfrage 1.2}
 		\label{tab:Query1_2}
 \end{table}
  \vskip 2.5cm
@@ -79,7 +79,7 @@ Die genauen Ergebnisse befinden sich in Tabelle	\ref{tab:Query1_3}.
 			 13,36    & 8,66 &  3,2\\
 			\hline
 		\end{tabular}
-		\caption{Grundanfrage 1.3}
+		\caption{Ergebnisse der Grundanfrage 1.3}
 		\label{tab:Query1_3}
 \end{table}
 \FloatBarrier
@@ -134,7 +134,7 @@ Es wird bestätigt, dass die Anfrage mit Tiefensuche  schneller als die Anfrage 
 			Tiefe 3&    223556  & 28318   & 102\\
 			\hline
 		\end{tabular}
-		\caption{Grundanfragen 2.1.1 und 2.1.2}
+		\caption{Ergebnisse der Grundanfragen 2.1.1 und 2.1.2}
 		\label{tab:Query2_1}
 \end{table}
 \FloatBarrier
@@ -145,7 +145,7 @@ MATCH t=(p:Person{name :'Person1'})-[:RELATIONSHIP3]->(p1:Person)
 WHERE NOT (p)-[:RELATIONSHIP3]->(p2) 
 RETURN COUNT(DISTINCT(p2))
 \end{Verbatim} 
- und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage werden 2 Ergebnismengen vom Java-typ $Set$ gebildet und durch den Aufruf der Funktion $removeAll()$  werden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung von dem $Where\;not$ Ausdruck  in Java und besitzt eine bessere Performanz. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohe Bearbeitungszeit.
+ und der äquivalenten Anfrage in Cypher. Beide Anfragen sind um ein vielfaches langsamer als die Anfrage, die die Core API verwendet. In der Core API Anfrage werden 2 Ergebnismengen vom Java-typ $Set$ gebildet und durch den Aufruf der Funktion $removeAll()$  werden die Elementen der einen Mengen aus der anderen Menge entfernt. Dies entspricht einer Realisierung des $Where\;not$ Ausdrucks in Java und wird schneller ausgeführt als der Ausdruck in Cypher. Alle 3 Anfragen besitzen im Vergleich zu vorangegangen Anfragen eine extrem hohe Bearbeitungszeit.
 \FloatBarrier
 \begin{table}[h]
 	\centering
@@ -156,7 +156,7 @@ RETURN COUNT(DISTINCT(p2))
 			4740646    & 4753414 &  1609\\
 			\hline
 		\end{tabular}
-		\caption{Grundanfrage 2.2}
+		\caption{Ergebnisse der Grundanfrage 2.2}
 		\label{tab:Query2_2}
 \end{table}
 \FloatBarrier
@@ -178,11 +178,11 @@ Die äquivalente Formulierung in Cypher besitzt die höchste aller beobachtetet 
 			8,4    & 8370298 &  11,5\\
 			\hline
 		\end{tabular}
-		\caption{Grundanfrage 2.3}
+		\caption{Ergebnisse der Grundanfrage 2.3}
 		\label{tab:Query2_3}
 \end{table}
 \FloatBarrier
-\noindent Die Ergebnisse der Traversierungen des gesamten Graphen, wie in Grundanfrage 2.4
+\noindent Die Ergebnisse der Traversierungen des gesamten Graphen, wie in Grundanfrage 2.4.1
  \begin{Verbatim}[frame=single]
 MATCH (a)-[RELATIONSHIP4]->(b) RETURN COUNT(DISTINCT(b))
 \end{Verbatim}
@@ -207,7 +207,7 @@ Trotz einer semantischen Äquivalenz von Grundanfrage 2.4.1 mit der Grundanfrage
 		Grundanfrage 2.4.4 &  29558\\
 		\hline
 	\end{tabular}
-	\caption{Grundanfragen 2.4.1-2.4.4}
+	\caption{Ergebnisse der Grundanfragen 2.4.1-2.4.4}
 	\label{tab:Query2_4}
 \end{table}
 \FloatBarrier
@@ -215,12 +215,12 @@ Trotz einer semantischen Äquivalenz von Grundanfrage 2.4.1 mit der Grundanfrage
 \subsection{Ergebnisse des dritten Testlaufes}
 Für die folgenden Aussagen werden die Werte aus der Tabelle \ref{tab:Query3}  betrachtet. Diese Tabelle stellt die Bearbeitungszeiten der Grundanfragen, ihrer Äquivalente in der Core API und in der OrientDB dar. \newline
 Die Grundanfragen 1.1.1-1.1.3 werden in Cypher durchschnittlich ca. 12 mal schneller ausgeführt als in der OrientDB, die relativ langen Bearbeitungszeiten bei beiden Systemen entstehen durch die Bedingungen im Where-Prädikat. In allen Fällen benötigt die Grundanfrage 1.1.3, welche die eingehenden und ausgehenden Kanten betrachtet, die längste Zeit zur Bearbeitung. Dies zeigt, dass OrientDB und Neo4j durch das Einfügen einer Bedingung im Where-Prädikat und der Anzahl der zu betrachtenden Kanten beeinflusst werden und bei solchen Anfragen aufwendige Berechnungen ausführen. \newline
- Grundanfrage 1.2, welche solange über den Graphen traversiert bis ein bestimmter Knoten gefunden ist, weist in OrientDB eine schnellere Bearbeitungszeit als Neo4j mit der Core API oder Cypher auf und wird ca. 3,7 mal schneller bearbeitet als die in Cypher gestellte Anfrage. Dies lässt sich beispielsweise mit einer effizienteren Implementierung der Indizies erklären. Die Anfrage wird in allen Fällen in weniger als einer Millisekunde beantwortet und bildet die am schnellsten beantwortete Anfrage. \newline
+ Grundanfrage 1.2, welche solange über den Graphen traversiert bis ein gegebener Knoten gefunden ist, weist in OrientDB eine schnellere Bearbeitungszeit als Neo4j mit der Core API oder Cypher auf und wird ca. 3,7 mal schneller bearbeitet als die in Cypher gestellte Anfrage. Dies lässt sich mit einer effizienteren Implementierung der Indizies erklären. Die Anfrage wird in allen Fällen in weniger als einer Millisekunde beantwortet und bildet die am schnellsten beantwortete Anfrage. \newline
 Grundanfrage 1.3, welche eine einfache Anfrage zum Finden von gemeinsamen Nachbarn darstellt, besitzt in Cypher und der Core API eine relativ geringe Bearbeitungszeit in der Größenordnung von einigen Millisekunden. In OrientDB befindet sich Grundanfrage 1.3 mit einer benötigten Zeit von 83955 ms in einer anderen Größenordnung und deutet darauf hin, dass der Vergleich von 2 Mengen miteinander in Neo4j effizienter implementiert ist. Dies ist auch in Grundanfrage 2.2 zu beobachten, für diese Anfrage muss bis in die Tiefe 2 traversiert werden und 2 Mengen müssen miteinander verglichen werden. Die Anfrage besitzt eine extrem hohe Bearbeitungszeit von mehreren Stunden, obwohl das Traversieren in der Tiefe 2, wie bei Grundanfrage 2.1.1 mit 72092 ms zu beobachten, eine relativ geringe Zeit benötigt, der Vergleich der beiden Mengen bildet so den rechenaufwendigeren Schritt. \newline
  In OrientDB wird die Grundanfragen 2.1.1  ca. 1,5 mal schneller bearbeitet als Grundanfrage 2.1.2, obwohl die Anzahl der zu betrachtenden  Knoten um den Faktor 2500 ansteigt. Dies deutet auf eine sehr gute Skalierbarkeit bei beiden Systemen hin, da bei OrientDB und Neo4j die Bearbeitungszeiten um einen Faktor zu den betrachtenden Knoten ansteigt, der weniger als linear ist. Die Grundanfrage 2.1.2 ist mit der Grundanfrage 1.2 die einzige Grundanfrage, die in OrientDB schneller bearbeitet wird, als in Neo4j mit Cypher. \newline  
  Grundanfrage 2.2 konnte in dieser Evaluation nicht vollständig analysiert werden, da die erste Ausführung der Anfrage ohne Caching ungefähr 70 Stunden benötigt hat. Weitere Wiederholungen mit Caching waren nicht möglich, aber würden bei der durchschnittlichen Verkürzung der Bearbeitungszeit durch das Caching von ca. 43\%  ungefähr 40 Stunden benötigen . \newline
 Mit 37,6 ms benötigt OrientDB bei Grundanfrage 2.3 ähnlich wie Neo4j eine relativ kurze Zeit von einigen Millisekunden zur Bearbeitung, dies lässt sich durch eine effiziente Implementierung des shortestpath-Algorithmus erklären. Das Finden des kürzesten Pfades ist ein grundlegendes Problem bei Graphen und der Algorithmus wurde bereits in der OrientDB Version 1.7.8 vom 13. August 2014 veröffentlicht \parencite{Old_OrientDB}. Durch die frühe Zurverfügungstellung ist es wahrscheinlich, dass der Algorithmus mit einer effizienten Implementierung veröffentlicht wurde oder über die Jahre optimiert wurde. \newline
-Für die Grundanfrage 2.4.2, welche mit Breitensuche über den gesamte Graphen traversiert, ist nur ein Vergleich zwischen OrientDB und der Core API von Neo4j möglich, da der Such-Algorithmus in Cypher nicht explizit angegeben werden kann und immer Tiefensuche verwendet wird. Durch die gleiche Komplexität von O(V+E) bei der Tiefen- und Breitensuche, benötigen die Grundanfragen 2.4.1 und 2.4.2 in OrientDB ungefähr eine gleiche Bearbeitungszeit. In Cypher wird die Grundanfrage 2.4.1 ca. 2,7 mal schneller bearbeitet als die gleiche Anfrage in OrientDB gestellt. Mit Verwendung der Core API wird die einseitige Tiefen- und Breitensuche durchschnittlich ca. 24.8 mal schneller beantwortet als auf OrientDB. \newline
+Für die Grundanfrage 2.4.2, welche mit Breitensuche über den gesamte Graphen traversiert, ist nur ein Vergleich zwischen OrientDB und der Core API von Neo4j möglich, da der Such-Algorithmus in Cypher nicht explizit angegeben werden kann und immer Tiefensuche verwendet wird. Durch die gleiche Komplexität von O(V+E) bei der Tiefen- und Breitensuche, benötigen die Grundanfragen 2.4.1 und 2.4.2 in OrientDB eine gleiche Bearbeitungszeit. In Cypher wird die Grundanfrage 2.4.1 ca. 2,7 mal schneller bearbeitet als die gleiche Anfrage in OrientDB. Mit Verwendung der Core API wird die einseitige Tiefen- und Breitensuche durchschnittlich ca. 24.8 mal schneller beantwortet als auf OrientDB. \newline
  Unter der Berücksichtigung aller beobachteten Zeiten außer von Grundanfrage 2.2 werden die Anfragen mit der Core API durchschnittlich ca. 207 mal schneller bearbeitet als in OrientDB und mit Cypher ca. 1,9 mal schneller als OrientDB. 
 \FloatBarrier
 \begin{table}[h]
@@ -242,42 +242,50 @@ Für die Grundanfrage 2.4.2, welche mit Breitensuche über den gesamte Graphen t
 	Grundanfrage 2.4.2& -  & 774040   & 31020   \\
 		\hline
 	\end{tabular}
-	\caption{Grundanfragen auf Neo4j und OrientDB}
+	\caption{Ergebnisse der Grundanfragen auf Neo4j und OrientDB}
 	\label{tab:Query3}
 \end{table}
 \FloatBarrier
 \section{Anwendungsszenario}
 Neoj4 Inc. stellt zahlreiche Nutzungen von Graphen in verschiedenen Themenkomplexen vor \parencite{Examples}. Für jeden Themenkomplex werden mehrere Beispielgraphen von eigenständigen Entwicklern, welche nicht für Neo4j arbeiten, zur Verfügung gestellt. Das folgende Anwendungsszenario stellt den Zweck einer Graphdatenbank für Kinofilme dar.\newline
-In diesem Beispiel ist der Nutzer ein Betreiber eines Kinos, welches aktuelle Kinofilm ausstrahlt und besondere Veranstaltungen betreibt. Bei diesen Veranstaltungen werden mehrere Filme von einer Kategorie oder einem bestimmten Schauspieler oder Regisseur gezeigt. Diese Veranstaltungen werden mehrere Wochen vor dem Veranstaltungstermin verplant und finden über mehrere Tage statt. Pro Veranstaltungstag werden im Durchschnitt 4 Filme benötigt. Solche Veranstaltungen wurden schon mehrmals betrieben und die Planung besitzt einen routinierten Ablauf, sodass viele Schritte effizient bearbeitet werden. Der zeitaufwendigste Arbeitsschritt, stellt das Finden von Filmen für das Veranstaltungsprogramm dar. \newline
-Aktuell stellt der Kinobetreiber eine Liste von Filmen für die Veranstaltung manuell zusammen, hierfür werden Filme ausgewählt, die der Betreiber selber kennt und es werden verschiedene Quellen aus dem Internet für eine Auswahl verwendet. Die Liste besitzt die Namen der Filme, zusätzliche Informationen wie Länge sind durch die Vielzahl von Quellen nicht immer vorhanden. Fehlende Informationen müssen für eine optimale Planung des Kinoprogramms erneut herausgesucht werden und einige Filme müssen nach dem initialen Aufstellen der Liste  aussortiert werden. \newline  
-Für eine Beschleunigung dieses Arbeitsschrittes kann das Datenbankmanagementsystem Neo4j verwendet werden. Unabhängig von dem Betriebssystem steht die kostenfreie Anwendung $Neo4j\; Desktop$ zur Verfügung. Durch diese Anwendung für den Desktop ist die Bedienung von Neo4j über ein grafischen User Interface(GUI) möglich. Zusätzlich wird die Erweiterung $APOC$ benötigt, welche per Mausklick in $Neo4j\; Dekstop$ eingebunden werden kann. Mit dieser Erweiterung ist es möglich Daten mit verschiedenen Dateiformaten wie CSV in die lokale Neo4j Datenbank zu importieren. Für das Thema Kino stehen im Internet zahlreiche große Datensätze mit Filme kostenfrei zur Verfügung \parencite{Kaggle}. Nach dem Importieren eines solchen Datensatzes, kann der Nutzer durch die Eingabemaske eine Anfrage stellen, um so eine übersichtliche vollständige Liste von Filme zu erhalten. Eine beispielhafte Anfrage in Cypher für eine Liste von Verbrechen-Filmen ist: 
+In diesem Beispiel ist der Nutzer ein Betreiber eines Kinos, welches aktuelle Kinofilme ausstrahlt und spezielle Veranstaltungen bietet. Bei diesen Veranstaltungen werden mehrere Filme von einer Kategorie oder einem bestimmten Schauspieler oder Regisseur gezeigt. Diese Veranstaltungen werden mehrere Wochen vor dem Veranstaltungstermin verplant und finden über mehrere Tage statt. Solche Veranstaltungen wurden schon mehrmals betrieben und die Planung besitzt einen routinierten Ablauf, sodass viele Schritte effizient bearbeitet werden. Der zeitaufwendigste Arbeitsschritt, stellt das Finden von Filmen für das Veranstaltungsprogramm dar. \newline
+Aktuell stellt der Kinobetreiber eine Liste von Filmen für die Veranstaltung manuell zusammen, hierfür werden Filme ausgewählt, die der Betreiber selber kennt und es werden verschiedene Quellen aus dem Internet für eine Auswahl verwendet. Die Liste besitzt die Namen der Filme, zusätzliche Informationen wie die Länge eines Filmes sind durch die Vielzahl von Quellen nicht immer vorhanden. Fehlende Informationen müssen für eine optimale Planung des Kinoprogramms erneut herausgesucht werden und einige Filme müssen nach dem initialen Aufstellen der Liste  aussortiert werden. \newline  
+Für eine Beschleunigung dieses Arbeitsschrittes kann Neo4j verwendet werden. Unabhängig von dem Betriebssystem steht die kostenfreie Anwendung $Neo4j\; Desktop$ zur Verfügung. Durch diese Anwendung für den Desktop ist die Bedienung von Neo4j über ein grafischen User Interface(GUI) möglich. Zusätzlich wird die Erweiterung $APOC$ benötigt, welche per Mausklick in $Neo4j\; Dekstop$ eingebunden werden kann. Mit dieser Erweiterung ist es möglich Daten mit verschiedenen Dateiformaten wie CSV oder JSON in die lokale Neo4j Datenbank zu importieren. Für das Thema Kino stehen im Internet zahlreiche, große Datensätze mit Filmen kostenfrei zur Verfügung \parencite{Kaggle}. Nach dem Importieren eines solchen Datensatzes, kann der Nutzer durch die Eingabemaske eine Anfrage stellen, um so eine übersichtliche vollständige Liste von Filme zu erhalten. Folgende Anfrage erstellt eine Liste von 20 Filmen mit dem Thema Verbrechen: 
 \begin{Verbatim}[frame=single]
 MATCH(m:Film) 
-WHERE m.Genre = Verbrechen
+WHERE m.Genre = 'Verbrechen' or m.Plot contains 'Verbrechen'
 RETURN m.Name as Name, m.Regie as Regie, 
 	m.Länge as Länge, m.Plot as Plot 
 LIMIT 20
 \end{Verbatim}
-Diese Anfrage erstellt eine Liste von 20 Filme, die für eine Veranstaltung mit Verbrechen-Filmen passen. Weitere Bedingungen können durch die Cypher Syntax einfach eingefügt werden, beispielsweise wenn gut bewertete Filme mit einem Schauspieler gesucht werden:
+Bei einem hohen Erfolg der Veranstaltung können ausgehend von den gezeigten Filmen Schauspieler aus diesen Filmen gefunden werden:
 \begin{Verbatim}[frame=single]
-MATCH (f:Film) 
-WHERE f.Schauspieler = 'Peter Dinklage' AND f.Wertung >= 5
+MATCH (s:Schauspieler)-[SpielteIn]->(m:Film)
+WHERE m.Genre = 'Verbrechen' or m.Plot contains 'Verbrechen'
+RETURN s.Name as Name, count(m) as Anzahl_der_Filme,
+Order by count(m) desc
+LIMIT 10
+\end{Verbatim}
+Es werden 10 Schauspieler gefunden, die in den meisten Filmen zum Thema Verbrechen mitgespielt haben. Diese Schauspieler sind potenzielle Kandidaten für eine Veranstaltung, bei der nur Filme von diesen Schauspielern gezeigt werden. Durch Bedingungen bezüglich eines Attributes wie der Bewertung eines Filmen, kann die Auswahl weiter eingegrenzt werden.
+\begin{Verbatim}[frame=single]
+MATCH (s:Schauspieler)-[SpielteIn]->(f:Film) 
+WHERE s.name = 'Christian Bale' AND f.Bewertung >= 5
 RETURN f.Name as Name, f.Regie as Regie, 
 	f.Länge as Länge, f.Plot as Plot 
 LIMIT 20
 \end{Verbatim}
-Neo4j übernimmt so das Auswerten von einem Datensatz, der beispielsweise in einem CSV Format dargestellt wird und für den Nutzer schwer zu lesen ist. Durch die effiziente Implementierung von Neo4j wird in kurzer Zeit eine vollständige Liste mit Filmen erstellt, die geforderte Bedingungen erfüllen. Der Arbeitsschritt zum Erstellen einer Liste mit geeigneten Filmen wird damit stark beschleunigt und effizienter ausgeführt.
+Neo4j übernimmt die Auswertung eines Datensatzes, der in einem CSV Format dargestellt wird und von dem Nutzer nicht schnell verwendet werden kann. Durch die effiziente Implementierung von Neo4j wird in kurzer Zeit eine vollständige Liste mit Filmen erstellt. Der Arbeitsschritt zum Erstellen einer Liste mit geeigneten Filmen wird damit beschleunigt und effizienter ausgeführt.
 \section{Limitierungen und zukünftige Arbeit}
-Die durchgeführte Evaluation nutzt mit OrientDB  eine einzige Referenzdatenbank. Dies ist keine reine GDB und unterstützt weitere Typen von Datenbanken. Für eine näherer Einordnung der Performanz von Neoj4 ist ein Vergleich mit einer reinen GDB wie beispielsweise der Sparksee Database sinnvoll \parencite{Sparksee}. Diese Datenbank konnte in dieser Evaluation auf Grund von Kommunikationsprobleme mit Sparsity technologies nicht verwendet werden. Durch einen Vergleich mit der Sparksee Database könnte die Performanz von zahlreichen Graphalgorithmen   wie zum Beispiel Zentralitäts-Algorithmen überprüft werden. Dies ist mit OrientDB nicht direkt möglich, da keine vergleichbare Implementierung der von Neo4j unterstützen Graphalgorithmen im vollen Ausmaß in OrientDB gegeben ist. \newline 
+Die durchgeführte Evaluation nutzt mit OrientDB  eine einzige Referenzdatenbank. Dies ist keine reine GDB und unterstützt weitere Typen von Datenbanken. Für eine näherer Einordnung der Performanz von Neoj4 ist ein Vergleich mit einer reinen GDB wie beispielsweise der Sparksee Database sinnvoll \parencite{Sparksee}. Diese Datenbank konnte in dieser Evaluation auf Grund von Kommunikationsprobleme mit Sparsity technologies nicht verwendet werden. Durch einen Vergleich mit der Sparksee Database könnte die Performanz von zahlreichen Graphalgorithmen  wie Zentralitäts-Algorithmen, zur Erkennung von Gruppen mit gemeinsamen Eigenschaften, überprüft werden. Dies ist mit OrientDB nicht direkt möglich, da keine vergleichbare Implementierung der von Neo4j unterstützen Graphalgorithmen im vollen Ausmaß in OrientDB gegeben ist. \newline 
 Ein Vergleich zwischen Neo4j und einer relationalen Datenbank, wie in \parencite{vicknair2010comparison} beschrieben, ist für eine weitere Beschreibung der Vor- und Nachteile einer Graphdatenbank sinnvoll. Dieser Vergleich wurde aus zeitlichen Gründen nicht vollzogen. Die Referenz zur OrientDB hat einen Vergleich zu einer anderen noSQL-Datenbank dargestellt und so ein erste Einschätzung zu der Performanz von Neo4j ermöglicht. \newline
-Ein weitere Aspekt der betrachtet werden kann, ist das Ausführen von Neo4j im Server Modus und auf mehreren Geräten verteilt. Durch diesen Aspekt können die ACID und CAP Eigenschaften genau untersucht werden und die Grenzen einer verteilten Neo4j-Datenbank getestet werden. Zudem kann ein Vergleich zwischen der Datenbank im eingebetteten Modus und dem Server Modus durchgeführt werden. So können genaue Vor- und Nachteile und ein Anwendungsszenario spezifiziert werden. \newline
-Eine kleinerer nicht betrachteter Aspekt ist die temporale Eigenschaft von Neo4j. Der vorgestellte Datensatz besitzt Attribut vom Typen $Date$ und stellt so eine temporale Datenbank dar, doch es fehlt ein Testlauf mit Anfragen zu diesem Attribute. Eine Allgemeine Betrachtung des temporalen Verhalten der Datenbank ist für eine genauere Einordnung von Neo4j im Vergleich zu anderen temporalen Graphdatenbanken sinnvoll.   \newline
-Die Anfragesprache GraphQL wird standardisierte Anfragesprache für GDBs angesehen \parencite{GraphQL}. In der Zukunft sollte GraphQL auch in Neo4j getestet werden, dies ist mit einer Erweiterung für Neo4j möglich und erfordert die Verwendung einer weiteren API. In dieser Evaluation wurde GraphQL nicht verwendet. 
+Ein weitere zu betrachtender Aspekt, ist das Ausführen einer Neo4j Datenbank im Server Modus auf mehreren Geräten verteilt. Durch diesen Aspekt können die ACID und CAP Eigenschaften untersucht werden und die Grenzen einer verteilten Neo4j-Datenbank getestet werden. Zudem kann ein Vergleich zwischen der Datenbank im eingebetteten Modus und dem Server Modus durchgeführt werden. So können genaue Vor- und Nachteile und ein Anwendungsszenario spezifiziert werden. \newline
+Eine kleinerer nicht betrachteter Aspekt ist die temporale Eigenschaft von Neo4j. Der vorgestellte Datensatz besitzt ein Attribut vom Typen $Date$ und stellt so eine temporale Datenbank dar, doch es fehlt ein Testlauf mit Anfragen zu diesem Attribute. Eine Allgemeine Betrachtung des temporalen Verhalten der Datenbank ist für eine genauere Einordnung von Neo4j im Vergleich zu anderen temporalen Graphdatenbanken sinnvoll.   \newline
+Die Anfragesprache GraphQL wird als standardisierte Anfragesprache für GDBs angesehen \parencite{GraphQL}. In der Zukunft sollte GraphQL auch in Neo4j getestet werden, dies ist mit einer Erweiterung für Neo4j möglich und erfordert die Verwendung einer weiteren API. In dieser Evaluation wurde GraphQL nicht verwendet. 
 \section{Fazit}
 Neo4j unterstützt mit den Java-Standardtypen und zahlreichen zeitlichen Typen wie $Time$, $LocalTime$ oder $DateTime$ eine Vielzahl von Datentypen, welche für die Modellierungen von Daten notwendig sind \parencite{Types}. Durch die Zurverfügungstellung der Anwendungen $Neo4j\; Dekstop$ und $Neo4j\; Browser$ und einer dazu gegebenen Anfragesprache, werden die benötigten Kenntnisse zur Bedienung des System minimiert. Für eine spezifischeren Gebrauch der Datenbank, werden mehrere Programmiersprachen unterstützt. Durch diese Schnittstellen ist es mögliche, das System auf viele Weisen zu nutzen und eine große Zielgruppe kann das System für viele Szenarien verwenden. \newline 
-Testlauf 1 und 2 zeigen, dass der Gebrauch der Java Core API in fast allen Fällen zu einer besseren Performanz führt. Mit Verwendung der Traversal API besitzt der Nutzer eine flexible Möglichkeit die Performanz seiner Anfragen zu beeinflussen. Zum Beispiel ist es möglich zwischen Breiten- und Tiefensuche zu wählen. Die am schnellsten bearbeiteten Anfragen besitzen keine gemeinsame Kategorie von den vorgestellten Kategorien aus Absatz \ref{Kategorien}. Die am langsamsten bearbeiteten Anfragen besitzen ebenfalls keine gemeinsamen Kategorien. Grundanfrage 2.2, welche die einzige Mustervergleichs-Anfrage ist, besitzt eine besonders hohe Bearbeitungszeit. Dementsprechend lässt sich nur für Mustervergleichs-Anfragen ein Bezug von Anfragen-Kategorie und Performanz in Neo4j erkennen, die anderen Kategorien weisen keinen solchen Bezug auf. \newline
-Wie die Tabellen \ref{tab:Query1_2} und \ref{tab:Query2_3} zeigen, können semantisch gleiche Anfragen in Cypher Unterschiede in ihrer Performanz aufzeigen. Dieses Verhalten ist in den APIs ebenfalls zu beobachten. Das System lässt sich durch eine hohe Anzahl von Schnittstellen leicht benutzen, aber das System effektiv zu nutzen und eine Anfrage effizient ausführen zu lassen, ist nicht trivial und erfordert technologische Kenntnisse. Durch Hinweise von Neo4j Inc. werden einige Möglichkeiten für das effiziente Ausführen gegeben \parencite{Optimizer}. Diese Hinweise befassen sich teilweise mit dem Umformulieren der Anfragen, um das volle Potenzial des Optimierers nutzen zu können. Wie in den Ergebnissen zur Grundanfrage 1.2 erläutert, deutet dies unter anderem auf einen inperformanten Optimierer hin. \newline
-Im Vergleich zu der Muli-Model Datenbank OrientDB unter Verwendung von SQL besitzt Neo4j mit der Core API ein bessere Performanz. Mit  Anfragesprache Cypher ist die Performanz von Neo4j nicht mehr eindeutig besser. Der verwendete Datensatz ist unter Neo4j ca. 58 \% größer, als bei OrientDB. Allgemein besitzt Neo4j so eine bessere Performanz, wenn die Kenntnisse durch den Nutzer gegeben sind, aber die Speicherverwaltung unter Neo4j ist schlechter. Wie die Performanz im globalen Kontext im Vergleich zu mehreren anderen Datenbankmanagementsystemen ist, wie in \parencite{jouili2013empirical} ausgeführt,  lässt im Rahmen dieses Evaluation nicht sagen. 
+Testlauf 1 und 2 zeigen, dass der Gebrauch der Java Core API in fast allen Fällen zu einer besseren Performanz führt. Mit Verwendung der Traversal API besitzt der Nutzer eine flexible Möglichkeit die Performanz seiner Anfragen zu beeinflussen. So ist es möglich zwischen Breiten- und Tiefensuche zu wählen. Die am schnellsten bearbeiteten Anfragen besitzen keine gemeinsame Kategorie von den vorgestellten Kategorien aus Absatz \ref{Kategorien}. Die am langsamsten bearbeiteten Anfragen besitzen ebenfalls keine gemeinsamen Kategorien. Grundanfrage 2.2, welche die einzige Mustervergleichs-Anfrage ist, besitzt eine besonders hohe Bearbeitungszeit. Dementsprechend lässt sich nur für Mustervergleichs-Anfragen ein Bezug von Anfragen-Kategorie und Bearbeitungszeit in Neo4j erkennen, die anderen Kategorien weisen keinen solchen Bezug auf. \newline
+Wie die Tabellen \ref{tab:Query1_2} und \ref{tab:Query2_3} zeigen, können semantisch gleiche Anfragen in Cypher Unterschiede in ihrer Performanz aufzeigen. Dieses Verhalten ist in den APIs ebenfalls zu beobachten. Das System lässt sich durch eine hohe Anzahl von Schnittstellen leicht benutzen, aber das System effektiv zu nutzen und eine Anfrage effizient ausführen zu lassen, ist nicht trivial und erfordert technologische Kenntnisse. Durch Hinweise von Neo4j Inc. werden einige Möglichkeiten für das effiziente Ausführen gegeben \parencite{Optimizer}. Diese Hinweise befassen sich teilweise mit dem Umformulieren der Anfragen, um die benötigten Arbeitsschritte des Optimierers. Wie in den Ergebnissen zur Grundanfrage 1.2 erläutert, deutet dies unter anderem auf einen inperformanten Optimierer hin. \newline
+Im Vergleich zu der Muli-model Datenbank OrientDB unter Verwendung von SQL besitzt Neo4j mit der Core API und Cypher ein bessere Performanz. Der verwendete Datensatz ist unter Neo4j ca. 2.4 mal größer als bei OrientDB. Allgemein besitzt Neo4j so eine bessere Performanz, aber die Speicherverwaltung unter Neo4j ist schlechter. Eine Einschätzungen über die Performanz im globalen Kontext verglichen mit mehreren anderen Datenbankmanagementsystemen ist, wie in \parencite{jouili2013empirical} ausgeführt, kann Rahmen dieses Evaluation nicht getroffen werden. 
 
 \begin{acknowledgements}
 	An dieser Stelle möchte ich all jenen danken, die durch ihre fachliche und persönliche Unterstützung zum Gelingen dieser Bachelorarbeit beigetragen haben. \newline \newline
